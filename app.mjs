@@ -1,4 +1,7 @@
 import express from "express"
+import attendeesRouter from "./api/attendees/route.mjs"
+import eventsRouter from "./api/events/route.mjs"
+import usersRouter from "./api/users/route.mjs"
 
 const app = express();
 
