@@ -38,10 +38,14 @@
   - [Get partner](#get-partner)
 
 - [Events](#events)
+
   - [Get event](#get-event)
   - [Get event questions](#get-event-questions)
   - [Get event participants](#get-event-participants)
   - [Search event](#search-events)
+
+- [Admin](#admin)
+  - [Get all users](#get-all-users)
 
 ### Authentication
 
@@ -401,3 +405,11 @@ Returns a list of events in the application system.
 | parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect. |
 
 <br>
+
+### Admin
+
+#### Get all users
+
+```HTTP
+GET /api/admin/users
+```
