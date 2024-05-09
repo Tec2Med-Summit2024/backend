@@ -14,11 +14,14 @@ Some general notes about the model and design of the application:
   - [Log out](#log-out)
 
 - [Users](#users)
+  - [Get user ticket](#get-user-ticket)
+  - [Get user qrcode](#get-user-qrcode)
   - [Get user schedule](#get-user-schedule)
   - [Get user connections](#get-user-connections)
   - [Get user notifications](#get-user-notifications)
   - [Get user recommendations](#get-user-recommendations)
   - [Search users](#search-users)
+  - [Update settings](#update-settings)
 
 - [Attendees](#attendees)
   - [Get attendee](#get-attendee)
@@ -30,26 +33,29 @@ Some general notes about the model and design of the application:
   - [Accept/Deny attendee connection request](#accept/deny-attendee-connection-request)
   - [Delete attendee connection](#delete-attendee-connection)
   - [Get attendee contacts](#get-attendee-contacts)
+  - [Add attendee certificate](#add-attendee-certificate)
+  - [Get attendee certificate](#get-attendee-certificate)
   - [Get attendee certificates](#get-attendee-certificates)
-  - [Get attendee ticket](#get-attendee-ticket)
-  - [Create attendee question](#create-attendee-question)
   - [Get attendee questions](#get-attendee-questions)
   - [Get partners followed by attendee](#get-partners-followed-by-attendee)
 
 - [Partners](#partners)
   - [Get partner](#get-partner)
-  - [Update partner](#update-partner)
-  - [Send CV to partner](#send-cv-to-partner)  
+  - [Send CV to partner](#send-cv-to-partner)
+  - [Get received CV](#get-received-CV)
+  - [Search received CV senders](sSearch-received-CV-senders)  
 
 - [Events](#events)
 
   - [Get event](#get-event)
+  - [Send question to event](#send-question-to-event)
   - [Get event questions](#get-event-questions)
-  - [Get event participants](#get-event-participants)
+  - [Send event satisfaction score](#send-event-satisfaction-score)
   - [Search events](#search-events)
 
 - [Admin](#admin)
   - [Get all users](#get-all-users)
+  - [Get event participants](#get-event-participants)
 
 ### Authentication
 
@@ -80,6 +86,29 @@ POST /api/logout
 Logs out an account in the application system.
 
 ### Users
+
+
+<br>
+
+#### Get user ticket
+
+```HTTP
+GET /api/users/{username}/ticket
+```
+
+Returns the ticket of the user identified by **username**.
+
+<br>
+
+#### Get user qrcode
+
+```HTTP
+GET /api/users/{username}/qrcode
+```
+
+Returns the qrcode of the user identified by **username**.
+
+<br>
 
 #### Get user schedule
 
@@ -143,6 +172,16 @@ Returns a list of users in the application system.
 
 <br>
 
+#### Update settings
+
+```HTTP
+PUT /api/users/{username}/settings
+```
+
+Updates the settings of the user identified by **username**.
+
+<br>
+
 ### Attendees
 
 #### Get attendee
@@ -161,7 +200,7 @@ Returns the attendee identified by **username**.
 PUT /api/attendees/{username}
 ```
 
-Updates the attendee identified by **username** and returns it.
+Updates the attendee identified by **username** and returns it. Only works for normal attendee.
 
 <br>
 
@@ -268,6 +307,26 @@ Returns the contacts of the attendee identified by **username**.
 
 <br>
 
+#### Add attendee certificate
+<!-- MAYBE NOT NECESSARY BECAUSE THE SYSTEM CAN ADD A CERTIFICATE INTERNALLY WHEN THE LOGGED USERS SENDS THE SATISFACTION SCORE -->
+```HTTP
+POST /api/attendees/{username}/certificates
+```
+
+Add a new certificate to the collections of certificates of the attendee identified by **username**.
+
+<br>
+
+#### Get attendee certificate
+
+```HTTP
+GET /api/attendees/{username}/certificates/{id}
+```
+
+Returns the certificate identified by **id** of the attendee identified by **username**.
+
+<br>
+
 #### Get attendee certificates
 
 ```HTTP
@@ -275,26 +334,6 @@ GET /api/attendees/{username}/certificates
 ```
 
 Returns the certificates of the attendee identified by **username**.
-
-<br>
-
-#### Get attendee ticket
-
-```HTTP
-GET /api/attendees/{username}/ticket
-```
-
-Returns the ticket of the attendee identified by **username**.
-
-<br>
-
-#### Create attendee question
-
-```HTTP
-GET /api/attendees/{username}/ticket
-```
-
-Creates a question made by the attendee identified by **username**.
 
 <br>
 
@@ -342,23 +381,40 @@ Returns the partner identified by **username**.
 
 <br>
 
-#### Update partner
-
-```HTTP
-PUT /api/partners/{username}
-```
-
-Updates the partner identified by **username** and returns it.
-
-<br>
-
 #### Send CV to partner
 
 ```HTTP
 POST /api/partners/{username}/cvs
 ```
 
-Sends a CV to the partner identified by **id**.
+Sends the CV of the logged attendee to the partner identified by **username**.
+
+<br>
+
+#### Get received CV
+
+```HTTP
+POST /api/partners/{username}/cvs/{id}
+```
+
+Returns the CV identified by **id** sent to the partner identified by **username**.
+
+<br>
+
+#### Search received CV senders
+
+```HTTP
+POST /api/partners/{username}/cvs
+```
+
+Returns the CV identified by **id** sent to the partner identified by **username**.
+
+**Query parameters**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| download | yes   | `BOOL` | If true download all the received CVs at the time to the mobile phone in a compressed .zip file. |
+| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect. |
 
 <br>
 
@@ -374,6 +430,16 @@ Returns the event identified by **id**.
 
 <br>
 
+#### Send question to event
+
+```HTTP
+POST /api/events/{id}/questions
+```
+
+Sends a question made by the logged attendee to the event identified by **id**.
+
+<br>
+
 #### Get event questions
 
 ```HTTP
@@ -384,13 +450,13 @@ Returns the questions of the event identified by **id**.
 
 <br>
 
-#### Get event participants
+#### Send event satisfaction score
 
 ```HTTP
-GET /api/events/{id}/participants
+POST /api/events/{id}/score
 ```
 
-Returns the participants of the event identified by **id**.
+Sends the satisfaction score given by the logged user to the event identified by **id**.
 
 <br>
 
@@ -417,3 +483,17 @@ Returns a list of events in the application system.
 ```HTTP
 GET /api/admin/users
 ```
+
+Description
+
+<br>
+
+#### Get event participants
+
+```HTTP
+GET /api/events/{id}/participants
+```
+
+Returns the participants of the event identified by **id**.
+
+<br>
