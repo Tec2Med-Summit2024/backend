@@ -1,2 +1,2 @@
-import {} from '../../database/db.mjs';
+import {} from './attendees.db.mjs';
 import {} from './attendees.model.mjs';

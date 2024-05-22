@@ -1,4 +1,4 @@
-import {getDriver} from './connector.mjs';
+import {getDriver} from '../../database/connector.mjs';
 
 
 

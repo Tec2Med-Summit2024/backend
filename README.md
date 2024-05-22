@@ -394,7 +394,7 @@ Sends the CV of the logged attendee to the partner identified by **username**.
 #### Get received CV
 
 ```HTTP
-POST /api/partners/{username}/cvs/{id}
+GET /api/partners/{username}/cvs/{id}
 ```
 
 Returns the CV identified by **id** sent to the partner identified by **username**.

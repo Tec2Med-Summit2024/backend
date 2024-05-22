@@ -8,12 +8,14 @@ router.get('/:username', (req, res) => {
     res.json({ message: 'Hello World' })
 })
 
-router.post('/:username/cvs', (req, res) => {
+router.route('/:username/cvs').post((req, res) => {
+    res.send('User List')
+}).get((req, res) => {
     res.send('User List')
 })
 
 router.get('/:username/cvs/:id', (req, res) => {
-    res.send('Returning CV with id='+res.param.id)
+    res.send('Returning CV with id='+req.params.id)
 })
 
 export default router;
