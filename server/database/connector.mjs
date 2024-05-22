@@ -19,7 +19,10 @@ let driver;
  * @returns {Promise<neo4j.Driver>}
  */
 export async function initDriver(uri, username, password) {
-  // TODO: Create an instance of the driver here
+  driver = neo4j.driver(uri, neo4j.auth.basic(username, password))
+  const serverInfo = await driver.getServerInfo()
+  console.log('Connection established')
+  console.log(serverInfo)
 }
 
 /**
