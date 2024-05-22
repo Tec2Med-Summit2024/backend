@@ -1,1 +1,1 @@
-import {} from './attendees.service.mjs';
+import {} from './attendees.service.mjs'
