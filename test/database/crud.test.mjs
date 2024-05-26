@@ -18,13 +18,17 @@ async function getDriver() {
   }
 }
 
-async function createNode(driver, label, properties) {
-  const session = driver.session({ database: 'neo4j' });
+async function createNode(label, properties, driver=undefined, session=undefined) {
+  if (!driver) driver = await getDriver();
+  if (!session) session = driver.session({ database: 'neo4j' });
+  
+  session = driver.session({ database: 'neo4j' });
   const query = `CREATE (n:${label} $properties) RETURN n`;
   const result = await session.run(query, { properties });
   session.close();
   return result.records[0].get(0);
 }
+
 
 const driver = await getDriver();
 
