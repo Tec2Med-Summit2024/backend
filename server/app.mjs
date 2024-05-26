@@ -6,7 +6,7 @@ import usersRouter from './api/users/users.route.mjs'
 
 const app = express();
 
-app.get("/", (req, res) => res.json("Hello World!"));
+app.get('/', (req, res) => res.json('Hello World!'));
 
 app.use('/api/attendees', attendeesRouter);
 app.use('/api/events', eventsRouter);
