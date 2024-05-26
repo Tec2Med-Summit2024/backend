@@ -1,1 +1,1 @@
-import { } from './partners.service.mjs';
+import {} from './partners.service.mjs';

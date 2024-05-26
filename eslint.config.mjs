@@ -28,6 +28,7 @@ export default [
         { avoidEscape: true, allowTemplateLiterals: true },
       ], // Enforce single quotes
       'prefer-template': 'error', // Enforce using template literals over string concatenation
+      semi: ['error', 'always'], // Enforce semicolons
     },
   },
 ];

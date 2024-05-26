@@ -9,7 +9,6 @@ import neo4j from 'neo4j-driver';
 let driver;
 // end::driver[]
 
-
 /**
  * Initiate the Neo4j Driver
  *
@@ -19,10 +18,10 @@ let driver;
  * @returns {Promise<neo4j.Driver>}
  */
 export async function initDriver(uri, username, password) {
-  driver = neo4j.driver(uri, neo4j.auth.basic(username, password))
-  const serverInfo = await driver.getServerInfo()
-  console.log('Connection established')
-  console.log(serverInfo)
+  driver = neo4j.driver(uri, neo4j.auth.basic(username, password));
+  const serverInfo = await driver.getServerInfo();
+  console.log('Connection established');
+  console.log(serverInfo);
 }
 
 /**
@@ -35,7 +34,7 @@ export async function initDriver(uri, username, password) {
  * @returns {neo4j.Driver}
  */
 export function getDriver() {
-  return driver
+  return driver;
 }
 
 /**
@@ -46,6 +45,6 @@ export function getDriver() {
  */
 export async function closeDriver() {
   if (driver) {
-    await driver.close()
+    await driver.close();
   }
 }
