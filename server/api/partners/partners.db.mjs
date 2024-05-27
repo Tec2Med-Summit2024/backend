@@ -1,22 +1,19 @@
 import { getDriver } from '../../database/connector.mjs';
 
 /**
- * Create a partner in the database
- * @param {Object} partner - The partner to create
- * @param {string} partner.name - The name of the partner
- * @param {string} partner.email - The email of the partner
- *
- * @returns {Promise<Object>} - The created partner
+ * 
+ * @param {string} username 
+ * @returns {Promise<{name: string, email: string} | null>}
  */
-export const neo4jCreatePartner = async (partner) => {
+export const getPartnerByUsername = async (username) => {
   const driver = getDriver();
   const session = driver.session();
 
   try {
     const result = await session.run(
-      `CREATE (p:Partner {name: $name, email: $email})
+      `MATCH (p:Partner {name: $username})
             RETURN p`,
-      partner
+      { username }
     );
     const r = result.records[0]?.get(0)?.properties ?? null;
     if (!r) return null;

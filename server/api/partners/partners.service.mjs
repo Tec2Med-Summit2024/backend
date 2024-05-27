@@ -1,8 +1,7 @@
-import { getPartnerUsername } from './partners.db.mjs';
-import {} from './partners.model.mjs';
+import { getPartnerByUsername } from './partners.db.mjs';
 
-export const getPartnerInDb = async (username) => {
-  const partner = await getPartnerUsername(username);
+export const getPartnerFromDb = async (username) => {
+  const partner = await getPartnerByUsername(username);
   if (!partner) {
     return { ok: false, error: 404, errorMsg: 'Partner not found' };
   }
@@ -10,17 +9,14 @@ export const getPartnerInDb = async (username) => {
   return { ok: true, value: partner };
 };
 
-export const createPartner = async (...args) => {
-  let partner = {
-    name: args[0],
-    username: args[1],
-    email: args[2],
-    password: '12314',
-  };
+export const addCVToPartner = async (username, cv) => {
+  // TODO: Implement this function
+};
 
-  delete partner.password;
+export const getCVFromPartner = async (username, cvID) => {
+  // TODO: Implement this function
+};
 
-  await neo4jCreatePartner(partner);
-
-  return { ok: true, value: partner };
+export const searchPartnerCVs = async (username, query) => {
+  // TODO: Implement this function
 };
