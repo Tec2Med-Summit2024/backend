@@ -6,14 +6,11 @@ import eventsRouter from './api/events/events.route.mjs';
 import partnersRouter from './api/partners/partners.route.mjs';
 import usersRouter from './api/users/users.route.mjs';
 
-import { verifyUsername } from './middlewares/verifyUsername.mjs';
-
-
 const app = express();
 // initDriver();
 app.get('/', (req, res) => res.json('Hello World!'));
 
-app.param('username', verifyUsername);
+// app.param('username', verifyUsername);
 
 app.use('/api/attendees', attendeesRouter);
 app.use('/api/events', eventsRouter);

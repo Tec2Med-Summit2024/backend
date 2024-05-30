@@ -23,8 +23,6 @@ export const getPartnerByUsername = async (username) => {
       name,
       email,
     };
-  } catch (error) {
-    throw error;
   } finally {
     await session.close();
   }

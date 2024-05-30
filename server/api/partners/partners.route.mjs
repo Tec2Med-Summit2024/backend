@@ -1,8 +1,11 @@
 import express from 'express';
 // remove this comment and add your controller functions
 import { getCV, getPartner, sendCVToPartner, searchCVs } from './partners.controller.mjs';
+import { verifyUsername } from '../../middleware/verifyer.mjs';
 
 const router = express.Router();
+
+router.param('username', verifyUsername);
 
 /**
  *

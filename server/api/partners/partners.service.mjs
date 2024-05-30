@@ -6,6 +6,7 @@ export const getPartnerFromDb = async (username) => {
     return { ok: false, error: 404, errorMsg: 'Partner not found' };
   }
 
+
   return { ok: true, value: partner };
 };
 
