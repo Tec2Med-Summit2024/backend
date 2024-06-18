@@ -1,11 +1,13 @@
-import { getPartnerByUsername } from './partners.db.mjs';
+import {
+  getPartnerByUsername,
+  searchReceivedCVsByPartener,
+} from './partners.db.mjs';
 
 export const getPartnerFromDb = async (username) => {
   const partner = await getPartnerByUsername(username);
   if (!partner) {
     return { ok: false, error: 404, errorMsg: 'Partner not found' };
   }
-
 
   return { ok: true, value: partner };
 };
@@ -19,5 +21,12 @@ export const getCVFromPartner = async (username, cvID) => {
 };
 
 export const searchPartnerCVs = async (username, query) => {
-  // TODO: Implement this function
+  const partner = await getPartnerByUsername(username);
+  if (!partner) {
+    return { ok: false, error: 404, errorMsg: 'Partner not found' };
+  }
+  return {
+    ok: true,
+    value: await searchReceivedCVsByPartener(username, query),
+  };
 };

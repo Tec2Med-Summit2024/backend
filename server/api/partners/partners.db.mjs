@@ -1,8 +1,8 @@
 import { getDriver } from '../../database/connector.mjs';
 
 /**
- * 
- * @param {string} username 
+ *
+ * @param {string} username
  * @returns {Promise<{name: string, email: string} | null>}
  */
 export const getPartnerByUsername = async (username) => {
@@ -23,6 +23,29 @@ export const getPartnerByUsername = async (username) => {
       name,
       email,
     };
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ *
+ * @param {string} username
+ * @param {object} query
+ * @returns {Promise<{name: string, email: string}[]>}
+ */
+export const searchReceivedCVsByPartener = async (username, query) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (p:Partner {name: $username})-[:COLLECTS]->(cv:CV)
+            RETURN cv`,
+      { username }
+    );
+
+    return result.records.map((r) => r.get(0).properties);
   } finally {
     await session.close();
   }

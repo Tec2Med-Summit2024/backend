@@ -1,4 +1,4 @@
-import { getPartnerFromDb } from './partners.service.mjs';
+import { getPartnerFromDb, searchPartnerCVs } from './partners.service.mjs';
 
 export const getPartner = async (req, res) => {
   const result = await getPartnerFromDb(req.username);
@@ -17,5 +17,9 @@ export const getCV = async (req, res) => {
 };
 
 export const searchCVs = async (req, res) => {
-  // TODO: Implement this function
+  const result = await searchPartnerCVs(req.username, req.query);
+  if (result.ok) {
+    return res.status(200).json(result.value);
+  }
+  return res.status(result.error).json({ error: result.errorMsg });
 };

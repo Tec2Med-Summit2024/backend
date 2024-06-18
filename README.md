@@ -43,7 +43,7 @@ Some general notes about the model and design of the application:
   - [Get partner](#get-partner)
   - [Send CV to partner](#send-cv-to-partner)
   - [Get received CV](#get-received-CV)
-  - [Search received CV senders](sSearch-received-CV-senders)  
+  - [Search received CV senders](#search-received-CV-senders)  
 
 - [Events](#events)
 
@@ -407,7 +407,7 @@ Returns the CV identified by **id** sent to the partner identified by **username
 POST /api/partners/{username}/cvs
 ```
 
-Returns the CV identified by **id** sent to the partner identified by **username**.
+Searches the CVs received by the partner identified by **username**.
 
 **Query parameters**
 
