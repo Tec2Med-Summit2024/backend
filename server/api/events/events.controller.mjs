@@ -1,1 +1,60 @@
-import {} from './events.service.mjs';
+import { } from './events.service.mjs';
+
+/**
+ * Get all events of the authorized user
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ * @query {string} [search] - Search query
+ * @query {Date} [start] - Limit the events by start date
+ * @query {Date} [end] - Limit the events by end date
+ */
+export const getEvents = async (req, res) => {
+    try {
+        const { search, start, end } = req.query;
+
+
+
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+};
+
+/**
+ * Get a specific event of the authorized user
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
+export const getEvent = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+};
+
+/**
+ * Creates a new question for the event
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
+export const createQuestion = async (req, res) => {
+    try {
+        const { id } = req.params;
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+};
+
+/**
+ * 
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
+export const getQuestions = async (req, res) => {
+    try {
+        const { id } = req.params;
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+};

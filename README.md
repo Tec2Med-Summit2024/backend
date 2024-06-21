@@ -47,11 +47,11 @@ Some general notes about the model and design of the application:
 
 - [Events](#events)
 
+  - [Get events](#get-events)
   - [Get event](#get-event)
   - [Send question to event](#send-question-to-event)
   - [Get event questions](#get-event-questions)
   - [Send event satisfaction score](#send-event-satisfaction-score)
-  - [Search events](#search-events)
 
 - [Admin](#admin)
   - [Get all users](#get-all-users)
@@ -420,6 +420,24 @@ Searches the CVs received by the partner identified by **username**.
 
 ### Events
 
+#### Get Events
+
+```HTTP
+GET /api/events
+```
+
+Returns all the events of the authorized user
+
+**Query parameters**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| query | ✅ | `STRING` | Query to search for in the event |
+| start | ✅ | `DATE` | All events that start before the specified time will be omitted |
+| end   | ✅ | `DATE` | All events that end after the specified time will be omitted  |
+
+<br />
+
 #### Get event
 
 ```HTTP
@@ -457,22 +475,6 @@ POST /api/events/{id}/score
 ```
 
 Sends the satisfaction score given by the logged user to the event identified by **id**.
-
-<br>
-
-#### Search events
-
-```HTTP
-GET /api/events
-```
-
-Returns a list of events in the application system.
-
-**Query parameters**
-
-| Param     | Optional | Type   | Description                                                |
-| :-------- | -------- | :----- | :--------------------------------------------------------- |
-| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect. |
 
 <br>
 
