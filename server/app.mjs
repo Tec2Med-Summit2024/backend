@@ -1,24 +1,37 @@
 import express from 'express';
 import { closeDriver, initDriver } from './database/connector.mjs';
 
+import adminRouter from './admin/router/index.mjs';
+
 import attendeesRouter from './api/attendees/attendees.route.mjs';
 import eventsRouter from './api/events/events.route.mjs';
 import partnersRouter from './api/partners/partners.route.mjs';
 import usersRouter from './api/users/users.route.mjs';
+import { engine } from 'express-handlebars';
 
 const app = express();
 
-initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
+// initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
 
-app.get('/', (req, res) => res.json('Hello World!'));
 
 // app.param('username', verifyUsername);
+app.engine('.hbs', engine({
+  extname: '.hbs',
+  layoutsDir: './server/admin/views/_layouts',
+  partialsDir: './server/admin/views/_partials',
+}));
+app.set('view engine', '.hbs');
+app.set('views', './server/admin/views');
+
+
+app.use('/admin', adminRouter)
 
 app.use('/api/attendees', attendeesRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/partners', partnersRouter);
 app.use('/api/users', usersRouter);
 
+app.get('/', (req, res) => res.json('Hello World!'));
 app.use('*', (_, res) => res.status(404).json({ error: 'Not found' }));
 
 const server = app.listen(9999, () =>
