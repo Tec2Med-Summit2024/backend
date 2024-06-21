@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 /**
- * @brief Gets all events of the authorized user
+ * @brief Gets all events
  * @GET /api/events
  */
 router.get("/", getEvents)

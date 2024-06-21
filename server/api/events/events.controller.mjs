@@ -1,4 +1,4 @@
-import { } from './events.service.mjs';
+import { getEventsFromDb } from './events.service.mjs';
 
 /**
  * Get all events of the authorized user
@@ -12,8 +12,12 @@ export const getEvents = async (req, res) => {
     try {
         const { search, start, end } = req.query;
 
+        const result = await getEventsFromDb(search, start, end);
+        if (result.ok) {
+            return res.status(200).json(result.value);
+        }
 
-
+        return res.status(result.error).json({ error: result.errorMsg });
     } catch (error) {
         return res.status(500).json({ error: "Internal Server Error" })
     }
