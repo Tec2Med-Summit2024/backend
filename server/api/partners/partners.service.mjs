@@ -16,7 +16,16 @@ export const addCVToPartner = async (username, cv) => {
   // TODO: Implement this function
 };
 
+/**
+ * 
+ * @param {string} username 
+ * @param {string} cvID 
+ */
 export const getCVFromPartner = async (username, cvID) => {
+
+
+
+
   // TODO: Implement this function
 };
 

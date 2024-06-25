@@ -28,6 +28,11 @@ export const getPartnerByUsername = async (username) => {
   }
 };
 
+export const findCV = () => {
+
+}
+
+
 /**
  *
  * @param {string} username

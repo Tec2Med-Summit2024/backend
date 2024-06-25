@@ -27,4 +27,5 @@ router.get('/:username/cvs/:cvID', getCV);
  */
 router.get('/:username/cvs', searchCVs);
 
+
 export default router;
