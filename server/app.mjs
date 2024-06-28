@@ -1,5 +1,9 @@
 import express from 'express';
+
 import { closeDriver, initDriver } from './database/connector.mjs';
+import fileUpload from 'express-fileupload';
+import cors from 'cors';
+
 
 import attendeesRouter from './api/attendees/attendees.route.mjs';
 import eventsRouter from './api/events/events.route.mjs';
@@ -12,6 +16,8 @@ initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
 
 app.get('/', (req, res) => res.json('Hello World!'));
 
+app.use(fileUpload());
+app.use(cors());
 // app.param('username', verifyUsername);
 
 app.use('/api/attendees', attendeesRouter);

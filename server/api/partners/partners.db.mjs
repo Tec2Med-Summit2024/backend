@@ -28,6 +28,36 @@ export const getPartnerByUsername = async (username) => {
   }
 };
 
+/**
+ *
+ * @param {string} username
+ * @param {string} id
+ * @returns {Promise<{resultID: string}[]>}
+ */
+export const sendCVToPartner = async (username, id) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+    `MATCH (p:Partner {name: $username})
+      CREATE (p)-[:COLLECTS]->(cv:CV {id: $id})
+       RETURN cv`,
+      { username, id }
+    );  
+  
+    const cv = result.records[0]?.get(0)?.properties ?? null;
+    const resultID = cv;
+    
+    return {
+      resultID
+    };
+  } finally {
+    await session.close();
+  }
+};
+
+
 export const findCV = () => {
 
 }
