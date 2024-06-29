@@ -1,7 +1,8 @@
 import {
   getPartnerByUsername,
-  searchReceivedCVsByPartner,
   sendCVToPartner,
+  getReceivedCVsByPartner,
+  getCV
 } from './partners.db.mjs';
 
 export const getPartnerFromDb = async (username) => {
@@ -45,25 +46,28 @@ export const addCVToPartner = async (username, files) => {
 };
 
 /**
+ * Get all the CVs from a partner identified by the username
+ * @param {string} username 
+ */
+export const getAllCVsFromPartner = async (username) => {
+  const partner = await getPartnerByUsername(username);
+  if (!partner) {
+    return { ok: false, error: 404, errorMsg: 'Partner not found' };
+  }
+
+  return { ok: true, value: await getReceivedCVsByPartner(username) };
+}
+
+/**
  * 
  * @param {string} username 
  * @param {string} cvID 
  */
 export const getCVFromPartner = async (username, cvID) => {
-
-
-
-
-  // TODO: Implement this function
-};
-
-export const searchPartnerCVs = async (username, query) => {
   const partner = await getPartnerByUsername(username);
   if (!partner) {
     return { ok: false, error: 404, errorMsg: 'Partner not found' };
   }
-  return {
-    ok: true,
-    value: await searchReceivedCVsByPartner(username, query),
-  };
+
+  return { ok: true, value: await getCV(username, cvID) };
 };

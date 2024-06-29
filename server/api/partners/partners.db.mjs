@@ -57,19 +57,12 @@ export const sendCVToPartner = async (username, id) => {
   }
 };
 
-
-export const findCV = () => {
-
-}
-
-
 /**
- *
+ * Get all the CVs connected to the given partner
  * @param {string} username
- * @param {object} query
  * @returns {Promise<{name: string, email: string}[]>}
  */
-export const searchReceivedCVsByPartner = async (username, query) => {
+export const getReceivedCVsByPartner = async (username) => {
   const driver = getDriver();
   const session = driver.session();
 
@@ -85,3 +78,26 @@ export const searchReceivedCVsByPartner = async (username, query) => {
     await session.close();
   }
 };
+
+/**
+ * Get a CV connected to the given partner
+ * @param {string} username Partner's username
+ * @param {string} cvId CV's id to get
+ */
+export const getCV = async (username, cvId) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (p:Partner {name: $username})-[:COLLECTS]->(cv:CV {id: $cvId})
+            RETURN cv`,
+      { username, cvId }
+    );
+
+    const cv = result.records[0]?.get(0)?.properties ?? null;
+    return cv;
+  } finally {
+    await session.close();
+  }
+}
