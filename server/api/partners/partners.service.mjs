@@ -1,6 +1,6 @@
 import {
   getPartnerByUsername,
-  searchReceivedCVsByPartener,
+  searchReceivedCVsByPartner,
   sendCVToPartner,
 } from './partners.db.mjs';
 
@@ -25,15 +25,15 @@ export const addCVToPartner = async (username, files) => {
   if (!cv) {
     return { ok: false, error: 404, errorMsg: 'Pdf not found' };
   }
-  
-  const uploadPath = `./tmp/${ cv.name }`;
-  cv.mv(uploadPath, function(err) {
+
+  const uploadPath = `./tmp/${cv.name}`;
+  cv.mv(uploadPath, function (err) {
     if (err)
       return { ok: false, error: 500, errorMsg: err };
 
     console.log('File uploaded!');
   });
-  
+
   const uuid = crypto.randomUUID();
   const cvID = await sendCVToPartner(username, uuid);
 
@@ -64,6 +64,6 @@ export const searchPartnerCVs = async (username, query) => {
   }
   return {
     ok: true,
-    value: await searchReceivedCVsByPartener(username, query),
+    value: await searchReceivedCVsByPartner(username, query),
   };
 };

@@ -40,15 +40,15 @@ export const sendCVToPartner = async (username, id) => {
 
   try {
     const result = await session.run(
-    `MATCH (p:Partner {name: $username})
+      `MATCH (p:Partner {name: $username})
       CREATE (p)-[:COLLECTS]->(cv:CV {id: $id})
        RETURN cv`,
       { username, id }
-    );  
-  
+    );
+
     const cv = result.records[0]?.get(0)?.properties ?? null;
     const resultID = cv;
-    
+
     return {
       resultID
     };
@@ -69,7 +69,7 @@ export const findCV = () => {
  * @param {object} query
  * @returns {Promise<{name: string, email: string}[]>}
  */
-export const searchReceivedCVsByPartener = async (username, query) => {
+export const searchReceivedCVsByPartner = async (username, query) => {
   const driver = getDriver();
   const session = driver.session();
 
