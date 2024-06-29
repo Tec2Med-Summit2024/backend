@@ -56,7 +56,7 @@ export const getAllCVsFromPartner = async (username) => {
   }
 
   return { ok: true, value: await getReceivedCVsByPartner(username) };
-}
+};
 
 /**
  * 

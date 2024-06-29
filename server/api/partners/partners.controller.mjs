@@ -42,7 +42,7 @@ export const getAllPartnerCVs = async (req, res) => {
   }
 
   return res.status(result.error).json({ error: result.errorMsg });
-}
+};
 
 
 /**

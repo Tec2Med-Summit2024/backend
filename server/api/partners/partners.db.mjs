@@ -100,4 +100,4 @@ export const getCV = async (username, cvId) => {
   } finally {
     await session.close();
   }
-}
+};

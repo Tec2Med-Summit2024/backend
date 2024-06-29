@@ -5,7 +5,8 @@
   "main": "app.mjs",
   "scripts": {
     "dev": "nodemon --env-file=.env .",
-    "start": "node --env-file=.env server/app.mjs"
+    "start": "node --env-file=.env server/app.mjs",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "Tec2Med - IT",
