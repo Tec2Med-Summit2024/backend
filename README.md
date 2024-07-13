@@ -280,7 +280,7 @@ Accepts or denies the received connection request identified by **id** of the at
 #### Delete attendee connection
 
 ```HTTP
-DELETE /api/attendees/{username}/connection/{id}
+DELETE /api/attendees/{username}/connections/{id}
 ```
 
 Delete the connection identified by **id** of the attendee identified by **username**.
