@@ -1,0 +1,23 @@
+<header class="flex items-center">
+    <h1>{{event.name}}</h1>
+
+    <div class="flex items-center">
+        <a href="/admin/events" class="flex items-center gap-2">
+            Events List
+        </a>
+
+        <a href="/admin/events/{{event.id}}/edit">
+            Edit Event
+        </a>
+
+        <form action="/admin/events/{{event.id}}/delete" method="post">
+            <button type="submit">
+                <span class="material-icons-outlined">bin</span>
+            </button>
+        </form>
+    </div>
+</header>
+
+<section>
+
+</section>

@@ -1,0 +1,43 @@
+<header class="flex items-center space-between">
+    <h1 class="text-4xl">Create Event</h1>
+
+    <a href="/admin/events" class="flex items-center gap-2">
+        <span class="material-icons-outlined">arrow-back</span>
+        Return to Events
+    </a>
+</header>
+
+
+<section>
+    <form action="/admin/events" method="post">
+
+        <div>
+            <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div>
+                <label for="speaker">Speaker</label>
+                <input type="text" id="speaker" name="speaker" required>
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+
+            <div>
+                <label for="time">Time</label>
+                <input type="text" id="time" name="time" required>
+            </div>
+
+        </div>
+
+        <div>
+            <button type="submit">Create Event</button>
+        </div>
+    </form>
+</section>
