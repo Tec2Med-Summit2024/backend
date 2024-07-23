@@ -1,4 +1,4 @@
-import { getEventsFromDb } from './events.service.mjs';
+import { getEvents, getEvent, createQuestionInEvent, getQuestionsFromEvent } from './events.service.mjs';
 
 /**
  * Get all events of the authorized user
@@ -12,7 +12,10 @@ export const getEvents = async (req, res) => {
     try {
         const { search, start, end } = req.query;
 
-        const result = await getEventsFromDb(search, start, end);
+        const startDate = start ? new Date(start) : new Date(2000, 0, 1);
+        const endDate = end ? new Date(end) : new Date(2100, 0, 1);
+
+        const result = await getEvents(search, startDate.getTime(), endDate.getTime());
         if (result.ok) {
             return res.status(200).json(result.value);
         }
@@ -32,6 +35,12 @@ export const getEvent = async (req, res) => {
     try {
         const { id } = req.params;
 
+        const result = await getEventById(id);
+        if (result.ok) {
+            return res.status(200).json(result);
+        }
+
+        return res.status(result.error).json({ error: result.errorMsg });
     } catch (error) {
         return res.status(500).json({ error: "Internal Server Error" })
     }
@@ -45,6 +54,14 @@ export const getEvent = async (req, res) => {
 export const createQuestion = async (req, res) => {
     try {
         const { id } = req.params;
+        const { question } = req.body;
+
+        const result = await createQuestionInEvent(id, question);
+        if (result.ok) {
+            return res.status(201).json(result.value);
+        }
+
+        return res.status(result.error).json({ error: result.errorMsg });
     } catch (error) {
         return res.status(500).json({ error: "Internal Server Error" })
     }
@@ -58,6 +75,13 @@ export const createQuestion = async (req, res) => {
 export const getQuestions = async (req, res) => {
     try {
         const { id } = req.params;
+
+        const result = await getQuestionsFromEvent(id);
+        if (result.ok) {
+            return res.status(200).json(result.value);
+        }
+
+        return res.status(result.error).json({ error: result.errorMsg });
     } catch (error) {
         return res.status(500).json({ error: "Internal Server Error" })
     }
