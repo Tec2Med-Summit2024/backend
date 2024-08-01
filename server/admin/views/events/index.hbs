@@ -1,40 +1,42 @@
-<h1 class="text-xl">Events Page</h1>
-
-<!-- TODO: Style this page -->
-
-<header class="flex items-center space-between">
+<header class="flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl">
     <h1 class="text-4xl">Events</h1>
 
-    <a href="/admin/events/new" class="flex items-center gap-2">
-        <span class="material-icons-outlined">add</span>
+    <a href="/admin/events/new" class="flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100">
+        <span class="material-symbols-outlined">
+            add
+        </span>
         Create
     </a>
 </header>
 
-<section class="flex flex-col">
-    {{each days}}
+<section class="flex flex-col max-w-screen-2xl mx-auto p-6">
+    {{#each days}}
     <div class="">
-        <h2>Day {{this.day}}</h2>
-        <div class="">
-            {{each this.events}}
-            <div class="">
-                <a href="/admin/events/{{this.id}}">{{this.name}}</a>
-                <span>{{this.speaker}}</span>
-                <span>{{this.location}}</span>
-                <span>{{this.time}}</span>
+        <h2 class="text-xl font-bold border-b-4 border-gray-800 mb-2">Day {{this.day}}</h2>
+        <div class="flex flex-col">
+            {{#each this.events}}
+            <div class="px-2 py-1 flex items-center justify-between border border-b-0 border-gray-800 last:border-b">
+                <div class="flex items-center gap-2">
+                    <a href="/admin/events/{{this.id}}" class="font-bold">{{this.name}}</a> |
+                    <span>{{this.speaker}}</span> |
+                    <span>{{this.location}}</span> |
+                    <span>{{this.time}}</span>
+                </div>
 
-                <div class="flex items-center">
-                    <form action="/admin/events/{{this.id}}/edit" method="post">
-                        <button type="submit">
-                            <span class="material-icons-outlined">pencil</span>
+                <div class="flex items-center gap-2 text-gray-50">
+
+                    <a href="/admin/events/{{this.id}}/edit" type="submit"
+                        class="flex items-center justify-center h-8 w-8 bg-orange-500 rounded-md">
+                        <span class="material-symbols-outlined">edit</span>
+                    </a>
+
+                    <form action="/admin/events/{{this.id}}/delete" method="post"
+                        class="flex items-center justify-center h-8 w-8">
+                        <button type="submit" class="flex items-center justify-center h-8 w-8 bg-red-400 rounded-md">
+                            <span class="material-symbols-outlined">delete</span>
                         </button>
                     </form>
 
-                    <form action="/admin/events/{{this.id}}/delete" method="post">
-                        <button type="submit">
-                            <span class="material-icons-outlined">bin</span>
-                        </button>
-                    </form>
                 </div>
             </div>
             {{/each}}

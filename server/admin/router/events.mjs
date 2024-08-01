@@ -1,0 +1,89 @@
+import express from "express";
+
+const router = express.Router();
+
+
+/**
+ * Events Management Page
+ */
+router.get("/", async (req, res) => {
+	try {
+
+		const days = [
+			{
+				day: 1,
+				events: [
+					{
+						id: 1,
+						name: "Event 1",
+						speaker: "Speaker 1",
+						location: "Auditorium 1",
+						time: "10:00 AM"
+					},
+					{
+						id: 2,
+						name: "Event 2",
+						speaker: "Speaker 2",
+						location: "Auditorium 2",
+						time: "10:30 AM"
+					}
+				]
+			}
+		]
+
+		return res.render("events/index", { title: "Events Management", days })
+	} catch (error) {
+		console.error(error)
+		return res.status(500).send("Internal Server Error")
+	}
+})
+
+/**
+ * Endpoint to create a new event
+ */
+router.post("/", async (req, res) => {
+	try {
+		return res.redirect("/admin/events")
+	} catch (error) {
+		console.error(error)
+		return res.redirect("/admin/events/new")
+	}
+})
+
+/**
+ * Page to create a new event
+ */
+router.get("/new", (req, res) => {
+	return res.render("events/new", { title: "Create New Event" })
+})
+
+/**
+ * Page to view event details
+ */
+router.get("/:id", (req, res) => {
+	return res.render("events/details", { title: "Event Details" })
+})
+
+/**
+ * Endpoint to update event details
+ */
+router.post("/:id", (req, res) => {
+	return res.redirect("/admin/events/:id")
+})
+
+/**
+ * Page to edit event details
+ */
+router.get("/:id/edit", (req, res) => {
+	return res.render("events/edit", { title: "Edit Event" })
+})
+
+/**
+ * Endpoint to delete an event
+ */
+router.post("/:id/delete", (req, res) => {
+	return res.redirect("/admin/events")
+})
+
+
+export default router;

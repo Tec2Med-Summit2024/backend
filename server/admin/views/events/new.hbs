@@ -1,43 +1,48 @@
-<header class="flex items-center space-between">
-    <h1 class="text-4xl">Create Event</h1>
+<header class="flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl">
+    <h1 class="text-4xl">Create an Event</h1>
 
-    <a href="/admin/events" class="flex items-center gap-2">
-        <span class="material-icons-outlined">arrow-back</span>
+    <a href="/admin/events" class="flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100">
+        <span class="material-symbols-outlined">
+            arrow_back
+        </span>
         Return to Events
     </a>
 </header>
 
 
-<section>
-    <form action="/admin/events" method="post">
-
-        <div>
-            <div>
+<section class="mx-auto max-w-screen-2xl p-6">
+    <form action="/admin/events" method="post" class="grid grid-cols-2 gap-4 text-lg" autocomplete="off">
+        <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name"
+                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
 
-            <div>
+            <div class="flex flex-col">
                 <label for="speaker">Speaker</label>
-                <input type="text" id="speaker" name="speaker" required>
+                <input type="text" id="speaker" name="speaker"
+                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
         </div>
 
-        <div>
-            <div>
+        <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
                 <label for="location">Location</label>
-                <input type="text" id="location" name="location" required>
+                <input type="text" id="location" name="location"
+                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
 
-            <div>
+            <div class="flex flex-col">
                 <label for="time">Time</label>
-                <input type="text" id="time" name="time" required>
+                <input type="text" id="time" name="time"
+                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
 
         </div>
 
         <div>
-            <button type="submit">Create Event</button>
+            <button type="submit" class="px-6 py-2 bg-green-600 text-gray-100 rounded-md">Create Event</button>
         </div>
     </form>
 </section>
