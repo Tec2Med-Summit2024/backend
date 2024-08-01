@@ -1,4 +1,3 @@
-import {} from './attendees.service.mjs';
 import {
   getAttendeeFromDb,
   updateAttendeeInDb,
@@ -14,7 +13,7 @@ import {
   getAttendeeCertificates,
   getAttendeeQuestions,
   getAttendeeFollowedPartners,
-} from './attendees.db.mjs';
+} from './attendees.service.mjs';
 
 /**
  *
