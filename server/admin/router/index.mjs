@@ -1,30 +1,23 @@
 import express from "express";
-import events from "./events.mjs"
+
+import attendeesRouter from "./attendees.mjs"
+import eventsRouter from "./events.mjs"
+import partnersRouter from "./partners.mjs"
+import ticketsRouter from "./tickets.mjs"
+import usersRouter from "./users.mjs"
 
 const router = express.Router();
 
 router.use("/static", express.static("server/admin/public"))
 
-router.use("/events", events)
+router.use("/attendees", attendeesRouter)
+router.use("/events", eventsRouter)
+router.use("/partners", partnersRouter)
+router.use("/tickets", ticketsRouter)
+router.use("/users", usersRouter)
 
 router.get("/", (req, res) => {
     return res.render("home", { title: "Admin Panel" })
-})
-
-router.get("/tickets", (req, res) => {
-    return res.render("tickets", { title: "Tickets Management" })
-})
-
-router.get("/users", (req, res) => {
-    return res.render("users", { title: "Users Management" })
-})
-
-router.get("/attendees", (req, res) => {
-    return res.render("attendees", { title: "Attendees Management" })
-})
-
-router.get("/partners", (req, res) => {
-    return res.render("partners", { title: "Partners Management" })
 })
 
 export default router;
