@@ -103,7 +103,7 @@ export const addConnectionRequest = async (req, res) => {
   try {
     const result = await addConnectionRequestToAttendee(
       req.username,
-      req.body.partnerUsername
+      req.body.attendee
     );
     if (result.ok) {
       return res.status(200).json(result.value);
@@ -122,7 +122,7 @@ export const addConnectionRequest = async (req, res) => {
  */
 export const getRequests = async (req, res) => {
   try {
-    const result = await getAttendeeRequests(req.username);
+    const result = await getAttendeeRequests(req.username, req.query.sent, req.query.received);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -201,6 +201,7 @@ export const getContacts = async (req, res) => {
  */
 export const addCertificate = async (req, res) => {
   try {
+    console.log(req.body);
     const result = await addAttendeeCertificate(
       req.username,
       req.body.certificate
