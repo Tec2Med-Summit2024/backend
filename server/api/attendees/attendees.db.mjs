@@ -1,3 +1,5 @@
+// TODO: Add documentation
+
 import { getDriver } from '../../database/connector.mjs';
 
 /**
@@ -144,7 +146,7 @@ export const addConnectionRequest = async (username, otherUsername) => {
     await session.close();
   }
 };
-//twbjze
+
 /**
  *
  * @param {string} username

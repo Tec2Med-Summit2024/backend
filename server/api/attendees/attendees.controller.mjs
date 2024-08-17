@@ -1,3 +1,5 @@
+// TODO: Add documentation
+
 import {
   getAttendeeFromDb,
   updateAttendeeInDb,

@@ -1,5 +1,6 @@
+// TODO: Add documentation
+
 import express from 'express';
-// remove this comment and add your controller functions
 import {
   getAttendee,
   updateAttendee,

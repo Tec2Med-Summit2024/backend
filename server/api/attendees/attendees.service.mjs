@@ -1,3 +1,5 @@
+// TODO: Add documentation
+
 import {
   getAttendeeByUsername,
   updateAttendeeWithData,
