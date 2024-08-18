@@ -3,7 +3,7 @@
 Some general notes about the model and design of the application:
 
 - Users can be attendees or partners
-- Attendes can be normal attendes, speakers, instructors or speakers and instructors (both). 
+- Attendes can be normal attendes, speakers, instructors or speakers and instructors (both).
 
 # API Reference
 
@@ -14,6 +14,7 @@ Some general notes about the model and design of the application:
   - [Log out](#log-out)
 
 - [Users](#users)
+
   - [Get user ticket](#get-user-ticket)
   - [Get user qrcode](#get-user-qrcode)
   - [Get user schedule](#get-user-schedule)
@@ -24,6 +25,7 @@ Some general notes about the model and design of the application:
   - [Update settings](#update-settings)
 
 - [Attendees](#attendees)
+
   - [Get attendee](#get-attendee)
   - [Update attendee](#update-attendee)
   - [Add event to attendee schedule](#add-event-to-attendee-schedule)
@@ -40,10 +42,11 @@ Some general notes about the model and design of the application:
   - [Get partners followed by attendee](#get-partners-followed-by-attendee)
 
 - [Partners](#partners)
+
   - [Get partner](#get-partner)
   - [Send CV to partner](#send-cv-to-partner)
   - [Get received CV](#get-received-CV)
-  - [Search received CV senders](#search-received-CV-senders)  
+  - [Search received CV senders](#search-received-CV-senders)
 
 - [Events](#events)
 
@@ -86,7 +89,6 @@ POST /api/logout
 Logs out an account in the application system.
 
 ### Users
-
 
 <br>
 
@@ -308,7 +310,9 @@ Returns the contacts of the attendee identified by **username**.
 <br>
 
 #### Add attendee certificate
+
 <!-- MAYBE NOT NECESSARY BECAUSE THE SYSTEM CAN ADD A CERTIFICATE INTERNALLY WHEN THE LOGGED USERS SENDS THE SATISFACTION SCORE -->
+
 ```HTTP
 POST /api/attendees/{username}/certificates
 ```
@@ -411,10 +415,10 @@ Searches the CVs received by the partner identified by **username**.
 
 **Query parameters**
 
-| Param     | Optional | Type   | Description                                                |
-| :-------- | -------- | :----- | :--------------------------------------------------------- |
-| download | yes   | `BOOL` | If true download all the received CVs at the time to the mobile phone in a compressed .zip file. |
-| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect. |
+| Param     | Optional | Type   | Description                                                                                      |
+| :-------- | -------- | :----- | :----------------------------------------------------------------------------------------------- |
+| download  | yes      | `BOOL` | If true download all the received CVs at the time to the mobile phone in a compressed .zip file. |
+| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect.                                       |
 
 <br>
 
