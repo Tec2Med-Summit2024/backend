@@ -3,7 +3,7 @@ import {
   getQRCode,
   getEvents,
   getConnections,
-  getNotifications,
+  getUserNotifications,
   searchUsers,
   updateUserSettings,
   getRecommendations
@@ -70,8 +70,8 @@ export const getUserConnections = async (req, res) => {
  * @param {import("express").Request} req 
  * @param {import("express").Response} res 
  */
-export const getUserNotifications = async (req, res) => {
-  const result = await getNotifications(req.username, req.role);
+export const getNotifications = async (req, res) => {
+  const result = await getUserNotifications(req.username, req.role);
   if (result.ok) {
     return res.status(200).json(result.value);
   }
@@ -99,7 +99,7 @@ export const getUserRecommendations = async (req, res) => {
  * @param {import("express").Response} res 
  */
 export const getUsers = async (req, res) => {
-  const result = await searchUsers(req.query.name); // query param either a value or undefined
+  const result = await searchUsers(req.query.name, req.query.type); 
   if (result.ok) {
     return res.status(200).json(result.value);
   }

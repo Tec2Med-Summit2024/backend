@@ -5,6 +5,13 @@ const rolesDict = {
   attendee: 'Attendee',
 };
 
+const userType = { 
+  partners: 'Partner',
+  attendees: 'Attendee',
+  instructors: 'Instructor',
+  speakers: 'Speaker',
+};
+
 const eventsRelationships = {
   partner: 'HOSTS',
   attendee: 'GOES_TO',
@@ -146,18 +153,21 @@ export const getRecommendationsDB = async (username, role) => {
   return user;   
 };
 
-export const searchUsersDB = async (query) => {
+export const searchUsersDB = async (name, type) => {
   const driver = getDriver();
   const session = driver.session();
 
+  name = name || '';
+  let query;
   try {
-    const result = await session.run(  
-      `MATCH (a:Attendee) WHERE a.name CONTAINS $query RETURN a.name as name 
-          UNION MATCH (p:Partner) WHERE p.name CONTAINS $query RETURN p.name as name`,
-      { query }
-    );
-    
-  return result.records.map((n) => n.get(0).properties);
+    if(userType[type] === 'Partner') {
+      query = `MATCH (a:Partner) WHERE a.name CONTAINS "${name}" 
+                  RETURN a`;
+    } else {
+      query = `MATCH (a:Attendee) WHERE a.type = "${userType[type]}" AND a.name CONTAINS "${name}" RETURN a`;
+    }
+    const result = await session.run(query);
+   return result.records.map((n) => n.get(0).properties);
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {

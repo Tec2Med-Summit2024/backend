@@ -41,7 +41,7 @@ export const getConnections = async (username, role) => {
     return { ok: true, value: connections };
 };
 
-export const getNotifications = async (username, role) => {
+export const getUserNotifications = async (username, role) => {
   const notifications = await getNotificationsDB(username, role);
   if (!notifications) 
     return { ok: false, error: 404, errorMsg: `${role} not found` };
@@ -57,8 +57,10 @@ export const getRecommendations = async (username, role) => {
     return { ok: true, value: recommendations };
 };
 
-export const searchUsers = async (username) => {
-    return { ok: true, value: await searchUsersDB(username) };
+export const searchUsers = async (name, type) => {
+    if(!type)
+      return { ok: false, error: 400, errorMsg: 'type is required' };
+    return { ok: true, value: await searchUsersDB(name, type) };
 };
 
 export const updateUserSettings = async (username, role, data) => {
