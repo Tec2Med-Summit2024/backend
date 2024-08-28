@@ -30,10 +30,11 @@ export const getAllEventsFromDb = async () => {
 export const getFilteredEventsFromDb = async (search, start, end) => {
     const driver = getDriver();
     const session = driver.session();
-
+    console.log(search, start, end);
+    console.log(typeof start, typeof end);
     try {
         const result = await session.run(
-            `MATCH (e:Event) WHERE e.title CONTAINS $search AND e.start >= $start AND e.end <= $end RETURN e`,
+            `MATCH (e:Event) WHERE toLower(e.name) CONTAINS toLower($search) AND e.start >= datetime($start) AND e.end <= datetime($end) RETURN e`,
             { search, start, end }
         );
 
@@ -52,11 +53,11 @@ export const getFilteredEventsFromDb = async (search, start, end) => {
 export const getEventByIdFromDb = async (id) => {
     const driver = getDriver();
     const session = driver.session();
-
+    const eventId = parseInt(id);
     try {
         const result = await session.run(
-            `MATCH (e:Event) WHERE e.id = $id RETURN e`,
-            { id }
+            `MATCH (e:Event) WHERE e.event_id = $eventId RETURN e`,
+            { eventId }
         );
 
         return result.records[0]?.get(0)?.properties;
@@ -78,7 +79,7 @@ export const createQuestionInEventFromDb = async (eventId, question) => {
 
     try {
         const result = await session.run(
-            `MATCH (e:Event) WHERE e.id = $eventId CREATE (q:Question $question)-[:ASKED_IN]->(e) RETURN q`,
+            `MATCH (e:Event) WHERE e.event_id = $eventId CREATE (q:Question $question)-[:ASKED_IN]->(e) RETURN q`,
             { eventId, question }
         );
 
@@ -100,7 +101,7 @@ export const getQuestionsFromEventFromDb = async (eventId) => {
 
     try {
         const result = await session.run(
-            `MATCH (e:Event)-[:ASKED_IN]->(q:Question) WHERE e.id = $eventId RETURN q`,
+            `MATCH (e:Event)-[:ASKED_IN]->(q:Question) WHERE e.event_id = $eventId RETURN q`,
             { eventId }
         );
 
