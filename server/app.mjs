@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { closeDriver, initDriver } from './database/connector.mjs';
 
 import attendeesRouter from './api/attendees/attendees.route.mjs';
@@ -12,6 +13,8 @@ initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
 
 app.get('/', (req, res) => res.json('Hello World!'));
 
+app.use(cors());
+app.use(express.json());
 // app.param('username', verifyUsername);
 
 app.use('/api/attendees', attendeesRouter);

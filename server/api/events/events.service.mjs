@@ -52,7 +52,7 @@ export const createQuestionInEvent = async (eventId, question) => {
     if (result) {
       return { ok: true, value: result };
     }
-
+    console.log('Failed to create question');
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   } catch (err) {
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };

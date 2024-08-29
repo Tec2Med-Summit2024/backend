@@ -42,7 +42,7 @@ export const getEvents = async (req, res) => {
  * @param {import("express").Response} res
  */
 export const getEvent = async (req, res) => {
-  try { 
+  try {
     const { id } = req.params;
     const result = await getEventById(id);
     if (result.ok) {
@@ -63,7 +63,10 @@ export const getEvent = async (req, res) => {
 export const createQuestion = async (req, res) => {
   try {
     const { id } = req.params;
-    const { question } = req.body;
+    const question = {
+      'question_id': req.body.question_id,
+      'content': req.body.content,
+    };
 
     const result = await createQuestionInEvent(id, question);
     if (result.ok) {
@@ -72,6 +75,7 @@ export const createQuestion = async (req, res) => {
 
     return res.status(result.error).json({ error: result.errorMsg });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
