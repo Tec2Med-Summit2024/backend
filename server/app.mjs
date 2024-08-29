@@ -8,17 +8,18 @@ import eventsRouter from './api/events/events.route.mjs';
 import partnersRouter from './api/partners/partners.route.mjs';
 import usersRouter from './api/users/users.route.mjs';
 import { engine } from 'express-handlebars';
+import handlebars from './admin/helpers/handlebars.mjs';
 
 const app = express();
 
-// initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
-
+initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
 
 // app.param('username', verifyUsername);
 app.engine('.hbs', engine({
   extname: '.hbs',
   layoutsDir: './server/admin/views/_layouts',
   partialsDir: './server/admin/views/_partials',
+  helpers: handlebars,
 }));
 app.set('view engine', '.hbs');
 app.set('views', './server/admin/views');

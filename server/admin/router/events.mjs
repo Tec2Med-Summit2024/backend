@@ -1,4 +1,5 @@
 import express from "express";
+import { makeQuery } from "../helpers/functions.mjs";
 
 const router = express.Router();
 
@@ -9,29 +10,11 @@ const router = express.Router();
 router.get("/", async (req, res) => {
 	try {
 
-		const days = [
-			{
-				day: 1,
-				events: [
-					{
-						id: 1,
-						name: "Event 1",
-						speaker: "Speaker 1",
-						location: "Auditorium 1",
-						time: "10:00 AM"
-					},
-					{
-						id: 2,
-						name: "Event 2",
-						speaker: "Speaker 2",
-						location: "Auditorium 2",
-						time: "10:30 AM"
-					}
-				]
-			}
-		]
+		const events = await makeQuery("MATCH (e:Event) RETURN e ORDER BY e.start DESC")
 
-		return res.render("events/index", { title: "Events Management", days })
+		console.log("Events =>", events)
+
+		return res.render("events/index", { title: "Events Management", events: [...events] })
 	} catch (error) {
 		console.error(error)
 		return res.status(500).send("Internal Server Error")
