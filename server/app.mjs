@@ -1,13 +1,14 @@
 import express from 'express';
 
-import { closeDriver, initDriver } from './database/connector.mjs';
-import fileUpload from 'express-fileupload';
 import cors from 'cors';
 
+import { closeDriver, initDriver } from './database/connector.mjs';
+import fileUpload from 'express-fileupload';
+
 import attendeesRouter from './api/attendees/attendees.route.mjs';
-//import eventsRouter from './api/events/events.route.mjs';
-//import partnersRouter from './api/partners/partners.route.mjs';
-//import usersRouter from './api/users/users.route.mjs';
+import eventsRouter from './api/events/events.route.mjs';
+import partnersRouter from './api/partners/partners.route.mjs';
+import usersRouter from './api/users/users.route.mjs';
 
 const app = express();
 
@@ -15,15 +16,17 @@ initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
 
 app.get('/', (req, res) => res.json('Hello World!'));
 
-app.use(fileUpload());
+
 app.use(cors());
 app.use(express.json());
-// app.param('username', verifyUsername);
+app.use(fileUpload());
+
+app.param('username', verifyUsername);
 
 app.use('/api/attendees', attendeesRouter);
-//app.use('/api/events', eventsRouter);
-//app.use('/api/partners', partnersRouter);
-//app.use('/api/users', usersRouter);
+app.use('/api/events', eventsRouter);
+app.use('/api/partners', partnersRouter);
+app.use('/api/users', usersRouter);
 
 app.use('*', (_, res) => res.status(404).json({ error: 'Not found' }));
 
