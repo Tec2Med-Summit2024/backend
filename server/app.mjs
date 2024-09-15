@@ -1,9 +1,9 @@
 import express from 'express';
-
+import fileUpload from 'express-fileupload';
 import cors from 'cors';
 
 import { closeDriver, initDriver } from './database/connector.mjs';
-import fileUpload from 'express-fileupload';
+import { verifyUsername } from './api/users/users.middleware.mjs';
 
 import attendeesRouter from './api/attendees/attendees.route.mjs';
 import eventsRouter from './api/events/events.route.mjs';
