@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
 
-// app.param('username', verifyUsername);
+app.param('username', verifyUsername);
 
 app.use('/api/attendees', attendeesRouter);
 app.use('/api/events', eventsRouter);
