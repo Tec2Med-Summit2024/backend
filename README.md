@@ -170,7 +170,8 @@ Returns a list of users in the application system.
 
 | Param | Optional | Type     | Description                                                                                                         |
 | :---- | -------- | :------- | :------------------------------------------------------------------------------------------------------------------ |
-| name  | yes      | `String` | The name of the user. Searches for users whose name matches a substring beginning from the start of the given name. |
+| name  | yes      | `String` | The name of the user. Searches for users whose name matches a substring beginning from the start of the given name. 
+| type  | no       | `String` | The type of the user. Possible types are: `attendees`, `partners`, `instructors`,  `speakers`. |
 
 <br>
 
