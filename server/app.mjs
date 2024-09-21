@@ -3,7 +3,7 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 
 import { closeDriver, initDriver } from './database/connector.mjs';
-import { verifyUsername } from './api/users/users.middleware.mjs';
+import { verifyUsername } from './middleware/verifier.mjs';
 
 import attendeesRouter from './api/attendees/attendees.route.mjs';
 import eventsRouter from './api/events/events.route.mjs';
