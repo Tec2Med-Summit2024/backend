@@ -23,7 +23,7 @@ export const getEvents = async (req, res) => {
     const endDate = end ? new Date(end) : new Date(2100, 0, 1, 0, 0, 0);
 
     const result = await searchEvents(
-      search,
+      searchName,
       startDate.toISOString(),
       endDate.toISOString()
     );
