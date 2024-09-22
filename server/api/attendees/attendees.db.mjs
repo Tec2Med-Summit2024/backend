@@ -1,5 +1,6 @@
 // TODO: Add documentation
 
+import e from 'express';
 import { getDriver } from '../../database/connector.mjs';
 
 /**
@@ -307,17 +308,18 @@ export const getAttendeeContactsInDb = async (username) => {
  * @param {string} username
  * @param {string} certificate
  */
-export const addCertificate = async (username, certificateID) => {
+export const addCertificate = async (username, eventID) => {
   const driver = getDriver();
   const session = driver.session();
 
   try {
     const result = await session.run(
       `MATCH (a:Attendee {username: $username})
-       MATCH (c:Certificate {id: $certificateID})
-       CREATE p=(a)-[:GETS]->(c)
-       RETURN p;`,
-      { username, certificateID }
+       MATCH (e:Event {event_id: $eventID})
+       CREATE (c:Certificate {cert_id: a.username+e.event_id})
+       CREATE (e)-[r1:GIVES]->(c)
+       CREATE (a)-[r2:GETS]->(c)`,
+      { username, eventID }
     );
 
     const r = result.records[0]?.get(0)?.segments ?? null;
@@ -339,8 +341,10 @@ export const getCertificate = async (username, certificateID) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})-[:GETS]->(c:Certificate {id: $certificateID})
-        RETURN c;`,
+      `MATCH (a:Attendee {username: $username})-[r:GETS]->(c:Certificate {cert_id: $certificateID})
+       MATCH (e:Event)-[r2:GIVES]->(c)
+       MATCH (e)-[:IN_TYPE]->(et:EventType)
+       RETURN c.cert_id, e.name, et.name, e.start, e.end, e.event_id`,
       { username, certificateID }
     );
 
@@ -362,8 +366,10 @@ export const getCertificates = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})-[:GETS]->(c:Certificate)
-        RETURN c;`,
+      `MATCH (a:Attendee {username: $username})-[r:GETS]->(c:Certificate)
+       MATCH (e:Event)-[r2:GIVES]->(c)
+       MATCH (e)-[:IN_TYPE]->(et:EventType)
+       RETURN c.cert_id, e.name, et.name, e.start, e.end, e.event_id`,
       { username }
     );
 

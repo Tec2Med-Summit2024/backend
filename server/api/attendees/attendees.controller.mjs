@@ -206,7 +206,7 @@ export const addCertificate = async (req, res) => {
     console.log(req.body);
     const result = await addAttendeeCertificate(
       req.username,
-      req.body.certificate
+      req.body.eventID
     );
     if (result.ok) {
       return res.status(200).json(result.value);

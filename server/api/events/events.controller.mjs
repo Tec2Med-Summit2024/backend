@@ -18,7 +18,7 @@ export const getEvents = async (req, res) => {
     console.log(req.query);
     const { search, start, end } = req.query;
     console.log(search, start, end);
-    const searchName = search ? search : ''; 
+    const searchName = search || '';
     const startDate = start ? new Date(start) : new Date(2000, 0, 1, 0, 0, 0);
     const endDate = end ? new Date(end) : new Date(2100, 0, 1, 0, 0, 0);
 
@@ -65,8 +65,8 @@ export const createQuestion = async (req, res) => {
   try {
     const { id } = req.params;
     const question = {
-      'question_id': req.body.question_id,
-      'content': req.body.content,
+      question_id: req.body.question_id,
+      content: req.body.content,
     };
 
     const result = await createQuestionInEvent(id, question);
