@@ -11,9 +11,9 @@ import {
  * @param {Date} start
  * @param {Date} end
  */
-export const searchEvents = async (search, start, end) => {
+export const searchEvents = async (search, type, start, end) => {
   try {
-    const events = await getFilteredEventsFromDb(search, start, end);
+    const events = await getFilteredEventsFromDb(search, type, start, end);
     if (events) {
       return { ok: true, value: events };
     }

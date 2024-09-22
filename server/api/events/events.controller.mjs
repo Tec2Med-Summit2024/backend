@@ -16,14 +16,16 @@ import {
 export const getEvents = async (req, res) => {
   try {
     console.log(req.query);
-    const { search, start, end } = req.query;
-    console.log(search, start, end);
-    const searchName = search || '';
+    const { name, type, start, end } = req.query;
+    console.log(name, start, end);
+    const searchName = name || '';
+    const searchType = type || '';
     const startDate = start ? new Date(start) : new Date(2000, 0, 1, 0, 0, 0);
     const endDate = end ? new Date(end) : new Date(2100, 0, 1, 0, 0, 0);
 
     const result = await searchEvents(
       searchName,
+      searchType,
       startDate.toISOString(),
       endDate.toISOString()
     );
