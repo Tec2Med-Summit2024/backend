@@ -9,7 +9,7 @@ export const getAllEventsFromDb = async () => {
   const session = driver.session();
 
   try {
-    const result = await session.run(`MATCH (e:Event) RETURN e`);
+    const result = await session.run(`MATCH (e:Event )-[:IN_TYPE]->(et:EventType) RETURN e, et.name`);
 
     return result.records.map((r) => r.get(0)?.properties);
   } catch (error) {
@@ -33,16 +33,16 @@ export const getFilteredEventsFromDb = async (name, type, start, end) => {
   try {
     const result = await session.run(
       `MATCH (e:Event )-[:IN_TYPE]->(et:EventType) 
-      WHERE toLower(e.name) CONTAINS toLower($search) 
+      WHERE toLower(e.name) CONTAINS toLower($name) 
        AND toLower(et.name) CONTAINS toLower($type)
-       AND toLower(e.name) CONTAINS toLower($name)
        AND e.start >= datetime($start) 
        AND e.end <= datetime($end) RETURN e, et.name`,
-      { name, start, end }
+      { name, type, start, end }
     );
 
     return result.records.map((r) => r.get(0)?.properties);
   } catch (error) {
+    console.log(error);
     return null;
   } finally {
     session.close();
