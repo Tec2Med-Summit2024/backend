@@ -62,8 +62,10 @@ export const getEventByIdFromDb = async (id) => {
       `MATCH (e:Event )-[:IN_TYPE]->(et:EventType) WHERE e.event_id = $eventId RETURN e, et.name`,
       { eventId }
     );
-
-    return result.records[0]?.get(0)?.properties;
+    const props = result.records[0]?.get(0)?.properties;
+    props.start = props.start.toStandardDate();
+    props.end = props.end.toStandardDate();
+    return props;
   } catch (error) {
     return null;
   } finally {
