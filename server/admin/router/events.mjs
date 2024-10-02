@@ -9,11 +9,7 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
 	try {
-
 		const events = await makeQuery("MATCH (e:Event) RETURN e ORDER BY e.start DESC")
-
-		console.log("Events =>", events)
-
 		return res.render("events/index", { title: "Events Management", events: [...events] })
 	} catch (error) {
 		console.error(error)

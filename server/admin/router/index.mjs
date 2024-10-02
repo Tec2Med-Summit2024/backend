@@ -8,6 +8,11 @@ import usersRouter from "./users.mjs"
 
 const router = express.Router();
 
+router.use((req, res, next) => {
+    next()
+})
+
+
 router.use("/static", express.static("server/admin/public"))
 
 router.use("/attendees", attendeesRouter)
