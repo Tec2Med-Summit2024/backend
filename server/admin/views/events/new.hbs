@@ -32,32 +32,41 @@
                 <input type="text" id="company" name="company"
                     class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
+                <label for="start_time">Start Time</label>
+                <input type="datetime-local" id="start_time" name="start_time"
+                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
+            </div>
 
             <div class="flex flex-col">
-                <label for="time">Date</label>
-                <input type="date" id="time" name="time"
+                <label for="end_time">End Time</label>
+                <input type="datetime-local" id="end_time" name="end_time"
                     class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
         </div>
 
         <div class="flex flex-col gap-2">
             <div class="flex flex-col">
-                <label for="start_time">Start Time</label>
-                <input type="time" id="start_time" name="start_time"
+                <label for="speaker">Speaker</label>
+                <input type="text" id="speaker" name="speaker"
                     class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
 
             <div class="flex flex-col">
-                <label for="end_time">End Time</label>
-                <input type="time" id="end_time" name="end_time"
+                <label for="topics">Topics</label>
+                <input type="text" id="topics" name="topics"
                     class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
+                <small>Separated by ;</small>
             </div>
         </div>
 
         <div class="flex flex-col gap-2 col-span-2">
             <div class="flex flex-col">
-                <label for="about">Description</label>
-                <input type="text" id="about" name="about"
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description"
                     class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
             </div>
         </div>
@@ -67,6 +76,7 @@
                 <label for="materials">Materials</label>
                 <input type="text" id="materials" name="materials"
                     class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
+                <small>Separated by ;</small>
             </div>
         </div>
 

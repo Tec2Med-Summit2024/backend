@@ -12,8 +12,10 @@ router.use((req, res, next) => {
     next()
 })
 
-
+router.use(express.urlencoded({ extended: false }))
+router.use(express.json())
 router.use("/static", express.static("server/admin/public"))
+
 
 router.use("/attendees", attendeesRouter)
 router.use("/events", eventsRouter)

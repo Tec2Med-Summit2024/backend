@@ -16,19 +16,19 @@
         <span>{{fmtDate this.start}}</span>
         <div class="px-2 py-1 flex items-center justify-between border  border-gray-800">
             <div class="flex items-center gap-2">
-                <a href="/admin/events/{{this.event_id}}" class="font-bold hover:underline">{{this.name}}</a> |
+                <a href="/admin/events/{{this.id}}" class="font-bold hover:underline">{{this.name}}</a> |
                 <span>{{this.building_and_room}}</span> |
                 <span>{{this.company}}</span>
             </div>
 
             <div class="flex items-center gap-2 text-gray-50">
 
-                <a href="/admin/events/{{this.event_id}}/edit" type="submit"
+                <a href="/admin/events/{{this.id}}/edit" type="submit"
                     class="flex items-center justify-center h-8 w-8 bg-orange-500 rounded-md">
                     <span class="material-symbols-outlined">edit</span>
                 </a>
 
-                <form action="/admin/events/{{this.event_id}}/delete" method="post"
+                <form action="/admin/events/{{this.id}}/delete" method="post"
                     class="flex items-center justify-center h-8 w-8">
                     <button type="submit"
                         class="flex items-center justify-center h-8 w-8 bg-red-400 rounded-md cursor-pointer">

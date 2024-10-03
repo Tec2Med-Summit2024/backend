@@ -10,6 +10,14 @@ router.get("/", async (req, res) => {
     }
 })
 
+router.post("/", async (req, res) => {
+    try {
+        return res.send("Create New Ticket")
+    } catch (error) {
+        return res.status(500).send("Internal Server Error")
+    }
+})
+
 router.get("/new", async (req, res) => {
     try {
         return res.render("tickets/new", { title: "Create New Ticket" })
