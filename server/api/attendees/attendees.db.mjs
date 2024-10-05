@@ -374,8 +374,15 @@ export const getCertificates = async (username) => {
     );
 
     return result.records.map((r) => {
-      const certificate = r.get(0);
-      return certificate.properties;
+      // Create an object mapping keys to values
+      const mapped = {};
+      r.keys.forEach((key, i) => {
+        mapped[key] = r._fields[i];
+      });
+      mapped['e.start'] = mapped['e.start'].toStandardDate();
+      mapped['e.end'] = mapped['e.end'].toStandardDate();
+      mapped['e.event_id'] = mapped['e.event_id'].low;
+      return mapped;
     });
   } finally {
     await session.close();

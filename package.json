@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.mjs",
   "scripts": {
-    "dev": "nodemon --env-file=.env .",
+    "dev": "nodemon --env-file=.env server/app.mjs",
     "start": "node --env-file=.env server/app.mjs",
     "lint": "eslint ."
   },
@@ -29,6 +29,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
-    "globals": "^15.2.0"
+    "globals": "^15.2.0",
+    "nodemon": "^3.1.7"
   }
 }
