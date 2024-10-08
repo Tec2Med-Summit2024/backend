@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.param('username', verifyUsername);
 
-router.param('username', verifyRole);
+router.param('role', verifyRole);
 
 /**
  * 

@@ -1,9 +1,25 @@
 import express from 'express';
 // remove this comment and add your controller functions
-import {} from './controller.mjs';
+import { registerAccount, loginAccount, logoutAccount } from './auth.controller.mjs';
 
 const router = express.Router();
 
-// authentication related routes
+
+/**
+ * 
+ */
+router.post('/register', registerAccount);
+
+/**
+ * 
+ */
+router.post('/login', loginAccount);
+
+/**
+ * 
+ */
+router.post('/:username', logoutAccount);
+
+
 
 export default router;
