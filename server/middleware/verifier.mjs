@@ -14,20 +14,27 @@ export const verifyUsername = (req, res, next, username) => {
 };
 
 
-export const verifyRole = (req, res, next) => {
-    // TODO: Implement this function with authentication -> partner or attendee
-    req.role = 'partner'; 
-    next();
-};
-
 export const authenticateToken = (req, res, next) => {
-    if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-        jwt.verify(req.headers.authorization.split(' ')[1], process.env.API_SECRET, function (err, decode) {
-            if (err) res.status(200).json(err.value);
-            req.user = decode;
-            next();  
-        });
+    const authHeader = req.headers.authorization;
+  
+    if (authHeader) {
+      const token = authHeader.split(' ')[1]; // Bearer <token>
+      jwt.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+        if (err) {
+          return res.status(403).json({
+            success: false,
+            message: 'Invalid token',
+          });
+        } else {  
+          req.user = payload.email;
+          req.role = payload.role;
+          next();
+        }
+      });
     } else {
-        return res.status(401).json({ error: 'Unauthorized' });
+      res.status(401).json({
+        success: false,
+        message: 'Token is not provided',
+      });
     }
-};
+  };

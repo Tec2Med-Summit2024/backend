@@ -17,7 +17,7 @@ export const createVerificationCode = async (email, verificationCode) => {
       { email, verificationCode }
     );
 
-    // In case 
+    // In case of no Attendee found, create a new basic one
     if( ! result.records.length > 0 ){
       createAttendee(email, verificationCode);
     } 
@@ -51,13 +51,81 @@ const createAttendee = async (email, verificationCode) => {
 };
 
 /**
- *
- * @param {User} user
+ * @param { string } email
  * @returns {Promise< >}
  */
-export const addAccount = async (user) => {
+export const getVerificationCode = async (email) => {
+  const driver = getDriver();
+  const session = driver.session();
 
+  try {
+    const result = await session.run(
+      `MATCH (n) WHERE (n:Attendee OR n:Partner) 
+        AND n.email = $email 
+        RETURN n.verification_code`,
+      { email }
+    );
+    const code = result.records[0]?.get(0);
+  
+    return code;
+      
+  } finally {
+    await session.close();
+  }
+};
 
+/**
+ * @param { string } email
+ * @param { string } password
+ * @returns {Promise< >}
+ */
+export const changePassword = async (email, password) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    await session.run(
+      `MATCH (n) WHERE (n:Attendee OR n:Partner) 
+        AND n.email = $email 
+        SET n.password = $password`,
+      { email, password }
+    );
+    return null;
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ * @param { string } email
+ * @returns {Promise< >}
+ */
+export const lookUpAccount = async (email) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (n:Attendee {email: $email})
+        RETURN n`,
+      { email }
+    );
+    if(result.records.length > 0 ) 
+      return 'attendee';
+
+    const result1 = await session.run(
+      `MATCH (n:Partner {email: $email})
+        RETURN n`,
+      { email }
+    );  
+    if(result1.records.length > 0 ) {
+      return 'partner';
+    }
+    
+    return null;
+  } finally {
+    await session.close();
+  }
 };
 
 
