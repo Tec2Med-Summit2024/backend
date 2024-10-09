@@ -37,7 +37,8 @@ const createAttendee = async (email, verificationCode) => {
   try {
     await session.run(
       `CREATE (a:Attendee 
-      {email: $email, verification_code: $verificationCode})`,
+      {email: $email, verification_code: 
+      $verificationCode, type: 'Attendee'})`,
       { email, verificationCode }
     );
 
