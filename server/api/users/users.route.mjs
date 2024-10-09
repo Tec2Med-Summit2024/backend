@@ -1,13 +1,12 @@
 import express from 'express';
 // remove this comment and add your controller functions
 import { getUserTicket, getUserQRCode, getUserEvents, getUserConnections, getUserRecommendations, getUsers, updateSettings, getNotifications} from './users.controller.mjs';
-import { verifyRole, verifyUsername } from '../../middleware/verifier.mjs';
+import { verifyUsername } from '../../middleware/verifier.mjs';
 
 const router = express.Router();
 
 router.param('username', verifyUsername);
 
-router.param('role', verifyRole);
 
 /**
  * 

@@ -1,7 +1,8 @@
 import express from 'express';
 // remove this comment and add your controller functions
-import { registerAccount, emailVerification, changePassword } from './auth.controller.mjs';
+import { registerAccount, emailVerification, changePassword, loginAccount } from './auth.controller.mjs';
 import { authenticateToken } from '../middleware/verifier.mjs';
+
 
 const router = express.Router();
 
@@ -22,7 +23,10 @@ router.post('/verification', emailVerification);
 router.post('/password',authenticateToken, changePassword);
 
 
-
+/**
+ * 
+ */
+router.post('/login', loginAccount);
 
 
 

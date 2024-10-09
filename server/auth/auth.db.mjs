@@ -107,21 +107,20 @@ export const lookUpAccount = async (email) => {
   try {
     const result = await session.run(
       `MATCH (n:Attendee {email: $email})
-        RETURN n`,
+        RETURN n.password`,
       { email }
     );
-    if(result.records.length > 0 ) 
-      return 'attendee';
-
+    if(result.records.length > 0 ) {
+      return { password: result.records[0].get(0), role: 'attendee' };
+    }  
     const result1 = await session.run(
       `MATCH (n:Partner {email: $email})
-        RETURN n`,
+        RETURN n.password`,
       { email }
     );  
     if(result1.records.length > 0 ) {
-      return 'partner';
+      return { password: result.records[0].get(0), role: 'partner' };
     }
-    
     return null;
   } finally {
     await session.close();

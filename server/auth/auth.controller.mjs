@@ -1,4 +1,4 @@
-import { registerAcc, verifyCode, changePass } from './auth.service.mjs';
+import { registerAcc, verifyCode, changePass, loginAcc } from './auth.service.mjs';
 
 /**
  * 
@@ -51,7 +51,22 @@ export const changePassword = async (req, res) => {
   }
 };
 
-
+/**
+ * 
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
+export const loginAccount = async (req, res) => {
+  try {
+    const result = await loginAcc(req.body.email, req.body.password);
+    if (result.ok) {
+      return res.status(200).json(result);
+    }
+    return res.status(result.error).json({ error: result.errorMsg });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 

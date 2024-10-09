@@ -12,8 +12,8 @@ import nodemailer  from 'nodemailer';
 const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: 'gameherob@gmail.com',
-      pass: 'zrnb qrgx hltv uvmu'
+      user: '',
+      pass: ''
   }
 });
 
@@ -40,12 +40,13 @@ export const registerAcc = async (email) => {
 
 export const verifyCode = async (email, code) => {
 
-  const role = await lookUpAccount(email);
+  const account = await lookUpAccount(email);
 
-  if (!role) {
+  if (!account) {
     return { ok: false, error: 404, errorMsg: 'Email not found' };
   }
-
+  const role = account.role;
+  
   const dbCode = await getVerificationCode(email);
 
   if (dbCode === code) {
@@ -74,35 +75,31 @@ export const changePass = async (email, password) => {
 };
 
 
+export const loginAcc = async (email, password) => {
 
+  const account = await lookUpAccount(email);
 
+  if (!account) {
+    return { ok: false, error: 404, errorMsg: 'Email not found' };
+  }
 
-export const loginAcc = async (user) => {
-
-
+  const role = account.role;
+  const passwordDB = account.password;
+  
   // comparing passwords
   const passwordIsValid = bcrypt.compareSync(
-    user.password,
-    userDB.password
+    password,
+    passwordDB
   );
 
   if (!passwordIsValid) 
-    return { ok: false, error: 401, accessToken: null, errorMsg: 'Invalid Password!' };
+    return { ok: false, error: 401, errorMsg: 'Invalid Password!' };
 
-  const token = jwt.sign({
-    id: user.id
-  }, process.env.API_SECRET, {
-    expiresIn: 86400
+  const token = jwt.sign({ email, role }, 
+    process.env.TOKEN_SECRET,{
+    expiresIn: '1h',
   });
-
-  return { ok: true,
-     accessToken: token, 
-     message: 'Login successfull', 
-     user: {
-      id: user._id,
-      email: user.email,
-      fullName: user.fullName,
-      }
-    };
+ 
+  return { ok: true, message: 'Account logged in', token};
 };
 
