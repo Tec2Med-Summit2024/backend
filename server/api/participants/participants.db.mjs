@@ -8,13 +8,13 @@ import { getDriver } from '../../database/connector.mjs';
  * @param {string} username
  * @returns {Promise<{name: string, email: string} | null>}
  */
-export const getAttendeeByUsername = async (username) => {
+export const getParticipantByUsername = async (username) => {
   const driver = getDriver();
   const session = driver.session();
 
   try {
     const result = await session.run(
-      'MATCH (a:Attendee {username: $username}) RETURN a',
+      'MATCH (a:Participant {username: $username}) RETURN a',
       { username }
     );
     const r = result.records[0]?.get(0)?.properties ?? null;
@@ -37,13 +37,13 @@ export const getAttendeeByUsername = async (username) => {
  * @param {string} id
  * @returns {Promise<{resultID: string}[]>}
  */
-export const updateAttendeeWithData = async (username, data) => {
+export const updateParticipantWithData = async (username, data) => {
   const driver = getDriver();
   const session = driver.session();
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
+      `MATCH (a:Participant {username: $username})
       SET a += $data
       RETURN a`,
       { username, data }
@@ -73,7 +73,7 @@ export const addEventToSchedule = async (username, eventID) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
+      `MATCH (a:Participant {username: $username})
       MATCH (e:Event {event_id: $eventID})
       CREATE r=(a)-[:GOES_TO]->(e)
       RETURN r`,
@@ -104,7 +104,7 @@ export const removeEventFromSchedule = async (username, eventID) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})-[r:GOES_TO]->(e:Event {id: $eventID})
+      `MATCH (a:Participant {username: $username})-[r:GOES_TO]->(e:Event {id: $eventID})
       DELETE r`,
       { username, eventID }
     );
@@ -133,8 +133,8 @@ export const addConnectionRequest = async (username, otherUsername) => {
   const requestID = Math.random().toString(36).substring(7);
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
-        MATCH (b:Attendee {username: $otherUsername})
+      `MATCH (a:Participant {username: $username})
+        MATCH (b:Participant {username: $otherUsername})
         CREATE (a)-[r:REQUESTS {rid: $requestID}]->(b)
         RETURN r.rid`,
       { username, otherUsername, requestID }
@@ -159,8 +159,8 @@ export const getSentConnectionRequests = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
-        MATCH r=(a)-[:REQUESTS]->(b:Attendee)
+      `MATCH (a:Participant {username: $username})
+        MATCH r=(a)-[:REQUESTS]->(b:Participant)
         RETURN r`,
       { username }
     );
@@ -184,8 +184,8 @@ export const getReceivedConnectionRequests = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
-        MATCH r=(b:Attendee)-[:REQUESTS]->(a)
+      `MATCH (a:Participant {username: $username})
+        MATCH r=(b:Participant)-[:REQUESTS]->(a)
         RETURN r`,
       { username }
     );
@@ -209,7 +209,7 @@ export const acceptConnectionRequest = async (username, requestID) => {
   const cid = Math.random().toString(36).substring(7);
   try {
     const result = await session.run(
-      `MATCH (b:Attendee)-[r:REQUESTS {rid: $requestID}]->(a:Attendee {username: $username})
+      `MATCH (b:Participant)-[r:REQUESTS {rid: $requestID}]->(a:Participant {username: $username})
         DELETE r  
         WITH a, b
         CREATE (a)-[r1:CONNECTS_WITH {cid: $cid}]->(b)
@@ -240,7 +240,7 @@ export const rejectConnectionRequest = async (username, requestID) => {
 
   try {
     const result = await session.run(
-      `MATCH (b:Attendee)-[r:REQUESTS {rid: $requestID}]->(a:Attendee {username: $username})
+      `MATCH (b:Participant)-[r:REQUESTS {rid: $requestID}]->(a:Participant {username: $username})
         DELETE r`,
       { username, requestID }
     );
@@ -263,8 +263,8 @@ export const deleteConnection = async (username, connectionID) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})-[r1:CONNECTS_WITH {cid: $connectionID}]->(b:Attendee)
-      MATCH (b:Attendee)-[r2:CONNECTS_WITH {cid: $connectionID}]->(a:Attendee {username: $username})
+      `MATCH (a:Participant {username: $username})-[r1:CONNECTS_WITH {cid: $connectionID}]->(b:Participant)
+      MATCH (b:Participant)-[r2:CONNECTS_WITH {cid: $connectionID}]->(a:Participant {username: $username})
         DELETE r1, r2`,
       { username, connectionID }
     );
@@ -280,13 +280,13 @@ export const deleteConnection = async (username, connectionID) => {
  * @param {string} username
  * @returns {Promise<{resultID: string}[]>}
  */
-export const getAttendeeContactsInDb = async (username) => {
+export const getParticipantContactsInDb = async (username) => {
   const driver = getDriver();
   const session = driver.session();
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
+      `MATCH (a:Participant {username: $username})
         MATCH (a)-[:CONNECTED]->(p:Partner)
         RETURN p`,
       { username }
@@ -314,7 +314,7 @@ export const addCertificate = async (username, eventID) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
+      `MATCH (a:Participant {username: $username})
        MATCH (e:Event {event_id: $eventID})
        CREATE (c:Certificate {cert_id: a.username+e.event_id})
        CREATE (e)-[r1:GIVES]->(c)
@@ -341,7 +341,7 @@ export const getCertificate = async (username, certificateID) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})-[r:GETS]->(c:Certificate {cert_id: $certificateID})
+      `MATCH (a:Participant {username: $username})-[r:GETS]->(c:Certificate {cert_id: $certificateID})
        MATCH (e:Event)-[r2:GIVES]->(c)
        MATCH (e)-[:IN_TYPE]->(et:EventType)
        RETURN c.cert_id, e.name, et.name, e.start, e.end, e.event_id`,
@@ -366,7 +366,7 @@ export const getCertificates = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})-[r:GETS]->(c:Certificate)
+      `MATCH (a:Participant {username: $username})-[r:GETS]->(c:Certificate)
        MATCH (e:Event)-[r2:GIVES]->(c)
        MATCH (e)-[:IN_TYPE]->(et:EventType)
        RETURN c.cert_id, e.name, et.name, e.start, e.end, e.event_id`,
@@ -399,7 +399,7 @@ export const getQuestions = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
+      `MATCH (a:Participant {username: $username})
         MATCH (a)-[:ASKS]->(q:Question)
         RETURN q`,
       { username }
@@ -427,7 +427,7 @@ export const getFollowedPartners = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (a:Attendee {username: $username})
+      `MATCH (a:Participant {username: $username})
         MATCH (a)-[:FOLLOWS]->(p:Partner)
         RETURN p`,
       { username }

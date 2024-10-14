@@ -2,7 +2,7 @@ import { getDriver } from '../../database/connector.mjs';
 
 const rolesDict = {
   partner: 'Partner',
-  attendee: 'Attendee',
+  participant: 'Participant',
 };
 
 const userType = { 
@@ -14,12 +14,12 @@ const userType = {
 
 const eventsRelationships = {
   partner: 'HOSTS',
-  attendee: 'GOES_TO',
+  participant: 'GOES_TO',
 };
 
 const connectionsRelationships = {
   partner: 'FOLLOWS',
-  attendee: 'CONNECTS_WITH',
+  participant: 'CONNECTS_WITH',
 };
 
 /**
@@ -164,7 +164,7 @@ export const searchUsersDB = async (name, type) => {
       query = `MATCH (a:Partner) WHERE a.name CONTAINS "${name}" 
                   RETURN a`;
     } else {
-      query = `MATCH (a:Attendee) WHERE a.type = "${userType[type]}" AND a.name CONTAINS "${name}" RETURN a`;
+      query = `MATCH (a:Participant) WHERE a.type = "${userType[type]}" AND a.name CONTAINS "${name}" RETURN a`;
     }
     const result = await session.run(query);
    return result.records.map((n) => n.get(0).properties);

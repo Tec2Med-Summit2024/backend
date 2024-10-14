@@ -2,8 +2,8 @@
 
 import express from 'express';
 import {
-  getAttendee,
-  updateAttendee,
+  getParticipant,
+  updateParticipant,
   addEventToSchedule,
   removeEventFromSchedule,
   addConnectionRequest,
@@ -16,24 +16,24 @@ import {
   getCertificates,
   getQuestions,
   getFollowedPartners,
-} from './attendees.controller.mjs';
+} from './participants.controller.mjs';
 import { verifyUsername } from '../../middleware/verifier.mjs';
 
 const router = express.Router();
 
 router.param('username', verifyUsername);
 
-// attendees resource routes
+// participants resource routes
 
 /**
  *
  */
-router.get('/:username', getAttendee);
+router.get('/:username', getParticipant);
 
 /**
  *
  */
-router.put('/:username', updateAttendee);
+router.put('/:username', updateParticipant);
 
 /**
  *

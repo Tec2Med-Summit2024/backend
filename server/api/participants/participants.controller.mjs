@@ -1,21 +1,21 @@
 // TODO: Add documentation
 
 import {
-  getAttendeeFromDb,
-  updateAttendeeInDb,
-  addEventToAttendeeSchedule,
-  removeEventFromAttendeeSchedule,
-  addConnectionRequestToAttendee,
-  getAttendeeRequests,
+  getParticipantFromDb,
+  updateParticipantInDb,
+  addEventToParticipantSchedule,
+  removeEventFromParticipantSchedule,
+  addConnectionRequestToParticipant,
+  getParticipantRequests,
   decideOnRequest,
-  deleteAttendeeConnection,
-  getAttendeeContacts,
-  addAttendeeCertificate,
-  getAttendeeCertificate,
-  getAttendeeCertificates,
-  getAttendeeQuestions,
-  getAttendeeFollowedPartners,
-} from './attendees.service.mjs';
+  deleteParticipantConnection,
+  getParticipantContacts,
+  addParticipantCertificate,
+  getParticipantCertificate,
+  getParticipantCertificates,
+  getParticipantQuestions,
+  getParticipantFollowedPartners,
+} from './participants.service.mjs';
 
 /**
  *
@@ -23,9 +23,9 @@ import {
  * @param {*} res
  * @returns
  */
-export const getAttendee = async (req, res) => {
+export const getParticipant = async (req, res) => {
   try {
-    const result = await getAttendeeFromDb(req.username);
+    const result = await getParticipantFromDb(req.username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -41,9 +41,9 @@ export const getAttendee = async (req, res) => {
  * @param {*} res
  * @returns
  */
-export const updateAttendee = async (req, res) => {
+export const updateParticipant = async (req, res) => {
   try {
-    const result = await updateAttendeeInDb(req.username, req.body);
+    const result = await updateParticipantInDb(req.username, req.body);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -61,7 +61,7 @@ export const updateAttendee = async (req, res) => {
  */
 export const addEventToSchedule = async (req, res) => {
   try {
-    const result = await addEventToAttendeeSchedule(
+    const result = await addEventToParticipantSchedule(
       req.username,
       req.body.eventID
     );
@@ -82,7 +82,7 @@ export const addEventToSchedule = async (req, res) => {
  */
 export const removeEventFromSchedule = async (req, res) => {
   try {
-    const result = await removeEventFromAttendeeSchedule(
+    const result = await removeEventFromParticipantSchedule(
       req.username,
       req.params.eventID
     );
@@ -103,9 +103,9 @@ export const removeEventFromSchedule = async (req, res) => {
  */
 export const addConnectionRequest = async (req, res) => {
   try {
-    const result = await addConnectionRequestToAttendee(
+    const result = await addConnectionRequestToParticipant(
       req.username,
-      req.body.attendee
+      req.body.participant
     );
     if (result.ok) {
       return res.status(200).json(result.value);
@@ -124,7 +124,7 @@ export const addConnectionRequest = async (req, res) => {
  */
 export const getRequests = async (req, res) => {
   try {
-    const result = await getAttendeeRequests(req.username, req.query.sent, req.query.received);
+    const result = await getParticipantRequests(req.username, req.query.sent, req.query.received);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -164,7 +164,7 @@ export const decideRequest = async (req, res) => {
  */
 export const deleteConnection = async (req, res) => {
   try {
-    const result = await deleteAttendeeConnection(
+    const result = await deleteParticipantConnection(
       req.username,
       req.params.connectionID
     );
@@ -185,7 +185,7 @@ export const deleteConnection = async (req, res) => {
  */
 export const getContacts = async (req, res) => {
   try {
-    const result = await getAttendeeContacts(req.username);
+    const result = await getParticipantContacts(req.username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -204,7 +204,7 @@ export const getContacts = async (req, res) => {
 export const addCertificate = async (req, res) => {
   try {
     console.log(req.body);
-    const result = await addAttendeeCertificate(
+    const result = await addParticipantCertificate(
       req.username,
       req.body.eventID
     );
@@ -225,7 +225,7 @@ export const addCertificate = async (req, res) => {
  */
 export const getCertificate = async (req, res) => {
   try {
-    const result = await getAttendeeCertificate(
+    const result = await getParticipantCertificate(
       req.username,
       req.params.certificateID
     );
@@ -246,7 +246,7 @@ export const getCertificate = async (req, res) => {
  */
 export const getCertificates = async (req, res) => {
   try {
-    const result = await getAttendeeCertificates(req.username);
+    const result = await getParticipantCertificates(req.username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -264,7 +264,7 @@ export const getCertificates = async (req, res) => {
  */
 export const getQuestions = async (req, res) => {
   try {
-    const result = await getAttendeeQuestions(req.username);
+    const result = await getParticipantQuestions(req.username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -282,7 +282,7 @@ export const getQuestions = async (req, res) => {
  */
 export const getFollowedPartners = async (req, res) => {
   try {
-    const result = await getAttendeeFollowedPartners(req.username);
+    const result = await getParticipantFollowedPartners(req.username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }

@@ -1,8 +1,8 @@
 // TODO: Add documentation
 
 import {
-  getAttendeeByUsername,
-  updateAttendeeWithData,
+  getParticipantByUsername,
+  updateParticipantWithData,
   addEventToSchedule,
   removeEventFromSchedule,
   addConnectionRequest,
@@ -11,36 +11,36 @@ import {
   acceptConnectionRequest,
   rejectConnectionRequest,
   deleteConnection,
-  getAttendeeContactsInDb,
+  getParticipantContactsInDb,
   addCertificate,
   getCertificate,
   getCertificates,
   getQuestions,
   getFollowedPartners,
-} from './attendees.db.mjs';
+} from './participants.db.mjs';
 
-export const getAttendeeFromDb = async (username) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const getParticipantFromDb = async (username) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
-  return { ok: true, value: attendee };
+  return { ok: true, value: participant };
 };
 
-export const updateAttendeeInDb = async (username, data) => {
-  const attendee = await updateAttendeeWithData(username, data);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const updateParticipantInDb = async (username, data) => {
+  const participant = await updateParticipantWithData(username, data);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
-  return { ok: true, value: attendee };
+  return { ok: true, value: participant };
 };
 
-export const addEventToAttendeeSchedule = async (username, eventID) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const addEventToParticipantSchedule = async (username, eventID) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   // TODO: Check if event exists
@@ -62,10 +62,10 @@ export const addEventToAttendeeSchedule = async (username, eventID) => {
  * @param {string} username
  * @param {string} eventID
  */
-export const removeEventFromAttendeeSchedule = async (username, eventID) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const removeEventFromParticipantSchedule = async (username, eventID) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   // TODO: Check if event exists
@@ -87,14 +87,14 @@ export const removeEventFromAttendeeSchedule = async (username, eventID) => {
  * @param {string} username
  * @param {string} eventID
  */
-export const addConnectionRequestToAttendee = async (
+export const addConnectionRequestToParticipant = async (
   username,
   otherUsername
 ) => {
-  const attendee = await getAttendeeByUsername(username);
-  const otherAttendee = await getAttendeeByUsername(otherUsername);
-  if (!attendee || !otherAttendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+  const participant = await getParticipantByUsername(username);
+  const otherParticipant = await getParticipantByUsername(otherUsername);
+  if (!participant || !otherParticipant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   const result = await addConnectionRequest(username, otherUsername);
@@ -114,10 +114,10 @@ export const addConnectionRequestToAttendee = async (
  * @param {string} username
  * @param {string} eventID
  */
-export const getAttendeeRequests = async (username, sent, received) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const getParticipantRequests = async (username, sent, received) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
   if (sent) {
     return { ok: true, value: await getSentConnectionRequests(username) };
@@ -139,9 +139,9 @@ export const getAttendeeRequests = async (username, sent, received) => {
  * @param {string} partnerUsername
  */
 export const decideOnRequest = async (username, requestID, accepted) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   // const partner = await getPartnerByUsername(partnerUsername);
@@ -170,10 +170,10 @@ export const decideOnRequest = async (username, requestID, accepted) => {
  * @param {string} username
  * @param {string} partnerUsername
  */
-export const deleteAttendeeConnection = async (username, connectionID) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const deleteParticipantConnection = async (username, connectionID) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   // const partner = await getPartnerByUsername(partnerUsername);
@@ -196,23 +196,23 @@ export const deleteAttendeeConnection = async (username, connectionID) => {
  * @param {string} username
  * @param {string} partnerUsername
  */
-export const getAttendeeContacts = async (username) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const getParticipantContacts = async (username) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
-  return { ok: true, value: await getAttendeeContactsInDb(username) };
+  return { ok: true, value: await getParticipantContactsInDb(username) };
 };
 
 /**
  *
  * @param {string} username
  */
-export const addAttendeeCertificate = async (username, certificate) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const addParticipantCertificate = async (username, certificate) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   // TODO: Check if certificate exists
@@ -229,10 +229,10 @@ export const addAttendeeCertificate = async (username, certificate) => {
  *
  * @param {string} username
  */
-export const getAttendeeCertificate = async (username, certificateID) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const getParticipantCertificate = async (username, certificateID) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   const certificate = await getCertificate(username, certificateID);
@@ -247,10 +247,10 @@ export const getAttendeeCertificate = async (username, certificateID) => {
  *
  * @param {string} username
  */
-export const getAttendeeCertificates = async (username) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const getParticipantCertificates = async (username) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   return { ok: true, value: await getCertificates(username) };
@@ -260,10 +260,10 @@ export const getAttendeeCertificates = async (username) => {
  *
  * @param {string} username
  */
-export const getAttendeeQuestions = async (username) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const getParticipantQuestions = async (username) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   return { ok: true, value: await getQuestions(username) };
@@ -273,10 +273,10 @@ export const getAttendeeQuestions = async (username) => {
  *
  * @param {string} username
  */
-export const getAttendeeFollowedPartners = async (username) => {
-  const attendee = await getAttendeeByUsername(username);
-  if (!attendee) {
-    return { ok: false, error: 404, errorMsg: 'Attendee not found' };
+export const getParticipantFollowedPartners = async (username) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
   }
 
   return { ok: true, value: await getFollowedPartners(username) };
