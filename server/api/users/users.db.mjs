@@ -147,10 +147,33 @@ export const getNotificationsDB = async (username, role) => {
   }
 };
 
+
+// Verifica só a lista de interesses e expertizes, não vê localidade e ou  intituicao de estudo/trabalho
 export const getRecommendationsDB = async (username, role) => {
-  const user = await getUser(username, role);
-  if (!user) return null;
-  return user;   
+  const driver = getDriver();
+  const session = driver.session();
+  
+  try {
+    const result = await session.run(  
+      `MATCH (p:Participant {name: $username})
+        WITH p.interests AS p_interests
+        MATCH (entity)
+        WHERE (entity:Participant OR entity:Partner)
+        AND entity.name <> $username
+        WITH entity, p_interests, entity.expertise AS entity_expertise
+        RETURN entity AS expertise,
+          coalesce(size([expert IN entity_expertise WHERE expert IN p_interests]), 0) AS shared_expertise_count
+        ORDER BY shared_expertise_count DESC`,
+      { username }
+    );
+  
+
+  return result.records.map((n) => n.get(0).properties);
+  } catch (error) {
+    return { ok: false, error: 500, errorMsg: error.message };
+  } finally {
+        await session.close();
+  }
 };
 
 export const searchUsersDB = async (name, type) => {
