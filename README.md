@@ -10,8 +10,9 @@ Some general notes about the model and design of the application:
 - [Authentication](#authentication)
 
   - [Register account](#register-account)
-  - [Log in](#log-in)
-  - [Log out](#log-out)
+  - [Verification](#verification)
+  - [Update password](#update-password)
+  - [Login](#login)
 
 - [Users](#users)
 
@@ -68,25 +69,67 @@ Some general notes about the model and design of the application:
 POST /api/register
 ```
 
-Creates an account in the application system and returns the account id.
+Verifies if the email is in the ticket list. If it is, sends a verification code to the email.
+
+**Body content**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
 
 <br>
 
-#### Log in
+#### Verification
+
+```HTTP
+POST /api/verification
+```
+
+Verifies the account with the verification code and returns a JWT Token and the user ID.
+
+**Body content**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
+| code | no   | `STRING` | Verification code. |
+
+#### Update password
+
+```HTTP
+POST /api/password
+```
+
+Updates the password of the user.
+
+Note: Needs the additional request header containing the JWT token of the user
+(i.e. Authorization: Bearer eyJhbGciOiJI...) .
+
+**Body content**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
+| password | no   | `STRING` | New password. |
+
+#### Login
 
 ```HTTP
 POST /api/login
 ```
 
-Logs in an account in the application system.
+Logs in the user and returns a JWT Token and the user Id.
 
-#### Log out
 
-```HTTP
-POST /api/logout
-```
+**Body content**
 
-Logs out an account in the application system.
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
+| password | no   | `STRING` | The password of the user. |
+
+
+
 
 ### Users
 

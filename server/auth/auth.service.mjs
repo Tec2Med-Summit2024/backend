@@ -12,8 +12,8 @@ import nodemailer  from 'nodemailer';
 const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: '',
-      pass: ''
+      user: process.env.MAILER_USER,
+      pass: process.env.MAILER_PWD
   }
 });
 
@@ -27,7 +27,7 @@ export const registerAcc = async (email) => {
   await createVerificationCode(email, verificationCode);
   
   const mailOptions = {
-    to: '', // ${email}
+    to: email, 
     subject: '[Tec2Med] Verification Code',
     html: `<h1>Verification Code: ${verificationCode}</h1> 
     <p>Use this code to verify your account.</p>`

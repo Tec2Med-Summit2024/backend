@@ -10,16 +10,16 @@ export const createVerificationCode = async (email, verificationCode) => {
 
   try {
     const result = await session.run(
-      `MATCH (n) WHERE (n:Attendee OR n:Partner) 
+      `MATCH (n) WHERE (n:Participant OR n:Partner) 
       AND n.email = $email 
       SET n.verification_code = $verificationCode
       RETURN n`,
       { email, verificationCode }
     );
 
-    // In case of no Attendee found, create a new basic one
+    // In case of no Participant found, create a new basic one
     if( ! result.records.length > 0 ){
-      createAttendee(email, verificationCode);
+      createParticipant(email, verificationCode);
     } 
 
   } catch (error) {
@@ -30,13 +30,13 @@ export const createVerificationCode = async (email, verificationCode) => {
   }
 };
 
-const createAttendee = async (email, verificationCode) => {
+const createParticipant = async (email, verificationCode) => {
   const driver = getDriver();
   const session = driver.session();
 
   try {
     await session.run(
-      `CREATE (a:Attendee 
+      `CREATE (a:Participant
       {email: $email, verification_code: 
       $verificationCode, type: 'Attendee'})`,
       { email, verificationCode }
@@ -61,7 +61,7 @@ export const getVerificationCode = async (email) => {
 
   try {
     const result = await session.run(
-      `MATCH (n) WHERE (n:Attendee OR n:Partner) 
+      `MATCH (n) WHERE (n:Participant OR n:Partner) 
         AND n.email = $email 
         RETURN n.verification_code`,
       { email }
@@ -86,7 +86,7 @@ export const changePassword = async (email, password) => {
 
   try {
     await session.run(
-      `MATCH (n) WHERE (n:Attendee OR n:Partner) 
+      `MATCH (n) WHERE (n:Participant OR n:Partner) 
         AND n.email = $email 
         SET n.password = $password`,
       { email, password }
@@ -107,12 +107,12 @@ export const lookUpAccount = async (email) => {
 
   try {
     const result = await session.run(
-      `MATCH (n:Attendee {email: $email})
+      `MATCH (n:Participant {email: $email})
         RETURN n.password`,
       { email }
     );
     if(result.records.length > 0 ) {
-      return { password: result.records[0].get(0), role: 'attendee' };
+      return { password: result.records[0].get(0), role: 'participant' };
     }  
     const result1 = await session.run(
       `MATCH (n:Partner {email: $email})
