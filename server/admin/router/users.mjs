@@ -6,13 +6,13 @@ const router = Router();
 router.get("/", async (req, res) => {
     try {
 
-        const attendees = await makeQuery("MATCH (u:Attendee) RETURN u")
+        const participant = await makeQuery("MATCH (u:Participant) RETURN u")
         const partners = await makeQuery("MATCH (p:Partner) RETURN p")
 
-        console.log(...attendees)
+        console.log(...participant)
 
 
-        return res.render("users/index", { title: "Users Management", attendees: [...attendees], partners: [...partners] })
+        return res.render("users/index", { title: "Users Management", participants: [...participant], partners: [...partners] })
     } catch (error) {
         return res.status(500).send("Internal Server Error")
     }

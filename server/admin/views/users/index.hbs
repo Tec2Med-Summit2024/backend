@@ -1,13 +1,15 @@
 <header class="flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl">
     <h1 class="text-4xl">Users</h1>
+
+    <a href="#partners" class="text-blue-600 hover:underline">Go To Partners</a>
 </header>
 
 <section class="flex flex-col max-w-screen-2xl mx-auto p-6">
 
     <div class="flex items-center justify-between gap-6 mb-1">
-        <h2 class="grow text-3xl border-b-2 border-slate-800">Attendees</h2>
+        <h2 class="grow text-3xl border-b-2 border-slate-800">Participants</h2>
 
-        <a href="/admin/users/new-attendee"
+        <a href="/admin/participants/create"
             class="flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100">
             <span class="material-symbols-outlined">
                 add
@@ -16,20 +18,21 @@
         </a>
     </div>
 
-    {{#each attendees}}
+    {{#each participants}}
     <div class="flex flex-col mb-2">
         <div class="px-2 py-1 flex items-center justify-between border  border-gray-800">
             <div class="flex items-center gap-2">
-                <a href="/admin/events/{{this.event_id}}" class="font-bold hover:underline">{{this.name}}</a> |
+                <a href="/admin/participants/{{this.participant_id}}"
+                    class="font-bold hover:underline">{{this.name}}</a> |
                 <span>{{this.building_and_room}}</span> |
                 <span>{{this.company}}</span>
             </div>
             <div class="flex items-center gap-2 text-gray-50">
-                <a href="/admin/events/{{this.event_id}}/edit" type="submit"
+                <a href="/admin/participants/{{this.participant_id}}/edit" type="submit"
                     class="flex items-center justify-center h-8 w-8 bg-orange-500 rounded-md">
                     <span class="material-symbols-outlined">edit</span>
                 </a>
-                <form action="/admin/events/{{this.event_id}}/delete" method="post"
+                <form action="/admin/participants/{{this.participant_id}}/delete" method="post"
                     class="flex items-center justify-center h-8 w-8">
                     <button type="submit"
                         class="flex items-center justify-center h-8 w-8 bg-red-400 rounded-md cursor-pointer">
@@ -42,9 +45,9 @@
     {{/each}}
 
     <div class="flex items-center justify-between gap-6 mb-1 mt-6">
-        <h2 class="grow text-3xl border-b-2 border-slate-800">Partners</h2>
+        <h2 id="partners" class="grow text-3xl border-b-2 border-slate-800">Partners</h2>
 
-        <a href="/admin/users/new-partner"
+        <a href="/admin/partners/create"
             class="flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100">
             <span class="material-symbols-outlined">
                 add
@@ -56,19 +59,19 @@
     <div class="flex flex-col mb-2">
         <div class="px-2 py-1 flex items-center justify-between border  border-gray-800">
             <div class="flex items-center gap-2">
-                <a href="/admin/events/{{this.event_id}}" class="font-bold hover:underline">{{this.name}}</a> |
+                <a href="/admin/partners/{{this.username}}" class="font-bold hover:underline">{{this.name}}</a> |
                 <span>{{this.building_and_room}}</span> |
                 <span>{{this.company}}</span>
             </div>
 
             <div class="flex items-center gap-2 text-gray-50">
 
-                <a href="/admin/events/{{this.event_id}}/edit" type="submit"
+                <a href="/admin/partners/{{this.username}}/edit" type="submit"
                     class="flex items-center justify-center h-8 w-8 bg-orange-500 rounded-md">
                     <span class="material-symbols-outlined">edit</span>
                 </a>
 
-                <form action="/admin/events/{{this.event_id}}/delete" method="post"
+                <form action="/admin/partners/{{this.username}}/delete" method="post"
                     class="flex items-center justify-center h-8 w-8">
                     <button type="submit"
                         class="flex items-center justify-center h-8 w-8 bg-red-400 rounded-md cursor-pointer">
