@@ -1,13 +1,13 @@
-import { registerAcc, verifyCode, changePass, loginAcc } from './auth.service.mjs';
+import { verifyAcc, verifyCode, changePass, loginAcc } from './auth.service.mjs';
 
 /**
  * 
  * @param {import("express").Request} req 
  * @param {import("express").Response} res 
  */
-export const registerAccount = async (req, res) => {
+export const verifyAccount = async (req, res) => {
   try {
-    const result = await registerAcc(req.body.email);
+    const result = await verifyAcc(req.body.email);
     if (result.ok) {
       return res.status(200).json(result);
     }

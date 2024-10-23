@@ -63,10 +63,10 @@ Some general notes about the model and design of the application:
 
 ### Authentication
 
-#### Register account
+#### Verify Account
 
 ```HTTP
-POST /api/register
+POST /api/request-verification
 ```
 
 Verifies if the email is in the ticket list. If it is, sends a verification code to the email.
@@ -82,7 +82,7 @@ Verifies if the email is in the ticket list. If it is, sends a verification code
 #### Verification
 
 ```HTTP
-POST /api/verification
+POST /api/verify
 ```
 
 Verifies the account with the verification code and returns a JWT Token and the user ID.
@@ -97,7 +97,7 @@ Verifies the account with the verification code and returns a JWT Token and the 
 #### Update password
 
 ```HTTP
-POST /api/password
+PUT /api/password
 ```
 
 Updates the password of the user.
@@ -118,7 +118,7 @@ Note: Needs the additional request header containing the JWT token of the user
 POST /api/login
 ```
 
-Logs in the user and returns a JWT Token and the user Id.
+Logs in the user and returns a JWT Token and the user ID.
 
 
 **Body content**

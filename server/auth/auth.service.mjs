@@ -1,6 +1,5 @@
 import {
   createVerificationCode, 
-  getVerificationCode,
   changePassword,
   lookUpAccount
 } from './auth.db.mjs';
@@ -17,7 +16,7 @@ const emailTransporter = nodemailer.createTransport({
   }
 });
 
-export const registerAcc = async (email) => {
+export const verifyAcc = async (email) => {
 
   // TODO verificar se o mail existe nos tickets.
   
@@ -38,6 +37,7 @@ export const registerAcc = async (email) => {
   return { ok: true, message: 'Verification code sent' };
 };
 
+
 export const verifyCode = async (email, code) => {
 
   const account = await lookUpAccount(email);
@@ -46,8 +46,8 @@ export const verifyCode = async (email, code) => {
     return { ok: false, error: 404, errorMsg: 'Email not found' };
   }
   const role = account.role;
-  
-  const dbCode = await getVerificationCode(email);
+  const dbCode = account.verification_code;
+  const id = account.id;
 
   if (dbCode === code) {
     console.log('Code verified');
@@ -57,7 +57,7 @@ export const verifyCode = async (email, code) => {
       expiresIn: '1h',
     });
 
-    return { ok: true, message: 'Code verified', token };
+    return { ok: true, message: 'Code verified', id, token};
   }else {
     console.log('Invalid Code');
     return { ok: false, error: 403, errorMsg: 'Invalid Code' };
@@ -76,7 +76,7 @@ export const changePass = async (email, password) => {
 
 
 export const loginAcc = async (email, password) => {
-
+  
   const account = await lookUpAccount(email);
 
   if (!account) {
@@ -85,6 +85,7 @@ export const loginAcc = async (email, password) => {
 
   const role = account.role;
   const passwordDB = account.password;
+  const id = account.id;
   
   // comparing passwords
   const passwordIsValid = bcrypt.compareSync(
@@ -100,6 +101,6 @@ export const loginAcc = async (email, password) => {
     expiresIn: '1h',
   });
  
-  return { ok: true, message: 'Account logged in', token};
+  return { ok: true, message: 'Account logged in', id, token};
 };
 

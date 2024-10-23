@@ -13,14 +13,17 @@ export const createVerificationCode = async (email, verificationCode) => {
       `MATCH (n) WHERE (n:Participant OR n:Partner) 
       AND n.email = $email 
       SET n.verification_code = $verificationCode
-      RETURN n`,
-      { email, verificationCode }
+      RETURN n.id`,
+      { email, verificationCode}
     );
-
     // In case of no Participant found, create a new basic one
     if( ! result.records.length > 0 ){
       createParticipant(email, verificationCode);
-    } 
+    }
+    // In case Account has has no Id yet
+    if(!result.records[0].get(0)){
+      addAccountId(email);
+    }
 
   } catch (error) {
     console.log(error);
@@ -33,13 +36,17 @@ export const createVerificationCode = async (email, verificationCode) => {
 const createParticipant = async (email, verificationCode) => {
   const driver = getDriver();
   const session = driver.session();
+  const id = crypto.randomUUID();
 
   try {
     await session.run(
       `CREATE (a:Participant
-      {email: $email, verification_code: 
-      $verificationCode, type: 'Attendee'})`,
-      { email, verificationCode }
+      {email: $email,
+      verification_code: $verificationCode, 
+      type: ['Attendee'],
+      id: $id
+      })`,
+      { email, verificationCode, id }
     );
 
     return null;
@@ -51,27 +58,25 @@ const createParticipant = async (email, verificationCode) => {
   }
 };
 
-/**
- * @param { string } email
- * @returns {Promise< >}
- */
-export const getVerificationCode = async (email) => {
+const addAccountId = async (email) => {
   const driver = getDriver();
   const session = driver.session();
+  const id = crypto.randomUUID();
 
   try {
-    const result = await session.run(
-      `MATCH (n) WHERE (n:Participant OR n:Partner) 
-        AND n.email = $email 
-        RETURN n.verification_code`,
-      { email }
+    await session.run( 
+      `MATCH (n) WHERE (n:Participant OR n:Partner)
+        AND n.email = $email
+        SET n.id = $id`,
+      { email, id }
     );
-    const code = result.records[0]?.get(0);
-  
-    return code;
-      
+
+    return null;
+  } catch (error) {
+    console.log(error);
+    return null;
   } finally {
-    await session.close();
+    session.close();
   }
 };
 
@@ -107,34 +112,25 @@ export const lookUpAccount = async (email) => {
 
   try {
     const result = await session.run(
-      `MATCH (n:Participant {email: $email})
-        RETURN n.password`,
+      `MATCH (e)
+        WHERE (e:Participant OR e:Partner)
+        AND e.email = $email
+        RETURN e.id AS id, 
+        e.password AS password, 
+        e.verification_code AS verification_code,
+        labels(e)[0] AS type`,
       { email }
     );
-    if(result.records.length > 0 ) {
-      return { password: result.records[0].get(0), role: 'participant' };
-    }  
-    const result1 = await session.run(
-      `MATCH (n:Partner {email: $email})
-        RETURN n.password`,
-      { email }
-    );  
-    if(result1.records.length > 0 ) {
-      return { password: result.records[0].get(0), role: 'partner' };
+    if(result.records.length > 0 ){
+      return {
+        id: result.records[0].get(0), 
+        password: result.records[0].get(1), 
+        verification_code: result.records[0].get(2), 
+        type: result.records[0].get(3)};
     }
     return null;
+      
   } finally {
     await session.close();
   }
-};
-
-
-/**
- *
- * @param {User} user
- * @returns {Promise< >}
- */
-export const getAccount = async (user) => {
-
-
 };
