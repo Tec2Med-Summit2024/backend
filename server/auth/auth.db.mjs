@@ -43,7 +43,7 @@ const createParticipant = async (email, verificationCode) => {
       `CREATE (a:Participant
       {email: $email,
       verification_code: $verificationCode, 
-      type: ['Attendee'],
+      type: ["Attendee"],
       id: $id
       })`,
       { email, verificationCode, id }
