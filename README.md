@@ -20,7 +20,6 @@ Some general notes about the model and design of the application:
   - [Get user schedule](#get-user-schedule)
   - [Get user connections](#get-user-connections)
   - [Get user notifications](#get-user-notifications)
-  - [Get user recommendations](#get-user-recommendations)
   - [Search users](#search-users)
   - [Update settings](#update-settings)
 
@@ -148,15 +147,6 @@ Returns the notifications of the user identified by **username**.
 
 <br>
 
-#### Get user recommendations
-
-```HTTP
-GET /api/users/{username}/recommendations
-```
-
-Returns the recommendations of the user identified by **username**.
-
-<br>
 
 #### Search users
 

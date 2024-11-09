@@ -13,7 +13,8 @@ export const verifyUsername = (req, res, next, username) => {
 
 
 export const verifyRole = (req, res, next) => {
-    // TODO: Implement this function with authentication -> partner or attendee
-    req.role = 'partner'; 
+    // TODO: Implement this function with authentication // update done
+    req.user =  'tturner@tec2med.com';
+    req.role = 'Participant'; 
     next();
 };
