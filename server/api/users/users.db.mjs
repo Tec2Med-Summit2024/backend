@@ -1,25 +1,14 @@
 import { getDriver } from '../../database/connector.mjs';
 
-const rolesDict = {
-  partner: 'Partner',
-  attendee: 'Attendee',
-};
-
-const userType = { 
-  partners: 'Partner',
-  attendees: 'Attendee',
-  instructors: 'Instructor',
-  speakers: 'Speaker',
-};
 
 const eventsRelationships = {
   partner: 'HOSTS',
-  attendee: 'GOES_TO',
+  participant: 'GOES_TO',
 };
 
 const connectionsRelationships = {
   partner: 'FOLLOWS',
-  attendee: 'CONNECTS_WITH',
+  participant: 'CONNECTS_WITH',
 };
 
 /**
@@ -34,7 +23,7 @@ const getUser = async (username, role) => {
 
   try {
     const result = await session.run(  
-      `MATCH (u:${rolesDict[role]} {name: $username})
+      `MATCH (u:${role} {name: $username})
             RETURN u`,
       { username }
     );
@@ -84,7 +73,7 @@ export const getEventsDB = async (username, role) => {
 
   try {
     const result = await session.run(  
-      `MATCH (p:${rolesDict[role]} {name: $username})-[:${eventsRelationships[role]}]->(e:Event)
+      `MATCH (p:${role} {name: $username})-[:${eventsRelationships[role]}]->(e:Event)
             RETURN e`,
       { username }
     );
@@ -109,7 +98,7 @@ export const getConnectionsDB = async (username, role) => {
 
   try {
     const result = await session.run(  
-      `MATCH (u:${rolesDict[role]} {name: $username})-[:${connectionsRelationships[role]}]-(c)
+      `MATCH (u:${role} {name: $username})-[:${connectionsRelationships[role]}]-(c)
             RETURN c`,
       { username }
     );
@@ -134,7 +123,7 @@ export const getNotificationsDB = async (username, role) => {
 
   try {
     const result = await session.run(  
-      `MATCH (u:${rolesDict[role]} {name: $username})-[:RECEIVES]->(n:Notification)
+      `MATCH (u:${role} {name: $username})-[:RECEIVES]->(n:Notification)
             RETURN n`,
       { username }
     );
@@ -147,27 +136,68 @@ export const getNotificationsDB = async (username, role) => {
   }
 };
 
-export const getRecommendationsDB = async (username, role) => {
-  const user = await getUser(username, role);
-  if (!user) return null;
-  return user;   
-};
 
-export const searchUsersDB = async (name, type) => {
+// Verifica a lista de interesses e expertises intituicao de estudo/trabalho
+export const searchUsersDB = async (query, type, email) => {
   const driver = getDriver();
   const session = driver.session();
 
-  name = name || '';
-  let query;
+  query = query || '';
+
   try {
-    if(userType[type] === 'Partner') {
-      query = `MATCH (a:Partner) WHERE a.name CONTAINS "${name}" 
-                  RETURN a`;
-    } else {
-      query = `MATCH (a:Attendee) WHERE a.type = "${userType[type]}" AND a.name CONTAINS "${name}" RETURN a`;
-    }
-    const result = await session.run(query);
-   return result.records.map((n) => n.get(0).properties);
+    const result = await session.run(  
+      `MATCH (user)
+       WHERE (user:Participant OR user:Partner) AND user.email = $email
+      WITH user, user.interests AS user_interests, user.expertise AS user_expertise, user.institution AS user_institution, $type AS type, $query AS query
+
+      // Find matching entities based on both Participants and Partners
+      MATCH (entity)
+      WHERE 
+        (
+          (entity:Partner AND type = 'partner') OR
+          (entity:Participant AND any(t IN entity.type WHERE toLower(t) = toLower(type)))
+        )
+      AND toLower(entity.name) CONTAINS toLower(query)
+      AND entity.email <> user.email
+
+      // Check if a FOLLOW relationship exists between the user and the entity (if the entity is a Partner)
+      OPTIONAL MATCH (user)-[follows:FOLLOWS]->(entity)
+      WITH user, entity, follows, user_interests, user_expertise, user_institution,
+          entity.expertise AS entity_expertise,
+          entity.interests AS entity_interests,
+          entity.institution AS entity_institution
+
+      WITH user, entity, user_interests, user_expertise, entity_expertise, entity_interests, entity_institution, user_institution, follows,
+        // Calculate matched interests and expertise
+        coalesce(size([interest IN user_interests WHERE interest IN entity_expertise])) AS matched_interests,
+        coalesce(size([expertise IN user_expertise WHERE expertise IN entity_interests])) AS matched_expertise,
+        // Determine if the entity's location matches the user's location (1 if true, 0 if false)
+        CASE WHEN entity_institution = user_institution THEN 1 ELSE 0 END AS institution_match,
+        // Set follow_exists to true if the FOLLOW relationship exists
+        CASE WHEN follows IS NOT NULL THEN true ELSE false END AS follow_exists
+
+      RETURN entity.name AS name,
+            entity.username AS username,
+            entity.biography AS biography,
+            entity.photo_id AS photo_id,
+            follow_exists
+                
+      ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC`,
+      { query, type, email }
+    );
+  
+
+  return result.records.map((n) => {
+    return {
+      name: n.get(0),
+      username: n.get(1),
+      biography: n.get(2),
+      photo_id: n.get(3),
+      follow_exists: n.get(4)
+    };
+  }
+
+);
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
@@ -175,12 +205,13 @@ export const searchUsersDB = async (name, type) => {
   }
 };
 
+
 export const updateSettingsDB = async (username, role, data) => {
   const driver = getDriver();
   const session = driver.session();
   try {
     const result = await session.run(
-      `MATCH u:${rolesDict[role]} {name: $username})-[:HAS]->(s:Settings)
+      `MATCH u:${role} {name: $username})-[:HAS]->(s:Settings)
        SET s += $data RETURN s`,
       { username, data }
     );

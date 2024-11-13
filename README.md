@@ -2,8 +2,8 @@
 
 Some general notes about the model and design of the application:
 
-- Users can be attendees or partners
-- Attendees can be normal attendees, speakers, instructors or speakers and instructors (both).
+- Users can be participants or partners
+- Participants can be attendees, speakers, instructors or speakers and instructors (both).
 
 # API Reference
 
@@ -21,26 +21,25 @@ Some general notes about the model and design of the application:
   - [Get user schedule](#get-user-schedule)
   - [Get user connections](#get-user-connections)
   - [Get user notifications](#get-user-notifications)
-  - [Get user recommendations](#get-user-recommendations)
   - [Search users](#search-users)
   - [Update settings](#update-settings)
 
-- [Attendees](#attendees)
+- [Participants](#participants)
 
-  - [Get attendee](#get-attendee)
-  - [Update attendee](#update-attendee)
-  - [Add event to attendee schedule](#add-event-to-attendee-schedule)
-  - [Remove event from attendee schedule](#remove-event-from-attendee-schedule)
-  - [Send attendee connection request](#send-attendee-connection-request)
-  - [Get attendee connection requests](#get-attendee-connection-requests)
-  - [Accept/Deny attendee connection request](#accept/deny-attendee-connection-request)
-  - [Delete attendee connection](#delete-attendee-connection)
-  - [Get attendee contacts](#get-attendee-contacts)
-  - [Add attendee certificate](#add-attendee-certificate)
-  - [Get attendee certificate](#get-attendee-certificate)
-  - [Get attendee certificates](#get-attendee-certificates)
-  - [Get attendee questions](#get-attendee-questions)
-  - [Get partners followed by attendee](#get-partners-followed-by-attendee)
+  - [Get participant](#get-participant)
+  - [Update participant](#update-participant)
+  - [Add event to participant schedule](#add-event-to-participant-schedule)
+  - [Remove event from participant schedule](#remove-event-from-participant-schedule)
+  - [Send participant connection request](#send-participant-connection-request)
+  - [Get participant connection requests](#get-participant-connection-requests)
+  - [Accept/Deny participant connection request](#accept/deny-participant-connection-request)
+  - [Delete participant connection](#delete-participant-connection)
+  - [Get participant contacts](#get-participant-contacts)
+  - [Add participant certificate](#add-participant-certificate)
+  - [Get participant certificate](#get-participant-certificate)
+  - [Get participant certificates](#get-participant-certificates)
+  - [Get participant questions](#get-participant-questions)
+  - [Get partners followed by participant](#get-partners-followed-by-participant)
 
 - [Partners](#partners)
 
@@ -191,15 +190,6 @@ Returns the notifications of the user identified by **username**.
 
 <br>
 
-#### Get user recommendations
-
-```HTTP
-GET /api/users/{username}/recommendations
-```
-
-Returns the recommendations of the user identified by **username**.
-
-<br>
 
 #### Search users
 
@@ -214,7 +204,7 @@ Returns a list of users in the application system.
 | Param | Optional | Type     | Description                                                                                                         |
 | :---- | -------- | :------- | :------------------------------------------------------------------------------------------------------------------ |
 | name  | yes      | `String` | The name of the user. Searches for users whose name matches a substring beginning from the start of the given name. 
-| type  | no       | `String` | The type of the user. Possible types are: `attendees`, `partners`, `instructors`,  `speakers`. |
+| type  | no       | `String` | The type of the user. Possible types are: `attendee`, `partner`, `instructor`,  `speaker`. |
 
 <br>
 
@@ -228,55 +218,55 @@ Updates the settings of the user identified by **username**.
 
 <br>
 
-### Attendees
+### Participants
 
-#### Get attendee
+#### Get participant
 
 ```HTTP
-GET /api/attendees/{username}
+GET /api/participants/{username}
 ```
 
-Returns the attendee identified by **username**.
+Returns the participant identified by **username**.
 
 <br>
 
-#### Update attendee
+#### Update participant
 
 ```HTTP
-PUT /api/attendees/{username}
+PUT /api/participants/{username}
 ```
 
-Updates the attendee identified by **username** and returns it. Only works for normal attendee.
+Updates the participant identified by **username** and returns it. Only works for normal participant.
 
 <br>
 
-#### Add event to attendee schedule
+#### Add event to participant schedule
 
 ```HTTP
-POST /api/attendees/{username}/events
+POST /api/participants/{username}/events
 ```
 
-Adds an event to the schedule of the attendee identified by **username**.
+Adds an event to the schedule of the participant identified by **username**.
 
 <br>
     
-#### Remove event from attendee schedule
+#### Remove event from participant schedule
 
 ```HTTP
-DELETE /api/attendees/{username}/events/{id}
+DELETE /api/participants/{username}/events/{id}
 ```
 
-Removes event identified by **id** from the schedule of the attendee identified by **username**.
+Removes event identified by **id** from the schedule of the participant identified by **username**.
 
 <br>
 
-#### Send attendee connection request
+#### Send participant connection request
 
 ```HTTP
-POST /api/attendees/{username}/requests
+POST /api/participants/{username}/requests
 ```
 
-Creates a connection request sent by the attendee identified by **username** to another attendee in the application system.
+Creates a connection request sent by the participant identified by **username** to another participant in the application system.
 
 **Query parameters**
 
@@ -286,13 +276,13 @@ Creates a connection request sent by the attendee identified by **username** to 
 
 <br>
 
-#### Get attendee connection requests
+#### Get participant connection requests
 
 ```HTTP
-GET /api/attendees/{username}/requests
+GET /api/participants/{username}/requests
 ```
 
-Returns the connection requests of the attendee identified by **username**.
+Returns the connection requests of the participant identified by **username**.
 
 **Query parameters**
 
@@ -304,13 +294,13 @@ Returns the connection requests of the attendee identified by **username**.
 
 <br>
 
-#### Accept/Deny attendee connection request
+#### Accept/Deny participant connection request
 
 ```HTTP
-DELETE /api/attendees/{username}/requests/{id}
+DELETE /api/participants/{username}/requests/{id}
 ```
 
-Accepts or denies the received connection request identified by **id** of the attendee identified by **username**.
+Accepts or denies the received connection request identified by **id** of the participant identified by **username**.
 
 **Query parameters**
 
@@ -321,13 +311,13 @@ Accepts or denies the received connection request identified by **id** of the at
 
 <br>
 
-#### Delete attendee connection
+#### Delete participant connection
 
 ```HTTP
-DELETE /api/attendees/{username}/connections/{id}
+DELETE /api/participants/{username}/connections/{id}
 ```
 
-Delete the connection identified by **id** of the attendee identified by **username**.
+Delete the connection identified by **id** of the participant identified by **username**.
 
 **Query parameters**
 
@@ -337,13 +327,13 @@ Delete the connection identified by **id** of the attendee identified by **usern
 
 <br>
 
-#### Get attendee contacts
+#### Get participant contacts
 
 ```HTTP
-GET /api/attendees/{username}/contacts
+GET /api/participants/{username}/contacts
 ```
 
-Returns the contacts of the attendee identified by **username**.
+Returns the contacts of the participant identified by **username**.
 
 **Query parameters**
 
@@ -353,45 +343,45 @@ Returns the contacts of the attendee identified by **username**.
 
 <br>
 
-#### Add attendee certificate
+#### Add participant certificate
 
 <!-- MAYBE NOT NECESSARY BECAUSE THE SYSTEM CAN ADD A CERTIFICATE INTERNALLY WHEN THE LOGGED USERS SENDS THE SATISFACTION SCORE -->
 
 ```HTTP
-POST /api/attendees/{username}/certificates
+POST /api/participants/{username}/certificates
 ```
 
-Add a new certificate to the collections of certificates of the attendee identified by **username**.
+Add a new certificate to the collections of certificates of the participant identified by **username**.
 
 <br>
 
-#### Get attendee certificate
+#### Get participant certificate
 
 ```HTTP
-GET /api/attendees/{username}/certificates/{id}
+GET /api/participants/{username}/certificates/{id}
 ```
 
-Returns the certificate identified by **id** of the attendee identified by **username**.
+Returns the certificate identified by **id** of the participant identified by **username**.
 
 <br>
 
-#### Get attendee certificates
+#### Get participant certificates
 
 ```HTTP
-GET /api/attendees/{username}/certificates
+GET /api/participants/{username}/certificates
 ```
 
-Returns the certificates of the attendee identified by **username**.
+Returns the certificates of the participant identified by **username**.
 
 <br>
 
-#### Get attendee questions
+#### Get participant questions
 
 ```HTTP
-GET /api/attendees/{username}/questions
+GET /api/participants/{username}/questions
 ```
 
-Returns the questions of the attendee identified by **username**.
+Returns the questions of the participant identified by **username**.
 
 **Query parameters**
 
@@ -401,13 +391,13 @@ Returns the questions of the attendee identified by **username**.
 
 <br>
 
-#### Get partners followed by attendee
+#### Get partners followed by participant
 
 ```HTTP
-GET /api/attendees/{username}/partners
+GET /api/participants/{username}/partners
 ```
 
-Returns the partners followed by the attendee identified by **username**.
+Returns the partners followed by the participant identified by **username**.
 
 **Query parameters**
 
@@ -435,7 +425,7 @@ Returns the partner identified by **username**.
 POST /api/partners/{username}/cvs
 ```
 
-Sends the CV of the logged attendee to the partner identified by **username**.
+Sends the CV of the logged participant to the partner identified by **username**.
 
 <br>
 
@@ -495,7 +485,7 @@ Returns the event identified by **id**.
 POST /api/events/{id}/questions
 ```
 
-Sends a question made by the logged attendee to the event identified by **id**.
+Sends a question made by the logged participant to the event identified by **id**.
 
 <br>
 
