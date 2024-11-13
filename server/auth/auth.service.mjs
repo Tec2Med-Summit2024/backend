@@ -8,6 +8,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer  from 'nodemailer';
 
+const TEST_EMAIL = '';
+
 const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -24,6 +26,8 @@ export const verifyAcc = async (email) => {
   console.log(`Verification code: ${verificationCode}`);
 
   await createVerificationCode(email, verificationCode);
+
+  email = TEST_EMAIL;
   
   const mailOptions = {
     to: email, 
@@ -31,7 +35,7 @@ export const verifyAcc = async (email) => {
     html: `<h1>Verification Code: ${verificationCode}</h1> 
     <p>Use this code to verify your account.</p>`
   };  
-
+  
   await emailTransporter.sendMail(mailOptions);
   
   return { ok: true, message: 'Verification code sent' };
@@ -48,8 +52,8 @@ export const verifyCode = async (email, code) => {
   const role = account.role;
   const dbCode = account.verification_code;
   const id = account.id;
-
-  if (dbCode === code) {
+  
+  if (dbCode == code) {
     console.log('Code verified');
     
     const token = jwt.sign({ email, role }, 

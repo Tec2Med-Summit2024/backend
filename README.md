@@ -9,7 +9,7 @@ Some general notes about the model and design of the application:
 
 - [Authentication](#authentication)
 
-  - [Register account](#register-account)
+  - [Verify Account](#Verify-Account)
   - [Verification](#verification)
   - [Update password](#update-password)
   - [Login](#login)
@@ -69,6 +69,9 @@ POST /api/request-verification
 ```
 
 Verifies if the email is in the ticket list. If it is, sends a verification code to the email.
+
+### TEMPORARY:
+(For testing check the code in the console, or change the email constant in server/auth/auth.service.mjs)
 
 **Body content**
 
