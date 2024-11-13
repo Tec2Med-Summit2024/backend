@@ -12,6 +12,12 @@ export const verifyUsername = (req, res, next, username) => {
     next();
 };
 
+export const verifyRole = (req, res, next) => {
+  // TODO: Implement this function with authentication // update done
+  req.user =  'tturner@tec2med.com';
+  req.role = 'Participant'; 
+  next();
+};
 
 export const authenticateToken = (req, res, next) => {
     const authHeader = req.headers.authorization;

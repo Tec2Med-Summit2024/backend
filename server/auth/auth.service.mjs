@@ -54,7 +54,7 @@ export const verifyCode = async (email, code) => {
     
     const token = jwt.sign({ email, role }, 
       process.env.TOKEN_SECRET,{
-      expiresIn: '1h',
+      expiresIn: '10000h',
     });
 
     return { ok: true, message: 'Code verified', id, token};
@@ -98,7 +98,7 @@ export const loginAcc = async (email, password) => {
 
   const token = jwt.sign({ email, role }, 
     process.env.TOKEN_SECRET,{
-    expiresIn: '1h',
+    expiresIn: '1000h',
   });
  
   return { ok: true, message: 'Account logged in', id, token};

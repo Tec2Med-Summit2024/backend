@@ -1,12 +1,11 @@
 import express from 'express';
 // remove this comment and add your controller functions
-import { getUserTicket, getUserQRCode, getUserEvents, getUserConnections, getUserRecommendations, getUsers, updateSettings, getNotifications} from './users.controller.mjs';
-import { verifyUsername } from '../../middleware/verifier.mjs';
+import { getUserTicket, getUserQRCode, getUserEvents, getUserConnections, getUsers, updateSettings, getNotifications} from './users.controller.mjs';
+import { verifyRole, verifyUsername } from '../../middleware/verifier.mjs';
 
 const router = express.Router();
 
 router.param('username', verifyUsername);
-
 
 /**
  * 
@@ -33,15 +32,11 @@ router.get('/:username/connections', getUserConnections);
  */
 router.get('/:username/notifications', getNotifications);
 
-/**
- * 
- */
-router.get('/:username/recommendations', getUserRecommendations);
 
 /**
  *           
  */
-router.get('', getUsers);
+router.get('', verifyRole, getUsers);
 
 /**
  * 
