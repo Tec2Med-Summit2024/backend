@@ -26,6 +26,4 @@ router.get("/new", async (req, res) => {
     }
 })
 
-
-
 export default router;
