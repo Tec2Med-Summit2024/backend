@@ -1,6 +1,6 @@
 <section class="flex flex-col max-w-screen-2xl mx-auto p-6">
 
-    <div class="flex items-center justify-between gap-6 mb-2">
+    <div class="flex items-center justify-between gap-6 mb-4">
         <h2 class="grow text-3xl border-b-2 border-slate-800">Participants</h2>
 
         <a href="/admin/participants/create"
@@ -17,9 +17,7 @@
         <div class="px-2 py-1 flex items-center justify-between border  border-gray-800">
             <div class="flex items-center gap-2">
                 <a href="/admin/participants/{{this.participant_id}}"
-                    class="font-bold hover:underline">{{this.name}}</a> |
-                <span>{{this.building_and_room}}</span> |
-                <span>{{this.company}}</span>
+                    class="font-bold hover:underline">{{this.name}}</a>
             </div>
             <div class="flex items-center gap-2 text-gray-50">
                 <a href="/admin/participants/{{this.participant_id}}/edit" type="submit"
