@@ -9,6 +9,7 @@ import participantsRouter from './api/participants/participants.route.mjs';
 import eventsRouter from './api/events/events.route.mjs';
 import partnersRouter from './api/partners/partners.route.mjs';
 import usersRouter from './api/users/users.route.mjs';
+import authRouter from './auth/auth.route.mjs';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/participants', participantsRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/partners', partnersRouter);
 app.use('/api/users', usersRouter);
+ app.use('/api', authRouter);
 
 app.use('*', (_, res) => res.status(404).json({ error: 'Not found' }));
 

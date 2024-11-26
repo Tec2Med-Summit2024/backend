@@ -9,9 +9,10 @@ Some general notes about the model and design of the application:
 
 - [Authentication](#authentication)
 
-  - [Register account](#register-account)
-  - [Log in](#log-in)
-  - [Log out](#log-out)
+  - [Verify Account](#Verify-Account)
+  - [Verification](#verification)
+  - [Update password](#update-password)
+  - [Login](#login)
 
 - [Users](#users)
 
@@ -20,7 +21,6 @@ Some general notes about the model and design of the application:
   - [Get user schedule](#get-user-schedule)
   - [Get user connections](#get-user-connections)
   - [Get user notifications](#get-user-notifications)
-  - [Get user recommendations](#get-user-recommendations)
   - [Search users](#search-users)
   - [Update settings](#update-settings)
 
@@ -62,31 +62,76 @@ Some general notes about the model and design of the application:
 
 ### Authentication
 
-#### Register account
+#### Verify Account
 
 ```HTTP
-POST /api/register
+POST /api/request-verification
 ```
 
-Creates an account in the application system and returns the account id.
+Verifies if the email is in the ticket list. If it is, sends a verification code to the email.
+
+### TEMPORARY:
+(For testing check the code in the console, or change the email constant in server/auth/auth.service.mjs)
+
+**Body content**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
 
 <br>
 
-#### Log in
+#### Verification
+
+```HTTP
+POST /api/verify
+```
+
+Verifies the account with the verification code and returns a JWT Token and the user ID.
+
+**Body content**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
+| code | no   | `STRING` | Verification code. |
+
+#### Update password
+
+```HTTP
+PUT /api/password
+```
+
+Updates the password of the user.
+
+Note: Needs the additional request header containing the JWT token of the user
+(i.e. Authorization: Bearer eyJhbGciOiJI...) .
+
+**Body content**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
+| password | no   | `STRING` | New password. |
+
+#### Login
 
 ```HTTP
 POST /api/login
 ```
 
-Logs in an account in the application system.
+Logs in the user and returns a JWT Token and the user ID.
 
-#### Log out
 
-```HTTP
-POST /api/logout
-```
+**Body content**
 
-Logs out an account in the application system.
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| email | no   | `STRING` | The email of the user. |
+| password | no   | `STRING` | The password of the user. |
+
+
+
 
 ### Users
 
@@ -148,15 +193,6 @@ Returns the notifications of the user identified by **username**.
 
 <br>
 
-#### Get user recommendations
-
-```HTTP
-GET /api/users/{username}/recommendations
-```
-
-Returns the recommendations of the user identified by **username**.
-
-<br>
 
 #### Search users
 
@@ -171,7 +207,7 @@ Returns a list of users in the application system.
 | Param | Optional | Type     | Description                                                                                                         |
 | :---- | -------- | :------- | :------------------------------------------------------------------------------------------------------------------ |
 | name  | yes      | `String` | The name of the user. Searches for users whose name matches a substring beginning from the start of the given name. 
-| type  | no       | `String` | The type of the user. Possible types are: `attendees`, `partners`, `instructors`,  `speakers`. |
+| type  | no       | `String` | The type of the user. Possible types are: `attendee`, `partner`, `instructor`,  `speaker`. |
 
 <br>
 

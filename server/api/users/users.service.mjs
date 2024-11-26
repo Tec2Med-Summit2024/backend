@@ -4,7 +4,6 @@ import {
   getEventsDB,
   getConnectionsDB,
   getNotificationsDB,
-  getRecommendationsDB,
   searchUsersDB,
   updateSettingsDB
 } from './users.db.mjs';
@@ -49,18 +48,11 @@ export const getUserNotifications = async (username, role) => {
   return { ok: true, value: notifications };
 };
 
-export const getRecommendations = async (username, role) => {
-    const recommendations = await getRecommendationsDB(username, role);
-    if (!recommendations) 
-      return { ok: false, error: 404, errorMsg: `${role} not found` };
-  
-    return { ok: true, value: recommendations };
-};
 
-export const searchUsers = async (name, type) => {
+export const searchUsers = async (name, type, user) => {
     if(!type)
       return { ok: false, error: 400, errorMsg: 'type is required' };
-    return { ok: true, value: await searchUsersDB(name, type) };
+    return { ok: true, value: await searchUsersDB(name, type, user) };
 };
 
 export const updateUserSettings = async (username, role, data) => {

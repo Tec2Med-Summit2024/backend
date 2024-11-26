@@ -11,18 +11,16 @@ export const getPartnerByUsername = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (p:Partner {username: $username})
-            RETURN p`,
+      `MATCH (partner:Partner {username: $username})
+        // Check if there's a COLLECTS relationship with any CV node
+        OPTIONAL MATCH (partner)-[r:COLLECTS]->(:CV)
+        RETURN apoc.map.merge(properties(partner), {hasCV: r IS NOT NULL}) AS partnerDetails`,
       { username }
     );
-    const r = result.records[0]?.get(0)?.properties ?? null;
-    if (!r) return null;
-
-    const { name, email } = r;
-    return {
-      name,
-      email,
-    };
+    
+    const r = result.records[0]?.get(0) ?? null;
+    
+    return r;
   } finally {
     await session.close();
   }
