@@ -11,7 +11,7 @@ export const getPartnerByUsername = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (p:Partner {name: $username})
+      `MATCH (p:Partner {username: $username})
             RETURN p`,
       { username }
     );
@@ -40,7 +40,7 @@ export const sendCVToPartner = async (username, id) => {
 
   try {
     const result = await session.run(
-      `MATCH (p:Partner {name: $username})
+      `MATCH (p:Partner {username: $username})
       CREATE (p)-[:COLLECTS]->(cv:CV {id: $id})
        RETURN cv`,
       { username, id }
@@ -68,7 +68,7 @@ export const getReceivedCVsByPartner = async (username) => {
 
   try {
     const result = await session.run(
-      `MATCH (p:Partner {name: $username})-[:COLLECTS]->(cv:CV)
+      `MATCH (p:Partner {username: $username})-[:COLLECTS]->(cv:CV)
             RETURN cv`,
       { username }
     );
@@ -90,7 +90,7 @@ export const getCV = async (username, cvId) => {
 
   try {
     const result = await session.run(
-      `MATCH (p:Partner {name: $username})-[:COLLECTS]->(cv:CV {id: $cvId})
+      `MATCH (p:Partner {username: $username})-[:COLLECTS]->(cv:CV {id: $cvId})
             RETURN cv`,
       { username, cvId }
     );
