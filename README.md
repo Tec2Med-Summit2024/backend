@@ -467,8 +467,8 @@ Returns all the events of the authorized user
 | Param     | Optional | Type   | Description                                                |
 | :-------- | -------- | :----- | :--------------------------------------------------------- |
 | query | ✅ | `STRING` | Query to search for in the event |
-| start | ✅ | `DATE` | All events that start before the specified time will be omitted |
-| end   | ✅ | `DATE` | All events that end after the specified time will be omitted  |
+| start | ✅ | `STRING` | All events that start before the specified time will be omitted. Format: yyyy/MM/ddThh:mm|
+| end   | ✅ | `STRING` | All events that end after the specified time will be omitted. Format: yyyy/MM/ddThh:mm  |
 
 <br />
 

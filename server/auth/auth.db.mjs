@@ -13,7 +13,7 @@ export const createVerificationCode = async (email, verificationCode) => {
       `MATCH (n) WHERE (n:Participant OR n:Partner) 
       AND n.email = $email 
       SET n.verification_code = $verificationCode
-      RETURN n.id`,
+      RETURN n.username`,
       { email, verificationCode}
     );
     // In case of no Participant found, create a new basic one
@@ -36,7 +36,7 @@ export const createVerificationCode = async (email, verificationCode) => {
 const createParticipant = async (email, verificationCode) => {
   const driver = getDriver();
   const session = driver.session();
-  const id = crypto.randomUUID();
+  const username = crypto.randomUUID();
 
   try {
     await session.run(
@@ -44,9 +44,9 @@ const createParticipant = async (email, verificationCode) => {
       {email: $email,
       verification_code: $verificationCode, 
       type: ["Attendee"],
-      id: $id
+      username: $username
       })`,
-      { email, verificationCode, id }
+      { email, verificationCode, username }
     );
 
     return null;
@@ -61,14 +61,14 @@ const createParticipant = async (email, verificationCode) => {
 const addAccountId = async (email) => {
   const driver = getDriver();
   const session = driver.session();
-  const id = crypto.randomUUID();
+  const username = crypto.randomUUID();
 
   try {
     await session.run( 
       `MATCH (n) WHERE (n:Participant OR n:Partner)
         AND n.email = $email
-        SET n.id = $id`,
-      { email, id }
+        SET n.username = $username`,
+      { email, username }
     );
 
     return null;
@@ -115,7 +115,7 @@ export const lookUpAccount = async (email) => {
       `MATCH (e)
         WHERE (e:Participant OR e:Partner)
         AND e.email = $email
-        RETURN e.id AS id, 
+        RETURN e.username AS username, 
         e.password AS password, 
         e.verification_code AS verification_code,
         labels(e)[0] AS type`,
@@ -123,7 +123,7 @@ export const lookUpAccount = async (email) => {
     );
     if(result.records.length > 0 ){
       return {
-        id: result.records[0].get(0), 
+        username: result.records[0].get(0), 
         password: result.records[0].get(1), 
         verification_code: result.records[0].get(2), 
         type: result.records[0].get(3)};

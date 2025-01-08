@@ -35,8 +35,8 @@ export const getFilteredEventsFromDb = async (name, type, start, end) => {
       `MATCH (e:Event )-[:IN_TYPE]->(et:EventType) 
       WHERE toLower(e.name) CONTAINS toLower($name) 
        AND toLower(et.name) CONTAINS toLower($type)
-       AND e.start >= datetime($start) 
-       AND e.end <= datetime($end) RETURN e, et.name`,
+       AND e.start >= $start 
+       AND e.end <= $end RETURN e, et.name`,
       { name, type, start, end }
     );
 
@@ -63,8 +63,6 @@ export const getEventByIdFromDb = async (id) => {
       { eventId }
     );
     const props = result.records[0]?.get(0)?.properties;
-    props.start = props.start.toStandardDate();
-    props.end = props.end.toStandardDate();
     return props;
   } catch (error) {
     return null;
