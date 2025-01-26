@@ -49,9 +49,9 @@ export const verifyCode = async (email, code) => {
   if (!account) {
     return { ok: false, error: 404, errorMsg: 'Email not found' };
   }
-  const role = account.role;
+  const role = account.type;
   const dbCode = account.verification_code;
-  const id = account.id;
+  const id = account.username;
   
   if (dbCode == code) {
     console.log('Code verified');
@@ -87,9 +87,9 @@ export const loginAcc = async (email, password) => {
     return { ok: false, error: 404, errorMsg: 'Email not found' };
   }
 
-  const role = account.role;
+  const role = account.type;
   const passwordDB = account.password;
-  const id = account.id;
+  const id = account.username;
   
   // comparing passwords
   const passwordIsValid = bcrypt.compareSync(
