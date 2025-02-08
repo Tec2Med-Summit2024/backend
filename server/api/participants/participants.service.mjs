@@ -19,6 +19,8 @@ import {
   getFollowedPartners,
 } from './participants.db.mjs';
 
+import { getEventById } from '../events/events.db.mjs';
+
 export const getParticipantFromDb = async (username) => {
   const participant = await getParticipantByUsername(username);
   if (!participant) {
@@ -44,6 +46,13 @@ export const addEventToParticipantSchedule = async (username, eventID) => {
   }
 
   // TODO: Check if event exists
+  const event = await getEventById(eventID);
+  if (!event) {
+    return { ok: false, error: 404, errorMsg: 'Event not found' };
+  }
+  if (event.curr_cap === event.max_cap) {
+    return { ok: false, error: 400, errorMsg: 'Event is full' };
+  }
 
   const result = await addEventToSchedule(username, eventID);
   if (!result) {
@@ -69,6 +78,10 @@ export const removeEventFromParticipantSchedule = async (username, eventID) => {
   }
 
   // TODO: Check if event exists
+  const event = await getEventById(eventID);
+  if (!event) {
+    return { ok: false, error: 404, errorMsg: 'Event not found' };
+  }
 
   const result = await removeEventFromSchedule(username, eventID);
   if (!result) {

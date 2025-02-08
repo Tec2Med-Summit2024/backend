@@ -76,6 +76,7 @@ export const addEventToSchedule = async (username, eventID) => {
       `MATCH (a:Participant {username: $username})
       MATCH (e:Event {event_id: $eventID})
       CREATE r=(a)-[:GOES_TO]->(e)
+      SET e.curr_cap = e.curr_cap + 1
       RETURN r`,
       { username, eventID }
     );
@@ -105,6 +106,7 @@ export const removeEventFromSchedule = async (username, eventID) => {
   try {
     const result = await session.run(
       `MATCH (a:Participant {username: $username})-[r:GOES_TO]->(e:Event {id: $eventID})
+      SET e.curr_cap = e.curr_cap - 1
       DELETE r`,
       { username, eventID }
     );
