@@ -36,11 +36,18 @@ export const getFilteredEventsFromDb = async (name, type, start, end) => {
       WHERE toLower(e.name) CONTAINS toLower($name) 
        AND toLower(et.name) CONTAINS toLower($type)
        AND e.start >= $start 
-       AND e.end <= $end RETURN e, et.name`,
+       AND e.end <= $end 
+       RETURN e, et.name AS eventType`,
       { name, type, start, end }
     );
 
-    return result.records.map((r) => r.get(0)?.properties);
+    return result.records.map((r) => {
+      const event = r.get('e')?.properties;
+      if (event) {
+        event.type = r.get('eventType'); // Add eventType as 'type' inside event JSON
+      }
+      return event;
+    });
   } catch (error) {
     console.log(error);
     return null;
