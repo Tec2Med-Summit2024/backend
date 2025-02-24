@@ -1,6 +1,5 @@
 // TODO: Add documentation
 
-import e from 'express';
 import { getDriver } from '../../database/connector.mjs';
 
 /**
@@ -77,17 +76,18 @@ export const addEventToSchedule = async (username, eventID) => {
       MATCH (e:Event {event_id: $eventID})
       CREATE r=(a)-[:GOES_TO]->(e)
       SET e.curr_cap = e.curr_cap + 1
-      RETURN r`,
+      WITH nodes(r) AS nodeList
+      RETURN nodeList[0].username AS username, nodeList[1].event_id AS eventID;`,
       { username, eventID }
     );
 
-    const r = result.records[0]?.get(0)?.properties ?? null;
-    if (!r) return null;
-    const { name, date } = r;
-    return {
-      name,
-      date,
-    };
+    const record = result.records[0]; // Get the first record
+    if (!record) return null;
+
+    const user = record.get('username'); // Extract username
+    const event = record.get('eventID'); // Extract eventID
+
+    return { user, event };
   } finally {
     await session.close();
   }
