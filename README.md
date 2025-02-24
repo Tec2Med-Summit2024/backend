@@ -467,9 +467,9 @@ Returns all the events of the authorized user
 | Param     | Optional | Type   | Description                                                |
 | :-------- | -------- | :----- | :--------------------------------------------------------- |
 | query | ✅ | `STRING` | Query to search for in the event |
-| start | ✅ | `STRING` | All events that start before the specified time will be omitted. Format: yyyy/MM/ddThh:mm|
-| end   | ✅ | `STRING` | All events that end after the specified time will be omitted. Format: yyyy/MM/ddThh:mm  |
-
+| start | ✅ | `STRING` | All events that start before the specified time will be omitted. Format: YYYY-MM-DDTHH:mm|
+| end   | ✅ | `STRING` | All events that end after the specified time will be omitted. Format: YYYY-MM-DDTHH:mm  |
+| type   | ✅ | `STRING` | All events of the specified type. Possible values: "Talk", "Masterclass", "Debate", "Roundtable", "Workshop".  |
 <br />
 
 #### Get event
