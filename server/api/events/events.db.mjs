@@ -66,11 +66,18 @@ export const getEventByIdFromDb = async (id) => {
   const eventId = parseInt(id);
   try {
     const result = await session.run(
-      `MATCH (e:Event )-[:IN_TYPE]->(et:EventType) WHERE e.event_id = $eventId RETURN e, et.name`,
+      `MATCH (e:Event )-[:IN_TYPE]->(et:EventType) 
+      WHERE e.event_id = $eventId 
+      RETURN e, et.name AS eventType`,
       { eventId }
     );
-    const props = result.records[0]?.get(0)?.properties;
-    return props;
+    const record = result.records[0]; // Get the first record
+    if (!record) return null;
+    const event = record.get('e')?.properties;
+    if (event) {
+      event.type = record.get('eventType'); // Add eventType as 'type' inside event JSON
+    }
+    return event;
   } catch (error) {
     return null;
   } finally {
