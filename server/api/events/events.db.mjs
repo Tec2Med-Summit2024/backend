@@ -113,6 +113,57 @@ export const createQuestionInEventFromDb = async (id, question) => {
 };
 
 /**
+ * Like a question
+ * @param {string} eventId
+ * @param {string} questionId
+ */
+export const likeQuestionInEventFromDb = async (eventId, questionId) => {
+  const driver = getDriver();
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (q:Question)-[:ASKED_IN]->(e:Event) 
+      WHERE e.event_id = $eventId AND q.question_id = $questionId 
+      SET q.likes = q.likes + 1 
+      RETURN q`,
+      { eventId, questionId }
+    );
+
+    return result.records[0]?.get(0)?.properties;
+  } catch (error) {
+    return null;
+  } finally {
+    session.close();
+  }
+};
+
+/**
+ * Dislike a question
+ * @param {string} eventId
+ * @param {string} questionId
+ */
+export const dislikeQuestionInEventFromDb = async (eventId, questionId) => {
+  const driver = getDriver();
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (q:Question)-[:ASKED_IN]->(e:Event) 
+      WHERE e.event_id = $eventId AND q.question_id = $questionId 
+      SET q.likes = q.likes - 1 
+      RETURN q`,
+      { eventId, questionId }
+    );
+
+    return result.records[0]?.get(0)?.properties;
+  } catch (error) {
+    return null;
+  } finally {
+    session.close();
+  }
+};
+
+
+/**
  * Get all the questions from an event
  * @param {string} eventId
  */
@@ -122,7 +173,10 @@ export const getQuestionsFromEventFromDb = async (id) => {
   const eventId = parseInt(id);
   try {
     const result = await session.run(
-      `MATCH (q:Question)-[:ASKED_IN]->(e:Event) WHERE e.event_id = $eventId RETURN q`,
+      `MATCH (q:Question)-[:ASKED_IN]->(e:Event) 
+      WHERE e.event_id = $eventId 
+      RETURN q 
+      ORDER BY q.likes DESC`,
       { eventId }
     );
 

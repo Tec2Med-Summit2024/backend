@@ -2,6 +2,8 @@ import {
   getFilteredEventsFromDb,
   getEventByIdFromDb,
   createQuestionInEventFromDb,
+  likeQuestionInEventFromDb,
+  dislikeQuestionInEventFromDb,
   getQuestionsFromEventFromDb,
 } from './events.db.mjs';
 
@@ -58,6 +60,43 @@ export const createQuestionInEvent = async (eventId, question) => {
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   }
 };
+
+/**
+ * @brief
+ * @param {string} eventId
+ * @param {string} questionId
+ */
+export const likeQuestion = async (eventId, questionId) => {
+  try {
+    const result = await likeQuestionInEventFromDb(eventId, questionId);
+    if (result) {
+      return { ok: true, value: result };
+    }
+    console.log('Failed to like question');
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  } catch (err) {
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  }
+};
+
+/**
+ * @brief
+ * @param {string} eventId
+ * @param {string} questionId
+ */
+export const dislikeQuestion = async (eventId, questionId) => {
+  try {
+    const result = await dislikeQuestionInEventFromDb(eventId, questionId);
+    if (result) {
+      return { ok: true, value: result };
+    }
+    console.log('Failed to dislike question');
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  } catch (err) {
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  }
+};
+
 
 /**
  *

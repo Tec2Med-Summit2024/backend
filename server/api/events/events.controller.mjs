@@ -2,6 +2,8 @@ import {
   searchEvents,
   getEventById,
   createQuestionInEvent,
+  likeQuestionInEvent,
+  dislikeQuestionInEvent,
   getQuestionsFromEvent,
 } from './events.service.mjs';
 
@@ -82,6 +84,47 @@ export const createQuestion = async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+/**
+ * Likes a question
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+export const likeQuestion = async (req, res) => {
+  try {
+    const { id, questionId } = req.params;
+
+    const result = await likeQuestionInEvent(id, questionId);
+    if (result.ok) {
+      return res.status(200).json(result.value);
+    }
+
+    return res.status(result.error).json({ error: result.errorMsg });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+/**
+ * Dislikes a question
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+export const dislikeQuestion = async (req, res) => {
+  try {
+    const { id, questionId } = req.params;
+
+    const result = await dislikeQuestionInEvent(id, questionId);
+    if (result.ok) {
+      return res.status(200).json(result.value);
+    }
+
+    return res.status(result.error).json({ error: result.errorMsg });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 /**
  *

@@ -3,6 +3,8 @@ import {
   getEvent,
   getEvents,
   createQuestion,
+  likeQuestion,
+  dislikeQuestion,
   getQuestions,
 } from './events.controller.mjs';
 
@@ -25,6 +27,18 @@ router.get('/:id', getEvent);
  * @POST /api/events/:id/questions
  */
 router.post('/:id/questions', createQuestion);
+
+/**
+ * @brief Likes a question
+ * @PUT /api/events/:id/questions/:questionId/like
+ */
+router.put('/:id/questions/:questionId', likeQuestion);
+
+/**
+ * @brief Dislikes a question
+ * @DELETE /api/events/:id/questions/:questionId
+ */
+router.delete('/:id/questions/:questionId', dislikeQuestion);
 
 /**
  * @brief Gets all questions of the event
