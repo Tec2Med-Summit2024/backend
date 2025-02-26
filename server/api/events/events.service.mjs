@@ -66,7 +66,7 @@ export const createQuestionInEvent = async (eventId, question) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const likeQuestion = async (eventId, questionId) => {
+export const likeQuestionInEvent = async (eventId, questionId) => {
   try {
     const result = await likeQuestionInEventFromDb(eventId, questionId);
     if (result) {
@@ -84,7 +84,7 @@ export const likeQuestion = async (eventId, questionId) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const dislikeQuestion = async (eventId, questionId) => {
+export const dislikeQuestionInEvent = async (eventId, questionId) => {
   try {
     const result = await dislikeQuestionInEventFromDb(eventId, questionId);
     if (result) {
