@@ -67,13 +67,14 @@ export const getEvent = async (req, res) => {
  */
 export const createQuestion = async (req, res) => {
   try {
+    const { username } = req.body.username;
     const { id } = req.params;
     const question = {
       question_id: req.body.question_id,
       content: req.body.content,
     };
 
-    const result = await createQuestionInEvent(id, question);
+    const result = await createQuestionInEvent(username, id, question);
     if (result.ok) {
       return res.status(201).json(result.value);
     }

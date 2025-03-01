@@ -48,9 +48,9 @@ export const getEventById = async (id) => {
  * @param {string} eventId
  * @param {*} question
  */
-export const createQuestionInEvent = async (eventId, question) => {
+export const createQuestionInEvent = async (username, eventId, question) => {
   try {
-    const result = await createQuestionInEventFromDb(eventId, question);
+    const result = await createQuestionInEventFromDb(username, eventId, question);
     if (result) {
       return { ok: true, value: result };
     }

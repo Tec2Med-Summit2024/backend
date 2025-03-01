@@ -11,7 +11,13 @@ export const getAllEventsFromDb = async () => {
   try {
     const result = await session.run(`MATCH (e:Event )-[:IN_TYPE]->(et:EventType) RETURN e, et.name`);
 
-    return result.records.map((r) => r.get(0)?.properties);
+    return result.records.map((r) => {
+      const event = r.get('e')?.properties;
+      if (event) {
+        event.type = r.get('et.name'); // Add eventType as 'type' inside event JSON
+      }
+      return event;
+    });
   } catch (error) {
     return null;
   } finally {
@@ -90,7 +96,7 @@ export const getEventByIdFromDb = async (id) => {
  * @param {string} eventId
  * @param {*} question
  */
-export const createQuestionInEventFromDb = async (id, question) => {
+export const createQuestionInEventFromDb = async (username, id, question) => {
   const driver = getDriver();
   const session = driver.session();
   console.log(id, question);
@@ -98,9 +104,12 @@ export const createQuestionInEventFromDb = async (id, question) => {
 
   try {
     const result = await session.run(
-      `MATCH (e:Event) WHERE e.event_id = $eventId 
-      CREATE (q:Question $question)-[:ASKED_IN]->(e) RETURN q`,
-      { eventId, question }
+      `MATCH (e:Event) WHERE e.event_id = $eventId
+      MATCH (p:Participant {username: $username})
+      CREATE (q:Question $question)-[:ASKED_IN]->(e)
+      CREATE (p)-[:ASKS]->(q)
+      RETURN q`,
+      {username, eventId, question }
     );
 
     return result.records[0]?.get(0)?.properties;
@@ -173,14 +182,23 @@ export const getQuestionsFromEventFromDb = async (id) => {
   const eventId = parseInt(id);
   try {
     const result = await session.run(
-      `MATCH (q:Question)-[:ASKED_IN]->(e:Event) 
-      WHERE e.event_id = $eventId 
-      RETURN q 
-      ORDER BY q.likes DESC`,
+      `MATCH (p:Participant)-[:ASKS]->(q:Question)-[:ASKED_IN]->(e:Event)  
+      WHERE e.event_id = $eventId  
+      RETURN q, p.name AS participantName, p.username AS participantUsername  
+      ORDER BY q.likes DESC
+`,
       { eventId }
     );
-
-    return result.records.map((r) => r.get(0)?.properties);
+    return result.records.map((r) => {
+      const question = r.get('q')?.properties;
+      if (question) {
+        question.participant = {
+          name: r.get('participantName'),
+          username: r.get('participantUsername'),
+        };
+      }
+      return question;
+    });
   } catch (error) {
     return null;
   } finally {
