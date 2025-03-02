@@ -320,11 +320,13 @@ export const addCertificate = async (username, eventID) => {
        MATCH (e:Event {event_id: $eventID})
        CREATE (c:Certificate {cert_id: a.username+e.event_id})
        CREATE (e)-[r1:GIVES]->(c)
-       CREATE (a)-[r2:GETS]->(c)`,
+       CREATE (a)-[r2:GETS]->(c)
+       RETURN c.cert_id
+       `,
       { username, eventID }
     );
 
-    const r = result.records[0]?.get(0)?.segments ?? null;
+    const r = result.records[0]?.get(0);
     if (!r) return null;
     return r;
   } finally {
