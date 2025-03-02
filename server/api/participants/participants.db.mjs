@@ -348,13 +348,24 @@ export const getCertificate = async (username, certificateID) => {
       `MATCH (a:Participant {username: $username})-[r:GETS]->(c:Certificate {cert_id: $certificateID})
        MATCH (e:Event)-[r2:GIVES]->(c)
        MATCH (e)-[:IN_TYPE]->(et:EventType)
-       RETURN c.cert_id, e.name, et.name, e.start, e.end, e.event_id`,
+       RETURN c.cert_id AS certID, e.name AS eventName, et.name AS eventType, 
+              e.start AS eventStart, e.end AS eventEnd, e.event_id AS eventID`,
       { username, certificateID }
     );
 
-    const r = result.records[0]?.get(0)?.properties ?? null;
+    const r = result.records[0];
     if (!r) return null;
-    return r;
+
+    return {
+      certID: r.get('certID'),
+      event: {
+        eventName: r.get('eventName'),
+        eventType: r.get('eventType'),
+        eventStart: r.get('eventStart'),
+        eventEnd: r.get('eventEnd'),
+        eventID: r.get('eventID'),
+      },
+    };
   } finally {
     await session.close();
   }
@@ -373,21 +384,21 @@ export const getCertificates = async (username) => {
       `MATCH (a:Participant {username: $username})-[r:GETS]->(c:Certificate)
        MATCH (e:Event)-[r2:GIVES]->(c)
        MATCH (e)-[:IN_TYPE]->(et:EventType)
-       RETURN c.cert_id, e.name, et.name, e.start, e.end, e.event_id`,
+       RETURN c.cert_id AS certID, e.name AS eventName, et.name AS eventType, 
+              e.start AS eventStart, e.end AS eventEnd, e.event_id AS eventID`,
       { username }
     );
 
-    return result.records.map((r) => {
-      // Create an object mapping keys to values
-      const mapped = {};
-      r.keys.forEach((key, i) => {
-        mapped[key] = r._fields[i];
-      });
-      mapped['e.start'] = mapped['e.start'].toStandardDate();
-      mapped['e.end'] = mapped['e.end'].toStandardDate();
-      mapped['e.event_id'] = mapped['e.event_id'].low;
-      return mapped;
-    });
+    return result.records.map((r) => ({
+      certID: r.get('certID'),
+      event: {
+        eventName: r.get('eventName'),
+        eventType: r.get('eventType'),
+        eventStart: r.get('eventStart'),
+        eventEnd: r.get('eventEnd'),
+        eventID: r.get('eventID'),
+      },
+    }));
   } finally {
     await session.close();
   }
