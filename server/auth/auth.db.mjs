@@ -4,7 +4,7 @@ import { getDriver } from '../database/connector.mjs';
  * @param { string } email
  * @param { string } verificationCode
  */
-export const createVerificationCode = async (email, verificationCode) => {
+export const createVerificationCode = async (email, verificationCode, foundUser) => {
   const driver = getDriver();
   const session = driver.session();
 
@@ -22,7 +22,7 @@ export const createVerificationCode = async (email, verificationCode) => {
     }
     // In case Account has has no Id yet
     if(!result.records[0].get(0)){
-      addAccountId(email);
+      addAccountId(email, foundUser);
     }
 
   } catch (error) {
@@ -58,17 +58,21 @@ const createParticipant = async (email, verificationCode) => {
   }
 };
 
-const addAccountId = async (email) => {
+const addAccountId = async (email, foundUser) => {
   const driver = getDriver();
   const session = driver.session();
   const username = crypto.randomUUID();
+  const name = foundUser.name;
+  const phone = foundUser.phone;
 
   try {
     await session.run( 
       `MATCH (n) WHERE (n:Participant OR n:Partner)
         AND n.email = $email
-        SET n.username = $username`,
-      { email, username }
+        SET n.username = $username
+        SET n.phone = $phone
+        Set n.name = $name`,
+      { email, username, phone, name }
     );
 
     return null;

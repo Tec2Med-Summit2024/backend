@@ -7,6 +7,7 @@ import {
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer  from 'nodemailer';
+import xlsx from 'node-xlsx';
 
 const TEST_EMAIL = '';
 
@@ -19,13 +20,33 @@ const emailTransporter = nodemailer.createTransport({
 });
 
 export const verifyAcc = async (email) => {
-
-  // TODO verificar se o mail existe nos tickets.
+  const obj = xlsx.parse("tec2med_tickeline_template.xlsx");
+  const sheet = obj[0].data;  
   
+  let foundUser = null;
+
+  for (let i = 1; i < sheet.length; i++) { 
+    const row = sheet[i];
+    const rowEmail = row[1];
+
+    if (rowEmail && rowEmail.trim() === email.trim()) {
+      foundUser = {
+        name: row[0], 
+        phone: row[2] 
+      };
+      break;
+    }
+  }
+
+  if (!foundUser) {
+    return { ok: false, error: 403, errorMsg: 'Email not found in ticket list' };
+  }
+  
+ 
   const verificationCode = Math.floor(Math.random() * 90000) + 10000;
   console.log(`Verification code: ${verificationCode}`);
 
-  await createVerificationCode(email, verificationCode);
+  await createVerificationCode(email, verificationCode, foundUser);
 
   email = TEST_EMAIL;
   
@@ -36,7 +57,7 @@ export const verifyAcc = async (email) => {
     <p>Use this code to verify your account.</p>`
   };  
   
-  await emailTransporter.sendMail(mailOptions);
+  //await emailTransporter.sendMail(mailOptions);
   
   return { ok: true, message: 'Verification code sent' };
 };
