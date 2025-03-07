@@ -85,7 +85,8 @@ export const getNotifications = async (req, res) => {
  * @param {import("express").Response} res 
  */
 export const getUsers = async (req, res) => {
-  const result = await searchUsers(req.query.name, req.query.type, req.user); 
+  const result = await searchUsers(req.query.name, req.query.type, req.user, req.query.location, 
+    req.query.field, req.query.institution, req.query.interests); 
   if (result.ok) {
     return res.status(200).json(result.value);
   }

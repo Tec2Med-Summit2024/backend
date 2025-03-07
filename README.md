@@ -206,8 +206,15 @@ Returns a list of users in the application system.
 
 | Param | Optional | Type     | Description                                                                                                         |
 | :---- | -------- | :------- | :------------------------------------------------------------------------------------------------------------------ |
-| name  | yes      | `String` | The name of the user. Searches for users whose name matches a substring beginning from the start of the given name. 
+| name  | yes      | `String` | The name of the user. Searches for users whose name matches a substring beginning from the start of the given name. |
 | type  | no       | `String` | The type of the user. Possible types are: `attendee`, `partner`, `instructor`,  `speaker`. |
+| location | yes      | `String` | The current location of the user. Searches for users whose current_location matches a substring beginning from the start of the given location. |
+| field | yes      | `String` | The work/study field of the user. Searches for users whose field_of_study_work_research matches a substring beginning from the start of the given field.| 
+| institution | yes      | `String` | The institution of the user. Searches for users whose institution matches a substring beginning from the start of the given institution. |
+| interests| yes      | `String` | The interests of the user. Searches for users whose interests match the given list of interests. |
+
+Note: The interests parameter is a list of exact interests in the form of ; seperated values (i.e. &interests=3D Printing;Data modelling)
+
 
 <br>
 
