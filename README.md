@@ -212,8 +212,9 @@ Returns a list of users in the application system.
 | field | yes      | `String` | The work/study field of the user. Searches for users whose field_of_study_work_research matches a substring beginning from the start of the given field.| 
 | institution | yes      | `String` | The institution of the user. Searches for users whose institution matches a substring beginning from the start of the given institution. |
 | interests| yes      | `String` | The interests of the user. Searches for users whose interests match the given list of interests. |
+| expertises| yes      | `String` | The expertises of the user. Searches for users whose expertises match the given list of expertises. |
 
-Note: The interests parameter is a list of exact interests in the form of ; seperated values (i.e. &interests=3D Printing;Data modelling)
+Note: The interests and expertises parameters are lists of exact interests/expertises in the form of ; seperated values (i.e. &interests=3D Printing;Data modelling)
 
 
 <br>
