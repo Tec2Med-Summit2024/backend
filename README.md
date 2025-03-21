@@ -147,6 +147,16 @@ Returns the ticket of the user identified by **username**.
 
 <br>
 
+#### Get user type
+
+```HTTP
+GET /api/users/{username}/type
+```
+
+Returns the type (Participant/Partner) of the user identified by **username**.
+
+<br>
+
 #### Get user qrcode
 
 ```HTTP

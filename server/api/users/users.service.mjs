@@ -5,7 +5,8 @@ import {
   getConnectionsDB,
   getNotificationsDB,
   searchUsersDB,
-  updateSettingsDB
+  updateSettingsDB,
+  getUserTypeDB
 } from './users.db.mjs';
 
 export const getTicket = async (username, role) => {
@@ -62,3 +63,12 @@ export const updateUserSettings = async (username, role, data) => {
   
     return { ok: true, value: res };
 };
+
+export const getUserTypes = async (username, role) => {
+  const res = await getUserTypeDB(username, role);
+  if (!res) 
+    return { ok: false, error: 404, errorMsg: `${role} not found` };
+
+  return { ok: true, value: res };
+};
+

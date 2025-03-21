@@ -245,3 +245,24 @@ export const updateSettingsDB = async (username, role, data) => {
   }
 };
 
+
+export const getUserTypeDB = async (username, role) => {
+  const driver = getDriver();
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (e)
+        WHERE (e:Participant OR e:Partner)
+        AND e.username = $username
+        return labels(e)[0]`,
+      { username}
+    );
+    
+    return result.records[0].get(0) 
+  } catch (error) {
+    return { ok: false, error: 500, errorMsg: error.message };
+  } finally {
+    await session.close();
+  }
+};
+
