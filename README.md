@@ -153,7 +153,7 @@ Returns the ticket of the user identified by **username**.
 GET /api/users/{username}/type
 ```
 
-Returns the type (Participant/Partner) of the user identified by **username**.
+Returns the list of types of the user identified by **username**.
 
 <br>
 
