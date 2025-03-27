@@ -67,7 +67,7 @@ export const getEvent = async (req, res) => {
  */
 export const createQuestion = async (req, res) => {
   try {
-    const { username } = req.body.username;
+    const username = req.body.username;
     const { id } = req.params;
     const question = {
       question_id: req.body.question_id,
