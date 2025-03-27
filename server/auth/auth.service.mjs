@@ -39,7 +39,7 @@ export const verifyAcc = async (email) => {
   }
 
   if (!foundUser) {
-    return { ok: false, error: 403, errorMsg: 'Email not found in ticket list' };
+    return { ok: false, error: 401, errorMsg: 'Email not found in ticket list' };
   }
   
  
