@@ -252,13 +252,13 @@ export const getUserTypeDB = async (username, role) => {
   try {
     const result = await session.run(
       `MATCH (e)
-WHERE (e:Participant OR e:Partner)
-AND e.username = "sarah98"
-RETURN 
-    CASE 
+        WHERE (e:Participant OR e:Partner)
+        AND e.username = $username
+        RETURN 
+        CASE 
         WHEN e:Partner THEN ["Partner"]
         ELSE e.type
-    END AS type`,
+      END AS type`,
       { username}
     );
     
