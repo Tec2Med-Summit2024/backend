@@ -9,8 +9,6 @@ import jwt from 'jsonwebtoken';
 import nodemailer  from 'nodemailer';
 import xlsx from 'node-xlsx';
 
-const TEST_EMAIL = '';
-
 const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -111,6 +109,10 @@ export const loginAcc = async (email, password) => {
   const role = account.type;
   const passwordDB = account.password;
   const id = account.username;
+
+  if (!passwordDB) {
+    return { ok: false, error: 401, errorMsg: 'Password not set' };
+  }
   
   // comparing passwords
   const passwordIsValid = bcrypt.compareSync(

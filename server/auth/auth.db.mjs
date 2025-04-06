@@ -16,13 +16,10 @@ export const createVerificationCode = async (email, verificationCode, foundUser)
       RETURN n.username`,
       { email, verificationCode}
     );
+
     // In case of no Participant found, create a new basic one
     if( ! result.records.length > 0 ){
-      createParticipant(email, verificationCode);
-    }
-    // In case Account has has no Id yet
-    if(!result.records[0].get(0)){
-      addAccountId(email, foundUser);
+      createParticipant(email, verificationCode, foundUser);
     }
 
   } catch (error) {
@@ -33,32 +30,7 @@ export const createVerificationCode = async (email, verificationCode, foundUser)
   }
 };
 
-const createParticipant = async (email, verificationCode) => {
-  const driver = getDriver();
-  const session = driver.session();
-  const username = crypto.randomUUID();
-
-  try {
-    await session.run(
-      `CREATE (a:Participant
-      {email: $email,
-      verification_code: $verificationCode, 
-      type: ["Attendee"],
-      username: $username
-      })`,
-      { email, verificationCode, username }
-    );
-
-    return null;
-  } catch (error) {
-    console.log(error);
-    return null;
-  } finally {
-    session.close();
-  }
-};
-
-const addAccountId = async (email, foundUser) => {
+const createParticipant = async (email, verificationCode, foundUser) => {
   const driver = getDriver();
   const session = driver.session();
   const username = crypto.randomUUID();
@@ -66,13 +38,15 @@ const addAccountId = async (email, foundUser) => {
   const phone = foundUser.phone;
 
   try {
-    await session.run( 
-      `MATCH (n) WHERE (n:Participant OR n:Partner)
-        AND n.email = $email
-        SET n.username = $username
-        SET n.phone = $phone
-        Set n.name = $name`,
-      { email, username, phone, name }
+    await session.run(
+      `CREATE (a:Participant
+      {email: $email,
+      verification_code: $verificationCode, 
+      type: ["Attendee"],
+      username: $username,
+      phone: $phone,
+      name: $name})`,
+      { email, verificationCode, username, phone, name }
     );
 
     return null;
@@ -83,6 +57,7 @@ const addAccountId = async (email, foundUser) => {
     session.close();
   }
 };
+
 
 /**
  * @param { string } email
