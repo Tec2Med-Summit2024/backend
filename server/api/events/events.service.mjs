@@ -46,11 +46,11 @@ export const getEventById = async (id) => {
 /**
  *
  * @param {string} eventId
- * @param {*} question
+ * @param {*} content
  */
-export const createQuestionInEvent = async (username, eventId, question) => {
+export const createQuestionInEvent = async (username, eventId, content) => {
   try {
-    const result = await createQuestionInEventFromDb(username, eventId, question);
+    const result = await createQuestionInEventFromDb(username, eventId, content);
     if (result) {
       return { ok: true, value: result };
     }
@@ -66,9 +66,9 @@ export const createQuestionInEvent = async (username, eventId, question) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const likeQuestionInEvent = async (eventId, questionId) => {
+export const likeQuestionInEvent = async (eventId, questionId, username) => {
   try {
-    const result = await likeQuestionInEventFromDb(eventId, questionId);
+    const result = await likeQuestionInEventFromDb(eventId, questionId, username);
     if (result) {
       return { ok: true, value: result };
     }
@@ -84,9 +84,9 @@ export const likeQuestionInEvent = async (eventId, questionId) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const dislikeQuestionInEvent = async (eventId, questionId) => {
+export const dislikeQuestionInEvent = async (eventId, questionId, username) => {
   try {
-    const result = await dislikeQuestionInEventFromDb(eventId, questionId);
+    const result = await dislikeQuestionInEventFromDb(eventId, questionId, username);
     if (result) {
       return { ok: true, value: result };
     }
@@ -102,9 +102,9 @@ export const dislikeQuestionInEvent = async (eventId, questionId) => {
  *
  * @param {string} eventId
  */
-export const getQuestionsFromEvent = async (eventId) => {
+export const getQuestionsFromEvent = async (eventId, username) => {
   try {
-    const questions = await getQuestionsFromEventFromDb(eventId);
+    const questions = await getQuestionsFromEventFromDb(eventId, username);
     if (questions) {
       return { ok: true, value: questions };
     }

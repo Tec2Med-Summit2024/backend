@@ -67,14 +67,10 @@ export const getEvent = async (req, res) => {
  */
 export const createQuestion = async (req, res) => {
   try {
-    const { username } = req.body.username;
-    const { id } = req.params;
-    const question = {
-      question_id: req.body.question_id,
-      content: req.body.content,
-    };
+    const { id, username } = req.params;
+    const content = req.body.content;
 
-    const result = await createQuestionInEvent(username, id, question);
+    const result = await createQuestionInEvent(username, id, content);
     if (result.ok) {
       return res.status(201).json(result.value);
     }
@@ -93,9 +89,9 @@ export const createQuestion = async (req, res) => {
  */
 export const likeQuestion = async (req, res) => {
   try {
-    const { id, questionId } = req.params;
-
-    const result = await likeQuestionInEvent(id, questionId);
+    const { id, questionId, username } = req.params;
+    
+    const result = await likeQuestionInEvent(id, questionId, username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -113,9 +109,9 @@ export const likeQuestion = async (req, res) => {
  */
 export const dislikeQuestion = async (req, res) => {
   try {
-    const { id, questionId } = req.params;
-
-    const result = await dislikeQuestionInEvent(id, questionId);
+    const { id, questionId, username } = req.params;
+    
+    const result = await dislikeQuestionInEvent(id, questionId, username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }
@@ -126,7 +122,6 @@ export const dislikeQuestion = async (req, res) => {
   }
 };
 
-
 /**
  *
  * @param {import("express").Request} req
@@ -134,9 +129,9 @@ export const dislikeQuestion = async (req, res) => {
  */
 export const getQuestions = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id, username } = req.params;
 
-    const result = await getQuestionsFromEvent(id);
+    const result = await getQuestionsFromEvent(id, username);
     if (result.ok) {
       return res.status(200).json(result.value);
     }

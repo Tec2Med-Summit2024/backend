@@ -96,23 +96,38 @@ export const getEventByIdFromDb = async (id) => {
  * @param {string} eventId
  * @param {*} question
  */
-export const createQuestionInEventFromDb = async (username, id, question) => {
+export const createQuestionInEventFromDb = async (username, id, content) => {
   const driver = getDriver();
   const session = driver.session();
-  console.log(id, question);
+  console.log(id, content);
   const eventId = parseInt(id);
 
   try {
-    const result = await session.run(
-      `MATCH (e:Event) WHERE e.event_id = $eventId
-      MATCH (p:Participant {username: $username})
-      CREATE (q:Question $question)-[:ASKED_IN]->(e)
-      CREATE (p)-[:ASKS]->(q)
-      RETURN q`,
-      {username, eventId, question }
+    // Step 1: Get the number of questions the event already has
+    const countResult = await session.run(
+      `MATCH (q:Question)-[:ASKED_IN]->(e:Event {event_id: $eventId})
+       RETURN count(q) AS questionCount`,
+      { eventId }
     );
 
-    return result.records[0]?.get(0)?.properties;
+    const questionCount = countResult.records[0]?.get('questionCount').toNumber() || 0;
+
+    // Step 2: Generate the question_id based on the event_id and question count
+    const questionId = `${eventId}q${questionCount + 1}`;
+
+    // Step 3: Create the Question node with the necessary attributes
+    const result = await session.run(
+      `MATCH (e:Event {event_id: $eventId})
+       MATCH (p:Participant {username: $username})
+       CREATE (q:Question {question_id: $questionId, content: $content, likes: 0})
+       CREATE (q)-[:ASKED_IN]->(e)
+       CREATE (p)-[:ASKS]->(q)
+       RETURN q.question_id`,
+      { eventId, username, content, questionId }
+    );
+
+    // Step 4: Return the question_id
+    return result.records[0]?.get('q.question_id');
   } catch (error) {
     console.log(error);
     return null;
@@ -126,19 +141,24 @@ export const createQuestionInEventFromDb = async (username, id, question) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const likeQuestionInEventFromDb = async (eventId, questionId) => {
+export const likeQuestionInEventFromDb = async (eventId, questionId, username) => {
   const driver = getDriver();
   const session = driver.session();
   try {
+    // Step 1: Match the Question and Event, and increment the likes
     const result = await session.run(
-      `MATCH (q:Question)-[:ASKED_IN]->(e:Event) 
-      WHERE e.event_id = $eventId AND q.question_id = $questionId 
-      SET q.likes = q.likes + 1 
-      RETURN q`,
-      { eventId, questionId }
+      `MATCH (q:Question {question_id:$questionId})-[:ASKED_IN]->(e:Event {event_id:$eventId}) 
+       SET q.likes = q.likes + 1 
+       MATCH (p:Participant {username: $username}) 
+       CREATE (p)-[:LIKES_QUESTION]->(q)
+       RETURN q`,
+      { eventId, questionId, username }
     );
 
-    return result.records[0]?.get(0)?.properties;
+    // Step 2: Return the Question with an additional "liked: true" attribute
+    const question = result.records[0]?.get('q').properties;
+    question.liked = true;
+    return question;
   } catch (error) {
     return null;
   } finally {
@@ -151,19 +171,26 @@ export const likeQuestionInEventFromDb = async (eventId, questionId) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const dislikeQuestionInEventFromDb = async (eventId, questionId) => {
+export const dislikeQuestionInEventFromDb = async (eventId, questionId, username) => {
   const driver = getDriver();
   const session = driver.session();
   try {
+    // Step 1: Match the Question and Event, and decrement the likes
     const result = await session.run(
-      `MATCH (q:Question)-[:ASKED_IN]->(e:Event) 
-      WHERE e.event_id = $eventId AND q.question_id = $questionId 
-      SET q.likes = q.likes - 1 
-      RETURN q`,
-      { eventId, questionId }
+      `MATCH (q:Question {question_id:$questionId})-[:ASKED_IN]->(e:Event {event_id:$eventId}) 
+       SET q.likes = q.likes - 1 
+       MATCH (p:Participant {username: $username}) 
+       OPTIONAL MATCH (p)-[r:LIKES_QUESTION]->(q) 
+       DELETE r
+       RETURN q`,
+      { eventId, questionId, username }
     );
 
-    return result.records[0]?.get(0)?.properties;
+    // Step 2: Return the Question with an additional "liked: false" attribute
+    const question = result.records[0]?.get('q').properties;
+    question.liked = false;
+
+    return question;
   } catch (error) {
     return null;
   } finally {
@@ -176,19 +203,20 @@ export const dislikeQuestionInEventFromDb = async (eventId, questionId) => {
  * Get all the questions from an event
  * @param {string} eventId
  */
-export const getQuestionsFromEventFromDb = async (id) => {
+export const getQuestionsFromEventFromDb = async (id, username) => {
   const driver = getDriver();
   const session = driver.session();
   const eventId = parseInt(id);
   try {
     const result = await session.run(
-      `MATCH (p:Participant)-[:ASKS]->(q:Question)-[:ASKED_IN]->(e:Event)  
-      WHERE e.event_id = $eventId  
-      RETURN q, p.name AS participantName, p.username AS participantUsername  
-      ORDER BY q.likes DESC
-`,
-      { eventId }
+      `MATCH (p:Participant {username: $username})-[:ASKS]->(q:Question)-[:ASKED_IN]->(e:Event {event_id:$eventId})
+       OPTIONAL MATCH (p2:Participant {username: $username})-[:LIKES_QUESTION]->(q)
+       RETURN q, p.name AS participantName, p.username AS participantUsername, 
+              CASE WHEN p2 IS NOT NULL THEN true ELSE false END AS liked
+       ORDER BY q.likes DESC`,
+      { eventId, username }
     );
+
     return result.records.map((r) => {
       const question = r.get('q')?.properties;
       if (question) {
@@ -196,6 +224,7 @@ export const getQuestionsFromEventFromDb = async (id) => {
           name: r.get('participantName'),
           username: r.get('participantUsername'),
         };
+        question.liked = r.get('liked');  // Attach the 'liked' status to the question
       }
       return question;
     });
