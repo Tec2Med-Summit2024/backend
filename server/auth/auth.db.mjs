@@ -4,7 +4,7 @@ import { getDriver } from '../database/connector.mjs';
  * @param { string } email
  * @param { string } verificationCode
  */
-export const createVerificationCode = async (email, verificationCode) => {
+export const createVerificationCode = async (email, verificationCode, foundUser) => {
   const driver = getDriver();
   const session = driver.session();
 
@@ -16,13 +16,10 @@ export const createVerificationCode = async (email, verificationCode) => {
       RETURN n.username`,
       { email, verificationCode}
     );
+
     // In case of no Participant found, create a new basic one
     if( ! result.records.length > 0 ){
-      createParticipant(email, verificationCode);
-    }
-    // In case Account has has no Id yet
-    if(!result.records[0].get(0)){
-      addAccountId(email);
+      createParticipant(email, verificationCode, foundUser);
     }
 
   } catch (error) {
@@ -33,10 +30,12 @@ export const createVerificationCode = async (email, verificationCode) => {
   }
 };
 
-const createParticipant = async (email, verificationCode) => {
+const createParticipant = async (email, verificationCode, foundUser) => {
   const driver = getDriver();
   const session = driver.session();
   const username = crypto.randomUUID();
+  const name = foundUser.name;
+  const phone = foundUser.phone;
 
   try {
     await session.run(
@@ -44,9 +43,10 @@ const createParticipant = async (email, verificationCode) => {
       {email: $email,
       verification_code: $verificationCode, 
       type: ["Attendee"],
-      username: $username
-      })`,
-      { email, verificationCode, username }
+      username: $username,
+      phone: $phone,
+      name: $name})`,
+      { email, verificationCode, username, phone, name }
     );
 
     return null;
@@ -58,27 +58,6 @@ const createParticipant = async (email, verificationCode) => {
   }
 };
 
-const addAccountId = async (email) => {
-  const driver = getDriver();
-  const session = driver.session();
-  const username = crypto.randomUUID();
-
-  try {
-    await session.run( 
-      `MATCH (n) WHERE (n:Participant OR n:Partner)
-        AND n.email = $email
-        SET n.username = $username`,
-      { email, username }
-    );
-
-    return null;
-  } catch (error) {
-    console.log(error);
-    return null;
-  } finally {
-    session.close();
-  }
-};
 
 /**
  * @param { string } email

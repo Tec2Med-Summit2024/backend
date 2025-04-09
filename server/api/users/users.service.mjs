@@ -5,7 +5,8 @@ import {
   getConnectionsDB,
   getNotificationsDB,
   searchUsersDB,
-  updateSettingsDB
+  updateSettingsDB,
+  getUserTypeDB
 } from './users.db.mjs';
 
 export const getTicket = async (username, role) => {
@@ -49,10 +50,10 @@ export const getUserNotifications = async (username, role) => {
 };
 
 
-export const searchUsers = async (name, type, user) => {
+export const searchUsers = async (query, type, user, location, field, institution, interests, expertises) => {
     if(!type)
       return { ok: false, error: 400, errorMsg: 'type is required' };
-    return { ok: true, value: await searchUsersDB(name, type, user) };
+    return { ok: true, value: await searchUsersDB(query, type, user, location, field, institution, interests, expertises) };
 };
 
 export const updateUserSettings = async (username, role, data) => {
@@ -62,3 +63,12 @@ export const updateUserSettings = async (username, role, data) => {
   
     return { ok: true, value: res };
 };
+
+export const getUserTypes = async (username, role) => {
+  const res = await getUserTypeDB(username, role);
+  if (!res) 
+    return { ok: false, error: 404, errorMsg: `${role} not found` };
+
+  return { ok: true, value: res };
+};
+

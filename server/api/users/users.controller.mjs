@@ -6,6 +6,7 @@ import {
   getUserNotifications,
   searchUsers,
   updateUserSettings,
+  getUserTypes
 } from './users.service.mjs';
 
 /**
@@ -85,7 +86,8 @@ export const getNotifications = async (req, res) => {
  * @param {import("express").Response} res 
  */
 export const getUsers = async (req, res) => {
-  const result = await searchUsers(req.query.name, req.query.type, req.user); 
+  const result = await searchUsers(req.query.name, req.query.type, req.user, req.query.location, 
+    req.query.field, req.query.institution, req.query.interests, req.query.expertises); 
   if (result.ok) {
     return res.status(200).json(result.value);
   }
@@ -106,4 +108,20 @@ export const updateSettings = async (req, res) => {
   
   return res.status(result.error).json({ error: result.errorMsg });
 };
+
+/**
+ * 
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
+export const getUserType = async (req, res) => {
+  const result = await getUserTypes(req.username, req.role);
+  if (result.ok) {
+    return res.status(200).json(result.value);
+  }
+  
+  return res.status(result.error).json({ error: result.errorMsg });
+};
+
+
 

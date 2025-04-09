@@ -137,19 +137,32 @@ export const getNotificationsDB = async (username, role) => {
 };
 
 
-// Verifica a lista de interesses e expertises intituicao de estudo/trabalho
-export const searchUsersDB = async (query, type, email) => {
+export const searchUsersDB = async (query, type, email, location, field, institution, interests, expertises) => {
   const driver = getDriver();
   const session = driver.session();
 
   query = query || '';
+  location = location || '';
+  field = field || '';
+  institution = institution || '';
+  if(interests)
+    interests = interests.split(';');
+  else
+    interests = [];  
+
+  if(expertises)
+    expertises = expertises.split(';');
+  else
+    expertises = [];
+
 
   try {
     const result = await session.run(  
       `MATCH (user)
        WHERE (user:Participant OR user:Partner) AND user.email = $email
-      WITH user, user.interests AS user_interests, user.expertise AS user_expertise, user.institution AS user_institution, $type AS type, $query AS query
-
+      WITH user, user.interests AS user_interests, user.expertise AS user_expertise, user.institution AS user_institution, $type AS type, $query AS query,
+      $location AS location, $field AS field, $institution AS institution, $interests AS query_interests, $expertises AS query_expertises
+      
       // Find matching entities based on both Participants and Partners
       MATCH (entity)
       WHERE 
@@ -159,6 +172,14 @@ export const searchUsersDB = async (query, type, email) => {
         )
       AND toLower(entity.name) CONTAINS toLower(query)
       AND entity.email <> user.email
+
+      // Se alguma cena brekar deve ser por causa destes filtros (nome das propriedades etc ...)
+      AND toLower(entity.current_location) CONTAINS toLower(location)
+      AND toLower(entity.field_of_study_work_research) CONTAINS toLower(field)
+      AND toLower(entity.institution) CONTAINS toLower(institution)
+      AND all(i IN query_interests WHERE i IN entity.interests)
+      AND all(i IN query_expertises WHERE i IN entity.expertise)
+
 
       // Check if a FOLLOW relationship exists between the user and the entity (if the entity is a Partner)
       OPTIONAL MATCH (user)-[follows:FOLLOWS]->(entity)
@@ -181,12 +202,12 @@ export const searchUsersDB = async (query, type, email) => {
             entity.biography AS biography,
             entity.photo_id AS photo_id,
             follow_exists
-                
-      ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC`,
-      { query, type, email }
+ 
+      ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC, name DESC`,
+      { query, type, email, location, field, institution, interests, expertises }
     );
-  
-
+    
+    
   return result.records.map((n) => {
     return {
       name: n.get(0),
@@ -217,6 +238,34 @@ export const updateSettingsDB = async (username, role, data) => {
     );
 
     return { ok: true, value: result.records[0].get(0).properties };
+  } catch (error) {
+    return { ok: false, error: 500, errorMsg: error.message };
+  } finally {
+    await session.close();
+  }
+};
+
+
+export const getUserTypeDB = async (username, role) => {
+  const driver = getDriver();
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (e)
+        WHERE (e:Participant OR e:Partner)
+        AND e.username = $username
+        RETURN 
+        CASE 
+        WHEN e:Partner THEN ["Partner"]
+        ELSE e.type
+      END AS type`,
+      { username}
+    );
+    
+    return {
+      type: result.records[0].get(0) 
+    }
+    
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {

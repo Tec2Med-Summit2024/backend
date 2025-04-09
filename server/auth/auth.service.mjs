@@ -7,8 +7,7 @@ import {
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer  from 'nodemailer';
-
-const TEST_EMAIL = '';
+import xlsx from 'node-xlsx';
 
 const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
@@ -19,13 +18,33 @@ const emailTransporter = nodemailer.createTransport({
 });
 
 export const verifyAcc = async (email) => {
-
-  // TODO verificar se o mail existe nos tickets.
+  const obj = xlsx.parse("tec2med_tickeline_template.xlsx");
+  const sheet = obj[0].data;  
   
+  let foundUser = null;
+
+  for (let i = 1; i < sheet.length; i++) { 
+    const row = sheet[i];
+    const rowEmail = row[1];
+
+    if (rowEmail && rowEmail.trim() === email.trim()) {
+      foundUser = {
+        name: row[0], 
+        phone: row[2] 
+      };
+      break;
+    }
+  }
+
+  if (!foundUser) {
+    return { ok: false, error: 401, errorMsg: 'Email not found in ticket list' };
+  }
+  
+ 
   const verificationCode = Math.floor(Math.random() * 90000) + 10000;
   console.log(`Verification code: ${verificationCode}`);
 
-  await createVerificationCode(email, verificationCode);
+  await createVerificationCode(email, verificationCode, foundUser);
 
   email = TEST_EMAIL;
   
@@ -36,7 +55,7 @@ export const verifyAcc = async (email) => {
     <p>Use this code to verify your account.</p>`
   };  
   
-  await emailTransporter.sendMail(mailOptions);
+  //await emailTransporter.sendMail(mailOptions);
   
   return { ok: true, message: 'Verification code sent' };
 };
@@ -90,6 +109,10 @@ export const loginAcc = async (email, password) => {
   const role = account.type;
   const passwordDB = account.password;
   const id = account.username;
+
+  if (!passwordDB) {
+    return { ok: false, error: 401, errorMsg: 'Password not set' };
+  }
   
   // comparing passwords
   const passwordIsValid = bcrypt.compareSync(
