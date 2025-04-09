@@ -1,6 +1,7 @@
 import {
   searchEvents,
   getEventById,
+  addFeedbackToEvent,
   createQuestionInEvent,
   likeQuestionInEvent,
   dislikeQuestionInEvent,
@@ -61,6 +62,28 @@ export const getEvent = async (req, res) => {
 };
 
 /**
+ * Add event feedback
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+export const addFeedback = async (req, res) => {
+  try {
+    const { id, username } = req.params;
+    const { feedback } = req.body;
+
+    const result = await addFeedbackToEvent(id, username, feedback);
+    if (result.ok) {
+      return res.status(200).json(result.value);
+    }
+
+    return res.status(result.error).json({ error: result.errorMsg });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+/**
  * Creates a new question for the event
  * @param {import("express").Request} req
  * @param {import("express").Response} res
@@ -90,7 +113,7 @@ export const createQuestion = async (req, res) => {
 export const likeQuestion = async (req, res) => {
   try {
     const { id, questionId, username } = req.params;
-    
+
     const result = await likeQuestionInEvent(id, questionId, username);
     if (result.ok) {
       return res.status(200).json(result.value);
@@ -110,7 +133,7 @@ export const likeQuestion = async (req, res) => {
 export const dislikeQuestion = async (req, res) => {
   try {
     const { id, questionId, username } = req.params;
-    
+
     const result = await dislikeQuestionInEvent(id, questionId, username);
     if (result.ok) {
       return res.status(200).json(result.value);

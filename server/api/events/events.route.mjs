@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getEvent,
+  addFeedback,
   getEvents,
   createQuestion,
   likeQuestion,
@@ -21,6 +22,12 @@ router.get('/', getEvents);
  * @GET /api/events/:id
  */
 router.get('/:id', getEvent);
+
+/**
+ * @brief Add event feedback
+ * @POST /api/events/:id/score/:username
+ */
+router.post('/:id/feedback/:username', addFeedback);
 
 /**
  * @brief Creates a new question for the event

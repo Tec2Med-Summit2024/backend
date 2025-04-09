@@ -1,6 +1,7 @@
 import {
   getFilteredEventsFromDb,
   getEventByIdFromDb,
+  addFeedbackToEventFromDb,
   createQuestionInEventFromDb,
   likeQuestionInEventFromDb,
   dislikeQuestionInEventFromDb,
@@ -45,12 +46,35 @@ export const getEventById = async (id) => {
 
 /**
  *
+ * @param {string} username
+ * @param {string} eventId
+ * @param {string} feedback
+ */
+export const addFeedbackToEvent = async (eventId, username, feedback) => {
+  try {
+    const result = await addFeedbackToEventFromDb(eventId, username, feedback);
+    if (result) {
+      return { ok: true, value: result };
+    }
+
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  } catch (err) {
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  }
+};
+
+/**
+ *
  * @param {string} eventId
  * @param {*} content
  */
 export const createQuestionInEvent = async (username, eventId, content) => {
   try {
-    const result = await createQuestionInEventFromDb(username, eventId, content);
+    const result = await createQuestionInEventFromDb(
+      username,
+      eventId,
+      content
+    );
     if (result) {
       return { ok: true, value: result };
     }
@@ -68,7 +92,11 @@ export const createQuestionInEvent = async (username, eventId, content) => {
  */
 export const likeQuestionInEvent = async (eventId, questionId, username) => {
   try {
-    const result = await likeQuestionInEventFromDb(eventId, questionId, username);
+    const result = await likeQuestionInEventFromDb(
+      eventId,
+      questionId,
+      username
+    );
     if (result) {
       return { ok: true, value: result };
     }
@@ -86,7 +114,11 @@ export const likeQuestionInEvent = async (eventId, questionId, username) => {
  */
 export const dislikeQuestionInEvent = async (eventId, questionId, username) => {
   try {
-    const result = await dislikeQuestionInEventFromDb(eventId, questionId, username);
+    const result = await dislikeQuestionInEventFromDb(
+      eventId,
+      questionId,
+      username
+    );
     if (result) {
       return { ok: true, value: result };
     }
@@ -96,7 +128,6 @@ export const dislikeQuestionInEvent = async (eventId, questionId, username) => {
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   }
 };
-
 
 /**
  *

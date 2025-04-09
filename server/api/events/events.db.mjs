@@ -92,6 +92,37 @@ export const getEventByIdFromDb = async (id) => {
 };
 
 /**
+ * 
+ * * @param {string} eventId
+ * @param {string} username
+ * @param {string} feedback
+ */
+export const addFeedbackToEventFromDb = async (id, username, feedback) => {
+  const driver = getDriver();
+  const session = driver.session();
+  const eventId = parseInt(id);
+  const feedbackId = `${eventId}f${username}`;
+  feedback.feedback_id = feedbackId; // Add feedback_id to the feedback object
+  try {
+    const result = await session.run(
+      `MATCH (e:Event {event_id: $eventId})
+       MATCH (p:Participant {username: $username})
+       CREATE (f:Feedback $feedback)
+       CREATE (p)-[:GIVES_FEEDBACK]->(f)
+       CREATE (f)-[:ABOUT]->(e) 
+       RETURN f.feedback_id AS feedbackId`,
+      { eventId, username, feedback }
+    );
+    return result.records[0]?.get('feedbackId');
+  } catch (error) {
+    return null;
+  } finally {
+    session.close();
+  }
+};
+
+
+/**
  *
  * @param {string} eventId
  * @param {*} question
