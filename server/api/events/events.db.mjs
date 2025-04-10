@@ -242,7 +242,7 @@ export const getQuestionsFromEventFromDb = async (id, username) => {
   const eventId = parseInt(id);
   try {
     const result = await session.run(
-      `MATCH (q:Question)-[:ASKED_IN]->(e:Event {event_id:$eventId})
+      `MATCH (p:Participant)-[:ASKS]->(q:Question)-[:ASKED_IN]->(e:Event {event_id:$eventId})
        OPTIONAL MATCH (p2:Participant {username: $username})-[:LIKES_QUESTION]->(q)
        RETURN q, p.name AS participantName, p.username AS participantUsername, 
               CASE WHEN p2 IS NOT NULL THEN true ELSE false END AS liked
