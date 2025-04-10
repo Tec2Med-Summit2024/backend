@@ -1,6 +1,5 @@
 import { getDriver } from '../../database/connector.mjs';
 
-
 const eventsRelationships = {
   partner: 'HOSTS',
   participant: 'GOES_TO',
@@ -22,7 +21,7 @@ const getUser = async (username, role) => {
   const session = driver.session();
 
   try {
-    const result = await session.run(  
+    const result = await session.run(
       `MATCH (u:${role} {name: $username})
             RETURN u`,
       { username }
@@ -31,9 +30,9 @@ const getUser = async (username, role) => {
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
-        await session.close();
+    await session.close();
   }
-};  
+};
 
 /**
  *
@@ -57,8 +56,8 @@ export const getTicketDB = async (username, role) => {
 export const getQRCodeDB = async (username, role) => {
   const user = await getUser(username, role);
   if (!user) return null;
-  
-  return { qr_code: user.qr_code }; 
+
+  return { qr_code: user.qr_code };
 };
 
 /**
@@ -72,17 +71,17 @@ export const getEventsDB = async (username, role) => {
   const session = driver.session();
 
   try {
-    const result = await session.run(  
+    const result = await session.run(
       `MATCH (p:${role} {name: $username})-[:${eventsRelationships[role]}]->(e:Event)
             RETURN e`,
       { username }
     );
-    
+
     return result.records.map((e) => e.get(0).properties);
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
-        await session.close();
+    await session.close();
   }
 };
 
@@ -97,17 +96,17 @@ export const getConnectionsDB = async (username, role) => {
   const session = driver.session();
 
   try {
-    const result = await session.run(  
+    const result = await session.run(
       `MATCH (u:${role} {name: $username})-[:${connectionsRelationships[role]}]-(c)
             RETURN c`,
       { username }
     );
-    
-  return result.records.map((c) => c.get(0).properties);
+
+    return result.records.map((c) => c.get(0).properties);
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
-        await session.close();
+    await session.close();
   }
 };
 
@@ -122,22 +121,30 @@ export const getNotificationsDB = async (username, role) => {
   const session = driver.session();
 
   try {
-    const result = await session.run(  
+    const result = await session.run(
       `MATCH (u:${role} {name: $username})-[:RECEIVES]->(n:Notification)
             RETURN n`,
       { username }
     );
-    
-  return result.records.map((n) => n.get(0).properties);
+
+    return result.records.map((n) => n.get(0).properties);
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
-        await session.close();
+    await session.close();
   }
 };
 
-
-export const searchUsersDB = async (query, type, email, location, field, institution, interests, expertises) => {
+export const searchUsersDB = async (
+  query,
+  type,
+  email,
+  location,
+  field,
+  institution,
+  interests,
+  expertises
+) => {
   const driver = getDriver();
   const session = driver.session();
 
@@ -145,19 +152,14 @@ export const searchUsersDB = async (query, type, email, location, field, institu
   location = location || '';
   field = field || '';
   institution = institution || '';
-  if(interests)
-    interests = interests.split(';');
-  else
-    interests = [];  
+  if (interests) interests = interests.split(';');
+  else interests = [];
 
-  if(expertises)
-    expertises = expertises.split(';');
-  else
-    expertises = [];
-
+  if (expertises) expertises = expertises.split(';');
+  else expertises = [];
 
   try {
-    const result = await session.run(  
+    const result = await session.run(
       `MATCH (user)
        WHERE (user:Participant OR user:Partner) AND user.email = $email
       WITH user, user.interests AS user_interests, user.expertise AS user_expertise, user.institution AS user_institution, $type AS type, $query AS query,
@@ -204,28 +206,33 @@ export const searchUsersDB = async (query, type, email, location, field, institu
             follow_exists
  
       ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC, name DESC`,
-      { query, type, email, location, field, institution, interests, expertises }
+      {
+        query,
+        type,
+        email,
+        location,
+        field,
+        institution,
+        interests,
+        expertises,
+      }
     );
-    
-    
-  return result.records.map((n) => {
-    return {
-      name: n.get(0),
-      username: n.get(1),
-      biography: n.get(2),
-      photo_id: n.get(3),
-      follow_exists: n.get(4)
-    };
-  }
 
-);
+    return result.records.map((n) => {
+      return {
+        name: n.get(0),
+        username: n.get(1),
+        biography: n.get(2),
+        photo_id: n.get(3),
+        follow_exists: n.get(4),
+      };
+    });
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
-        await session.close();
+    await session.close();
   }
 };
-
 
 export const updateSettingsDB = async (username, role, data) => {
   const driver = getDriver();
@@ -245,7 +252,6 @@ export const updateSettingsDB = async (username, role, data) => {
   }
 };
 
-
 export const getUserTypeDB = async (username, role) => {
   const driver = getDriver();
   const session = driver.session();
@@ -259,17 +265,15 @@ export const getUserTypeDB = async (username, role) => {
         WHEN e:Partner THEN ["Partner"]
         ELSE e.type
       END AS type`,
-      { username}
+      { username }
     );
-    
+
     return {
-      type: result.records[0].get(0) 
-    }
-    
+      type: result.records[0].get(0),
+    };
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
     await session.close();
   }
 };
-

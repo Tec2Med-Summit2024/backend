@@ -179,9 +179,9 @@ export const likeQuestionInEventFromDb = async (id, questionId, username) => {
   try {
     // Step 1: Match the Question and Event, and increment the likes
     const result = await session.run(
-      `MATCH (q:Question {question_id:$questionId})-[:ASKED_IN]->(e:Event {event_id:$eventId}) 
-       SET q.likes = q.likes + 1 
+      `MATCH (q:Question {question_id:$questionId})-[:ASKED_IN]->(e:Event {event_id:$eventId})
        MATCH (p:Participant {username: $username}) 
+       SET q.likes = q.likes + 1 
        CREATE (p)-[:LIKES_QUESTION]->(q)
        RETURN q`,
       { eventId, questionId, username }
@@ -211,8 +211,8 @@ export const dislikeQuestionInEventFromDb = async (id, questionId, username) => 
     // Step 1: Match the Question and Event, and decrement the likes
     const result = await session.run(
       `MATCH (q:Question {question_id:$questionId})-[:ASKED_IN]->(e:Event {event_id:$eventId}) 
-       SET q.likes = q.likes - 1 
        MATCH (p:Participant {username: $username}) 
+       SET q.likes = q.likes - 1 
        OPTIONAL MATCH (p)-[r:LIKES_QUESTION]->(q) 
        DELETE r
        RETURN q`,
