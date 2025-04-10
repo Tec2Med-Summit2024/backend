@@ -22,7 +22,7 @@ const getUser = async (username, role) => {
 
   try {
     const result = await session.run(
-      `MATCH (u:${role} {name: $username})
+      `MATCH (u:${role} {username: $username})
             RETURN u`,
       { username }
     );
@@ -72,7 +72,7 @@ export const getEventsDB = async (username, role) => {
 
   try {
     const result = await session.run(
-      `MATCH (p:${role} {name: $username})-[:${eventsRelationships[role]}]->(e:Event)
+      `MATCH (p:${role} {username: $username})-[:${eventsRelationships[role]}]->(e:Event)
             RETURN e`,
       { username }
     );
@@ -97,7 +97,7 @@ export const getConnectionsDB = async (username, role) => {
 
   try {
     const result = await session.run(
-      `MATCH (u:${role} {name: $username})-[:${connectionsRelationships[role]}]-(c)
+      `MATCH (u:${role} {username: $username})-[:${connectionsRelationships[role]}]-(c)
             RETURN c`,
       { username }
     );
@@ -122,7 +122,7 @@ export const getNotificationsDB = async (username, role) => {
 
   try {
     const result = await session.run(
-      `MATCH (u:${role} {name: $username})-[:RECEIVES]->(n:Notification)
+      `MATCH (u:${role} {username: $username})-[:RECEIVES]->(n:Notification)
             RETURN n`,
       { username }
     );
@@ -239,7 +239,7 @@ export const updateSettingsDB = async (username, role, data) => {
   const session = driver.session();
   try {
     const result = await session.run(
-      `MATCH u:${role} {name: $username})-[:HAS]->(s:Settings)
+      `MATCH u:${role} {username: $username})-[:HAS]->(s:Settings)
        SET s += $data RETURN s`,
       { username, data }
     );
