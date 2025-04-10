@@ -172,9 +172,10 @@ export const createQuestionInEventFromDb = async (username, id, content) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const likeQuestionInEventFromDb = async (eventId, questionId, username) => {
+export const likeQuestionInEventFromDb = async (id, questionId, username) => {
   const driver = getDriver();
   const session = driver.session();
+  const eventId = parseInt(id);
   try {
     // Step 1: Match the Question and Event, and increment the likes
     const result = await session.run(
@@ -202,9 +203,10 @@ export const likeQuestionInEventFromDb = async (eventId, questionId, username) =
  * @param {string} eventId
  * @param {string} questionId
  */
-export const dislikeQuestionInEventFromDb = async (eventId, questionId, username) => {
+export const dislikeQuestionInEventFromDb = async (id, questionId, username) => {
   const driver = getDriver();
   const session = driver.session();
+  const eventId = parseInt(id);
   try {
     // Step 1: Match the Question and Event, and decrement the likes
     const result = await session.run(
