@@ -212,8 +212,8 @@ export const dislikeQuestionInEventFromDb = async (id, questionId, username) => 
     const result = await session.run(
       `MATCH (q:Question {question_id:$questionId})-[:ASKED_IN]->(e:Event {event_id:$eventId}) 
        MATCH (p:Participant {username: $username}) 
-       SET q.likes = q.likes - 1 
        OPTIONAL MATCH (p)-[r:LIKES_QUESTION]->(q) 
+       SET q.likes = q.likes - 1 
        DELETE r
        RETURN q`,
       { eventId, questionId, username }
