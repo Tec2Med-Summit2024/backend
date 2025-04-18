@@ -39,15 +39,12 @@ export const verifyAcc = async (email) => {
   if (!foundUser) {
     return { ok: false, error: 401, errorMsg: 'Email not found in ticket list' };
   }
-  
  
   const verificationCode = Math.floor(Math.random() * 90000) + 10000;
   console.log(`Verification code: ${verificationCode}`);
 
   await createVerificationCode(email, verificationCode, foundUser);
 
-  email = TEST_EMAIL;
-  
   const mailOptions = {
     to: email, 
     subject: '[Tec2Med] Verification Code',
