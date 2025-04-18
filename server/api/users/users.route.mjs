@@ -6,6 +6,7 @@ import { verifyRole, verifyUsername } from '../../middleware/verifier.mjs';
 const router = express.Router();
 
 router.param('username', verifyUsername);
+router.use(verifyRole);
 
 /**
  * 
@@ -36,7 +37,7 @@ router.get('/:username/notifications', getNotifications);
 /**
  *           
  */
-router.get('', verifyRole, getUsers);
+router.get('', getUsers);
 
 /**
  * 
