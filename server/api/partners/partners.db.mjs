@@ -99,3 +99,25 @@ export const getCV = async (username, cvId) => {
     await session.close();
   }
 };
+
+/**
+ * Get all the followers of a partner identified by the username
+ * @param {string} username 
+ */
+export const getFollowersByPartner = async (username) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (a:Partner {username: $username})
+       MATCH (a)-[:FOLLOWS]->(p:Partner)
+       RETURN p`,
+      { username }
+    );
+
+    return result.records.map((r) => r.get(0).properties);
+  } finally {
+    await session.close();
+  }
+};  

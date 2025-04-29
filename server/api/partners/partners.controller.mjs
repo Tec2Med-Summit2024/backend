@@ -1,4 +1,4 @@
-import { getPartnerFromDb, getCVFromPartner, addCVToPartner, getAllCVsFromPartner } from './partners.service.mjs';
+import { getPartnerFromDb, getCVFromPartner, addCVToPartner, getAllCVsFromPartner, getFollowersFromPartner } from './partners.service.mjs';
 
 /**
  * 
@@ -58,3 +58,17 @@ export const getCV = async (req, res) => {
 
   return res.status(result.error).json({ error: result.errorMsg });
 };
+
+/**
+ * 
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
+export const getFollowers = async (req, res) => {
+  const result = await getFollowersFromPartner(req.params.username);
+  if (result.ok) {
+    return res.status(200).json(result.value);
+  }
+  return res.status(result.error).json({ error: result.errorMsg });
+};
+

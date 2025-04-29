@@ -2,7 +2,8 @@ import {
   getPartnerByUsername,
   sendCVToPartner,
   getReceivedCVsByPartner,
-  getCV
+  getCV,
+  getFollowersByPartner
 } from './partners.db.mjs';
 
 export const getPartnerFromDb = async (username) => {
@@ -71,3 +72,16 @@ export const getCVFromPartner = async (username, cvID) => {
 
   return { ok: true, value: await getCV(username, cvID) };
 };
+
+/**
+ * 
+ * @param {string} username 
+ */
+export const getFollowersFromPartner = async (username) => {
+  const followers = await getPartnerByUsername(username);
+  if (!followers) {
+    return { ok: false, error: 404, errorMsg: 'Partner not found' };
+  }
+
+  return { ok: true, value: await getFollowersByPartner(username) };
+};  

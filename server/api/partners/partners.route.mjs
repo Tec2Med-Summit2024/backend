@@ -1,6 +1,6 @@
 import express from 'express';
 // remove this comment and add your controller functions
-import { getCV, getPartner, sendCVToPartner, getAllPartnerCVs } from './partners.controller.mjs';
+import { getCV, getPartner, sendCVToPartner, getAllPartnerCVs, getFollowers } from './partners.controller.mjs';
 import { verifyUsername } from '../../middleware/verifier.mjs';
 
 const router = express.Router();
@@ -26,6 +26,11 @@ router.get('/:username/cvs', getAllPartnerCVs);
  * 
  */
 router.get('/:username/cvs/:cvID', getCV);
+
+/**
+ * 
+ */
+router.get('/:username/followers', getFollowers);
 
 
 export default router;

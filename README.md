@@ -47,6 +47,7 @@ Some general notes about the model and design of the application:
   - [Send CV to partner](#send-cv-to-partner)
   - [Get received CV](#get-received-CV)
   - [Get all received CV](#get-all-received-CV)
+  - [Get partners followed by partner](#Get-partners-followed-by-partner)
 
 - [Events](#events)
 
@@ -467,6 +468,16 @@ POST /api/partners/{username}/cvs
 ```
 
 Gets all the CVs sent to the given partner identified by **username**.
+
+<br>
+
+#### Get partners followed by partner
+
+```HTTP
+GET /api/partners/{username}/followers
+```
+
+Returns the partners followed by the partner identified by **username**.
 
 <br>
 
