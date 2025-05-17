@@ -1,15 +1,39 @@
-<header
-  class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'
->
-  <h1 class='text-4xl'>Create New Event</h1>
+<header class='py-6 px-6 mx-auto max-w-screen-2xl'>
+  <div class='flex items-center justify-between'>
+    <div class='flex flex-col gap-4'>
+      <h1 class='text-4xl'>Create New Event</h1>
 
-  <a
-    href='/admin/events'
-    class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'
-  >
-    <span class='material-symbols-outlined'>arrow_back</span>
-    Return to Events
-  </a>
+      <!-- Dropdown Menu -->
+      <div>
+        <label for='event_type' class='text-lg font-medium mb-1 block'>Event Type</label>
+        <select
+          id='event_type'
+          name='event_type'
+          form='create-event-form'
+          class='px-3 py-2 border border-gray-800 rounded-md w-64'
+          required
+        >
+          <option value='' disabled selected>Select a type</option>
+          <option value='Debate'>Debate</option>
+          <option value='Masterclass'>Masterclass</option>
+          <option value='Roundtable'>Roundtable</option>
+          <option value='Talk'>Talk</option>
+          <option value='Workshop'>Workshop</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Return Link -->
+    <a
+      href='/admin/events'
+      class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 h-fit self-start'
+    >
+      <span class='material-symbols-outlined'>arrow_back</span>
+      Return to Events
+    </a>
+  </div>
+</header>
+
 </header>
 
 <section class='mx-auto max-w-screen-2xl p-6'>

@@ -1,7 +1,7 @@
 <header
   class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'
 >
-  <h1 class='text-4xl'>Edit Partner - {{partner.name}}</h1>
+  <h1 class='text-4xl'>Create New Partner</h1>
 
   <a
     href='/admin/partners'
@@ -14,8 +14,8 @@
 
 <section class='mx-auto max-w-screen-2xl p-6'>
   <form
-    id="edit-partner-form"
-    action='/admin/partners/{{partner.username}}'
+    id='create-partner-form'
+    action='/admin/partners'
     method='post'
     class='grid grid-cols-2 gap-6 text-lg'
     autocomplete='off'
@@ -27,8 +27,8 @@
           type='text'
           id='name'
           name='name'
-          placeholder='{{partner.name}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
@@ -38,41 +38,41 @@
           type='text'
           id='field_of_study_work_research'
           name='field_of_study_work_research'
-          placeholder='{{partner.field_of_study_work_research}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
       <div class='flex flex-col'>
         <label for='phone'>Phone</label>
         <input
-          type='text'
+          type='tel'
           id='phone'
           name='phone'
-          placeholder='{{partner.phone}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
       <div class='flex flex-col'>
         <label for='website'>Website</label>
         <input
-          type='text'
+          type='url'
           id='website'
           name='website'
-          placeholder='{{partner.website}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
       <div class='flex flex-col'>
         <label for='instagram'>Instagram</label>
         <input
-          type='text'
+          type='url'
           id='instagram'
           name='instagram'
-          placeholder='{{partner.instagram}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
@@ -85,8 +85,8 @@
           type='text'
           id='interests'
           name='interests'
-          placeholder='{{partner.interests}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
@@ -96,41 +96,41 @@
           type='text'
           id='current_location'
           name='current_location'
-          placeholder='{{partner.current_location}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
       <div class='flex flex-col'>
         <label for='email'>Email</label>
         <input
-          type='text'
+          type='email'
           id='email'
           name='email'
-          placeholder='{{partner.email}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
       <div class='flex flex-col'>
         <label for='linkedin'>LinkedIn</label>
         <input
-          type='text'
+          type='url'
           id='linkedin'
           name='linkedin'
-          placeholder='{{partner.linkedin}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
       <div class='flex flex-col'>
         <label for='facebook'>Facebook</label>
         <input
-          type='text'
+          type='url'
           id='facebook'
           name='facebook'
-          placeholder='{{partner.facebook}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
@@ -139,22 +139,22 @@
     <div class='flex flex-col gap-2 col-span-2'>
       <label class for='biography'>Biography</label>
       <textarea
-        form="edit-partner-form"
+        form='create-partner-form'
         type='text'
         id='biography'
         name='biography'
-        placeholder='{{partner.biography}}'
         class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         rows='4'
-      /></textarea>
+        required
+      ></textarea>
     </div>
 
     <div class='w-fit mx-auto col-span-2'>
       <button
-        form="edit-partner-form"
+        form='create-partner-form'
         type='submit'
-        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md '
-      >Edit Partner</button>
+        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
+      >Create Partner</button>
     </div>
   </form>
 </section>

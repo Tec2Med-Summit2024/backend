@@ -32,6 +32,9 @@ router.post('/', async (req, res) => {
     const fields = req.body;
     console.log('Creating new event with fields:', fields);
     // Generate parameterized property assignments for Cypher
+    const eventType = fields.event_type;
+    delete fields.event_type;
+    console.log('Event Type:', eventType);
     const fieldKeys = Object.keys(fields);
     const propertyAssignments = fieldKeys
       .map((key) => {
@@ -44,18 +47,22 @@ router.post('/', async (req, res) => {
       })
       .join(', ');
     console.log('Property Assignments:', propertyAssignments);
-    const result = await makeQuery(`
+    const result = await makeQuery(
+      `
       MATCH (e:Event)
       WITH count(e) + 1 AS newEventId
       CREATE (newEvent:Event {
         event_id: newEventId,
         ${propertyAssignments}
       })
-      RETURN newEvent
-    `);
-
+      CREATE (newEvent)-[:IN_TYPE]->(et:EventType {name: $eventType})
+      RETURN newEvent {.*, event_type: et.name}
+    `,
+      { eventType }
+    );
     const e = result[0];
 
+    console.log('Created Event:', e);
     const start = e.start;
     const end = e.end;
 
@@ -94,7 +101,8 @@ router.get('/:id', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
     const result = await makeQuery(
-      'MATCH (e:Event {event_id: $eventId}) RETURN e',
+      `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
+       RETURN e {.*, event_type: et.name}`,
       { eventId }
     );
     const e = result[0];
