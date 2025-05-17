@@ -1,80 +1,160 @@
-<header class="flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl">
-    <h1 class="text-4xl">Create an Event</h1>
+<header
+  class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'
+>
+  <h1 class='text-4xl'>Create New Event</h1>
 
-    <a href="/admin/events" class="flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 ">
-        <span class="material-symbols-outlined">
-            arrow_back
-        </span>
-        <span class="hover:underline">Return to Events</span>
-    </a>
+  <a
+    href='/admin/events'
+    class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'
+  >
+    <span class='material-symbols-outlined'>arrow_back</span>
+    Return to Events
+  </a>
 </header>
 
-<section class="mx-auto max-w-screen-2xl p-6">
-    <form action="/admin/events" method="post" class="grid grid-cols-2 gap-4 text-lg" autocomplete="off">
+<section class='mx-auto max-w-screen-2xl p-6'>
+  <form
+    id='create-event-form'
+    action='/admin/events'
+    method='post'
+    class='grid grid-cols-2 gap-6 text-lg'
+    autocomplete='off'
+  >
+    <div class='flex flex-col gap-2'>
+      <div class='flex flex-col'>
+        <label for='name'>Name</label>
+        <input
+          type='text'
+          id='name'
+          name='name'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-        <div class="flex flex-col gap-2">
-            <div class="flex flex-col">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
+      <div class='flex flex-col'>
+        <label for='topics_covered'>Topics</label>
+        <input
+          type='text'
+          id='topics_covered'
+          name='topics_covered'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-            <div class="flex flex-col">
-                <label for="building_and_room">Building & Room</label>
-                <input type="text" id="building_and_room" name="building_and_room"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
-        </div>
+      <div class='flex flex-col'>
+        <label for='start'>Start Date &amp; Time</label>
+        <input
+          type='datetime-local'
+          id='start'
+          name='start'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-        <div class="flex flex-col gap-2">
-            <div class="flex flex-col">
-                <label for="company">Company</label>
-                <input type="text" id="company" name="company"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
+      <div class='flex flex-col'>
+        <label for='building_and_room'>Location</label>
+        <input
+          type='text'
+          id='building_and_room'
+          name='building_and_room'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-            <div class="flex flex-col">
-                <label for="time">Date</label>
-                <input type="date" id="time" name="time"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
-        </div>
+      <div class='flex flex-col'>
+        <label for='curr_cap'>Current Capacity</label>
+        <input
+          type='number'
+          id='curr_cap'
+          name='curr_cap'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-        <div class="flex flex-col gap-2">
-            <div class="flex flex-col">
-                <label for="start_time">Start Time</label>
-                <input type="time" id="start_time" name="start_time"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
+    </div>
 
-            <div class="flex flex-col">
-                <label for="end_time">End Time</label>
-                <input type="time" id="end_time" name="end_time"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
-        </div>
+    <div class='flex flex-col gap-2'>
+      <div class='flex flex-col'>
+        <label for='company'>Company</label>
+        <input
+          type='text'
+          id='company'
+          name='company'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-        <div class="flex flex-col gap-2 col-span-2">
-            <div class="flex flex-col">
-                <label for="about">Description</label>
-                <input type="text" id="about" name="about"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
-        </div>
+      <div class='flex flex-col'>
+        <label for='speakers_instructors'>Speakers/Instructors</label>
+        <input
+          type='text'
+          id='speakers_instructors'
+          name='speakers_instructors'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-        <div class="flex flex-col gap-2 col-span-2">
-            <div class="flex flex-col">
-                <label for="materials">Materials</label>
-                <input type="text" id="materials" name="materials"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
-        </div>
+      <div class='flex flex-col'>
+        <label for='end'>End Date &amp; Time</label>
+        <input
+          type='datetime-local'
+          id='end'
+          name='end'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-        <div class="col-span-2">
-            <button type="submit" class="px-6 py-2 bg-green-600 text-gray-100 rounded-md hover:underline">
-                Create Event
-            </button>
-        </div>
+      <div class='flex flex-col'>
+        <label for='materials_to_bring'>Materials Necessary</label>
+        <input
+          type='text'
+          id='materials_to_bring'
+          name='materials_to_bring'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
 
-    </form>
+      <div class='flex flex-col'>
+        <label for='max_cap'>Maximum Capacity</label>
+        <input
+          type='number'
+          id='max_cap'
+          name='max_cap'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
+        />
+      </div>
+
+    </div>
+
+    <div class='flex flex-col gap-2 col-span-2'>
+      <label class for='description_about'>About</label>
+      <textarea
+        form='create-event-form'
+        type='text'
+        id='description_about'
+        name='description_about'
+        class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        rows='4'
+        required
+      ></textarea>
+    </div>
+
+    <div class='w-fit mx-auto col-span-2'>
+      <button
+        form='create-event-form'
+        type='submit'
+        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
+      >Create Event</button>
+    </div>
+  </form>
 </section>

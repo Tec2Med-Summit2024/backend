@@ -1,23 +1,67 @@
-<header class="flex items-center">
-    <h1>{{event.name}}</h1>
+<header class='flex flex-col gap-4 py-6 px-6 mx-auto max-w-screen-2xl'>
+  <div class='flex items-center justify-between'>
+    <h1 class='text-4xl font-bold'>{{event.name}}</h1>
+    <a
+      href='/admin/events'
+      class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 hover:underline'
+    >
+      <span class='material-symbols-outlined'>arrow_back</span>
+      <span>Return to Events</span>
+    </a>
+  </div>
 
-    <div class="flex items-center">
-        <a href="/admin/events" class="flex items-center gap-2">
-            Events List
-        </a>
-
-        <a href="/admin/events/{{event.id}}/edit">
-            Edit Event
-        </a>
-
-        <form action="/admin/events/{{event.id}}/delete" method="post">
-            <button type="submit">
-                <span class="material-icons-outlined">bin</span>
-            </button>
-        </form>
-    </div>
+  <div class='flex gap-4'>
+    <a
+      href='/admin/events/{{event.event_id}}/edit'
+      class='bg-blue-600 text-white px-4 py-2 rounded-md hover:opacity-80'
+    >
+      Edit Event
+    </a>
+    <form
+      action='/admin/events/{{event.event_id}}/delete'
+      method='post'
+      class='inline'
+    >
+      <button
+        type='submit'
+        class='bg-red-600 text-white px-4 py-2 rounded-md hover:opacity-80 flex items-center gap-1'
+        onclick="return confirm('Are you sure you want to delete event {{event.event_id}}?')"
+      >
+        Delete Event
+      </button>
+    </form>
+  </div>
 </header>
 
-<section>
+<section class='px-6 mx-auto max-w-screen-2xl'>
+  <h2 class='text-lg font-semibold text-gray-600 mb-4'>Event ID:
+    {{event.event_id}}</h2>
 
+  <div class='grid grid-cols-1 md:grid-cols-2 gap-6 text-base'>
+    <p><strong>Event Name:</strong> {{event.name}}</p>
+    <p><strong>Company:</strong> {{event.company}}</p>
+    <p><strong>Topics Covered:</strong> {{event.topics_covered}}</p>
+    <p><strong>Speakers/Instructors:</strong> {{event.speakers_instructors}}</p>
+    <p>
+      <strong>Start:</strong><br />
+      📅
+      {{event.startDate}}<br />
+      ⏰
+      {{event.startTime}}
+    </p>
+
+    <p>
+      <strong>End:</strong><br />
+      📅
+      {{event.endDate}}<br />
+      ⏰
+      {{event.endTime}}
+    </p>
+    <p><strong>Location:</strong> {{event.building_and_room}}</p>
+    <p><strong>Materials to Bring:</strong> {{event.materials_to_bring}}</p>
+    <p><strong>Current Capacity:</strong> {{event.curr_cap}}</p>
+    <p><strong>Max Capacity:</strong> {{event.max_cap}}</p>
+    <p class='md:col-span-2'><strong>Description:</strong>
+      {{event.description_about}}</p>
+  </div>
 </section>

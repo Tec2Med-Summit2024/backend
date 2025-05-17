@@ -1,46 +1,160 @@
-<header class="flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl">
-    <h1 class="text-4xl">Edit Event - {{event.name}}</h1>
+<header
+  class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'
+>
+  <h1 class='text-4xl'>Edit Event - {{event.name}}</h1>
 
-    <a href="/admin/events" class="flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 ">
-        <span class="material-symbols-outlined">arrow_back</span>
-        Return to Events
-    </a>
+  <a
+    href='/admin/events'
+    class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'
+  >
+    <span class='material-symbols-outlined'>arrow_back</span>
+    Return to Events
+  </a>
 </header>
 
+<section class='mx-auto max-w-screen-2xl p-6'>
+  <form
+    id="edit-event-form"
+    action='/admin/events/{{event.event_id}}'
+    method='post'
+    class='grid grid-cols-2 gap-6 text-lg'
+    autocomplete='off'
+  >
+    <div class='flex flex-col gap-2'>
+      <div class='flex flex-col'>
+        <label for='name'>Name</label>
+        <input
+          type='text'
+          id='name'
+          name='name'
+          placeholder='{{event.name}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
 
-<section class="mx-auto max-w-screen-2xl p-6">
-    <form action="/admin/events/{{event.id}}" method="post" class="grid grid-cols-2 gap-4 text-lg" autocomplete="off">
-        <div class="flex flex-col gap-2">
-            <div class="flex flex-col">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" value="{{event.name}}"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
+      <div class='flex flex-col'>
+        <label for='topics_covered'>Topics</label>
+        <input
+          type='text'
+          id='topics_covered'
+          name='topics_covered'
+          placeholder='{{event.topics_covered}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
 
-            <div class="flex flex-col">
-                <label for="speaker">Speaker</label>
-                <input type="text" id="speaker" name="speaker" value="{{event.speaker}}"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
-        </div>
+      <div class='flex flex-col'>
+        <label for='start'>Start Date &amp; Time</label>
+        <input
+          type='text'
+          id='start'
+          name='start'
+          placeholder='{{event.start}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
 
-        <div class="flex flex-col gap-2">
-            <div class="flex flex-col">
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location" value="{{event.location}}"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
+      <div class='flex flex-col'>
+        <label for='building_and_room'>Location</label>
+        <input
+          type='text'
+          id='building_and_room'
+          name='building_and_room'
+          placeholder='{{event.building_and_room}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
 
-            <div class="flex flex-col">
-                <label for="time">Time</label>
-                <input type="text" id="time" name="time" value="{{event.time}}"
-                    class="px-2 py-1 border border-gray-800 outline-none rounded-md" required>
-            </div>
+      <div class='flex flex-col'>
+        <label for='curr_cap'>Current Capacity</label>
+        <input
+          type='text'
+          id='curr_cap'
+          name='curr_cap'
+          placeholder='{{event.curr_cap}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
 
-        </div>
+    </div>
 
-        <div>
-            <button type="submit" class="px-6 py-2 bg-green-600 text-gray-100 rounded-md">Edit Event</button>
-        </div>
-    </form>
+    <div class='flex flex-col gap-2'>
+      <div class='flex flex-col'>
+        <label for='company'>Company</label>
+        <input
+          type='text'
+          id='company'
+          name='company'
+          placeholder='{{event.company}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='speakers_instructors'>Speakers/Instructors</label>
+        <input
+          type='text'
+          id='speakers_instructors'
+          name='speakers_instructors'
+          placeholder='{{event.speakers_instructors}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='end'>End Date &amp; Time</label>
+        <input
+          type='text'
+          id='end'
+          name='end'
+          placeholder='{{event.end}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='materials_to_bring'>Materials Necessary</label>
+        <input
+          type='text'
+          id='materials_to_bring'
+          name='materials_to_bring'
+          placeholder='{{event.materials_to_bring}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='max_cap'>Maximum Capacity</label>
+        <input
+          type='text'
+          id='max_cap'
+          name='max_cap'
+          placeholder='{{event.max_cap}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
+
+    </div>
+
+    <div class='flex flex-col gap-2 col-span-2'>
+      <label class for='description_about'>About</label>
+      <textarea
+        form="edit-event-form"
+        type='text'
+        id='description_about'
+        name='description_about'
+        placeholder='{{event.description_about}}'
+        class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        rows='4'
+      /></textarea>
+    </div>
+
+    <div class='w-fit mx-auto col-span-2'>
+      <button
+        form="edit-event-form"
+        type='submit'
+        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md '
+      >Edit Event</button>
+    </div>
+  </form>
 </section>

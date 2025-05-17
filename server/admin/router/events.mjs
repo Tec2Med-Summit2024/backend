@@ -1,72 +1,207 @@
-import express from "express";
-import { makeQuery } from "../helpers/functions.mjs";
+import express from 'express';
+import { makeQuery } from '../helpers/functions.mjs';
 
 const router = express.Router();
-
 
 /**
  * Events Management Page
  */
-router.get("/", async (req, res) => {
-	try {
+router.get('/', async (req, res) => {
+  try {
+    const events = await makeQuery(
+      'MATCH (e:Event) RETURN e ORDER BY e.start DESC'
+    );
 
-		const events = await makeQuery("MATCH (e:Event) RETURN e ORDER BY e.start DESC")
+    // console.log('Events =>', events);
 
-		console.log("Events =>", events)
-
-		return res.render("events/index", { title: "Events Management", events: [...events] })
-	} catch (error) {
-		console.error(error)
-		return res.status(500).send("Internal Server Error")
-	}
-})
+    return res.render('events/index', {
+      title: 'Events Management',
+      events: [...events],
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
 /**
  * Endpoint to create a new event
  */
-router.post("/", async (req, res) => {
-	try {
-		return res.redirect("/admin/events")
-	} catch (error) {
-		console.error(error)
-		return res.redirect("/admin/events/new")
-	}
-})
+router.post('/', async (req, res) => {
+  try {
+    const fields = req.body;
+    console.log('Creating new event with fields:', fields);
+    // Generate parameterized property assignments for Cypher
+    const fieldKeys = Object.keys(fields);
+    const propertyAssignments = fieldKeys
+      .map((key) => {
+        const value = fields[key];
+        if (typeof value === 'number') {
+          return `${key}: ${value}`;
+        } else {
+          return `${key}: '${value}'`;
+        }
+      })
+      .join(', ');
+    console.log('Property Assignments:', propertyAssignments);
+    const result = await makeQuery(`
+      MATCH (e:Event)
+      WITH count(e) + 1 AS newEventId
+      CREATE (newEvent:Event {
+        event_id: newEventId,
+        ${propertyAssignments}
+      })
+      RETURN newEvent
+    `);
+
+    const e = result[0];
+
+    const start = e.start;
+    const end = e.end;
+
+    const startDate = start.split('T')[0];
+    const startTime = start.split('T')[1].split(':').slice(0, 2).join(':');
+    const endDate = end.split('T')[0];
+    const endTime = end.split('T')[1].split(':').slice(0, 2).join(':');
+    e.startDate = startDate;
+    e.startTime = startTime;
+    e.endDate = endDate;
+    e.endTime = endTime;
+
+    console.log('Created Event with event_id:', e.event_id);
+    // Add your creation logic here
+    return res.render('events/details', {
+      title: `Event ${e.event_id}`,
+      event: e,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
 /**
  * Page to create a new event
  */
-router.get("/new", (req, res) => {
-	return res.render("events/new", { title: "Create New Event" })
-})
+router.get('/new', (req, res) => {
+  return res.render('events/new', { title: 'Create New Event' });
+});
 
 /**
  * Page to view event details
  */
-router.get("/:id", (req, res) => {
-	return res.render("events/details", { title: "Event Details" })
-})
+router.get('/:id', async (req, res) => {
+  try {
+    const eventId = parseInt(req.params.id);
+    const result = await makeQuery(
+      'MATCH (e:Event {event_id: $eventId}) RETURN e',
+      { eventId }
+    );
+    const e = result[0];
+    console.log('Event ', e);
+
+    const start = e.start;
+    const end = e.end;
+
+    const startDate = start.split('T')[0];
+    const startTime = start.split('T')[1].split(':').slice(0, 2).join(':');
+    const endDate = end.split('T')[0];
+    const endTime = end.split('T')[1].split(':').slice(0, 2).join(':');
+    e.startDate = startDate;
+    e.startTime = startTime;
+    e.endDate = endDate;
+    e.endTime = endTime;
+    console.log('Event with formatted date and time:', e);
+
+    return res.render('events/details', {
+      title: `Event ${e.event_id}`,
+      event: e,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
 /**
  * Endpoint to update event details
  */
-router.post("/:id", (req, res) => {
-	return res.redirect("/admin/events/:id")
-})
+router.post('/:id', async (req, res) => {
+  try {
+    const eventId = parseInt(req.params.id);
+    const fields = req.body;
+    console.log('Updating event with ID:', eventId);
+    console.log('Fields:', fields);
+    // Add your update logic here
+    for (const field in fields) {
+      const value = fields[field];
+      console.log(`Field: ${field}, Value: ${value}`);
+      if (value === '') {
+        console.log(`Field ${field} is empty`);
+        // Remove the field from the object
+        delete fields[field];
+      }
+    }
+    console.log('Updated fields:', fields);
+    const result = await makeQuery(
+      'MATCH (e:Event {event_id: $eventId}) SET e += $fields RETURN e',
+      { eventId, fields }
+    );
+    const eventUpdated = result[0];
+    console.log('Updated event:', eventUpdated);
+    // Redirect to the event details page after updating
+    return res.render('events/details', {
+      title: `Event ${eventUpdated.event_id}`,
+      event: eventUpdated,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
 /**
  * Page to edit event details
  */
-router.get("/:id/edit", (req, res) => {
-	return res.render("events/edit", { title: "Edit Event" })
-})
+router.get('/:id/edit', async (req, res) => {
+  try {
+    const eventId = parseInt(req.params.id);
+    const result = await makeQuery(
+      'MATCH (e:Event {event_id: $eventId}) RETURN e',
+      { eventId }
+    );
+
+    console.log('Event ', result[0]);
+
+    return res.render('events/edit', {
+      title: `Edit Event ${result[0].event_id}`,
+      event: result[0],
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
 /**
  * Endpoint to delete an event
  */
-router.post("/:id/delete", (req, res) => {
-	return res.redirect("/admin/events")
-})
-
+router.post('/:id/delete', async (req, res) => {
+  try {
+    const eventId = parseInt(req.params.id);
+    console.log('Deleting event with ID:', eventId);
+    // Add your delete logic here
+    const result = await makeQuery(
+      'MATCH (e:Event {event_id: $eventId}) DETACH DELETE e',
+      { eventId }
+    );
+    console.log('Delete result:', result);
+    // Redirect to the events list page after deletion
+    return res.redirect('/admin/events');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
 export default router;
