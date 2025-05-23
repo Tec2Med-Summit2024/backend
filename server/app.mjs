@@ -6,7 +6,6 @@ import adminRouter from './admin/router/index.mjs';
 import attendeesRouter from './api/attendees/attendees.route.mjs';
 import eventsRouter from './api/events/events.route.mjs';
 import partnersRouter from './api/partners/partners.route.mjs';
-import usersRouter from './api/users/users.route.mjs';
 import { engine } from 'express-handlebars';
 import handlebars from './admin/helpers/handlebars.mjs';
 
@@ -30,8 +29,6 @@ app.use('/admin', adminRouter)
 app.use('/api/attendees', attendeesRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/partners', partnersRouter);
-app.use('/api/users', usersRouter);
-
 app.get('/', (req, res) => res.json('Hello World!'));
 app.use('*', (_, res) => res.status(404).json({ error: 'Not found' }));
 
