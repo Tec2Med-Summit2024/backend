@@ -39,7 +39,9 @@ const handlebars = {
 		if (!array) return '';
 		if (!Array.isArray(array)) array = [array];
 		return array.includes(value) ? 'checked' : '';
-	}
+	},
+	add: (a, b) => a + b,
+	subtract: (a, b) => a - b
 };
 
 export default handlebars;

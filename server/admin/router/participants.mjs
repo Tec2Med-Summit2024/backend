@@ -9,20 +9,36 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.max(1, parseInt(req.query.limit) || 10);
+    const limit = Math.max(1, parseInt(req.query.limit) || 50);
     const skip = (page - 1) * limit;
+    const search = req.query.search || '';
+
+    // Build the search condition
+    let searchCondition = '';
+    let params = { skip, limit };
+    
+    if (search) {
+      searchCondition = `
+        WHERE p.name CONTAINS $search 
+        OR p.username CONTAINS $search 
+        OR p.email CONTAINS $search
+      `;
+      params.search = search.toLowerCase();
+    }
 
     // Get total count for pagination
     const countResult = await makeQuery(
-      'MATCH (p:Participant) RETURN count(p) as total'
+      `MATCH (p:Participant) ${searchCondition} RETURN count(p) as total`,
+      params
     );
-    const total = parseInt(countResult[0].total);
-    const totalPages = Math.ceil(total / limit);
+    
+    const total = countResult[0]?.low || 0;
+    const totalPages = Math.max(1, Math.ceil(total / limit));
 
     // Get paginated participants
     const participants = await makeQuery(
-      'MATCH (p:Participant) RETURN p ORDER BY p.name SKIP toInteger($skip) LIMIT toInteger($limit)',
-      { skip: skip, limit: limit }
+      `MATCH (p:Participant) ${searchCondition} RETURN p SKIP toInteger($skip) LIMIT toInteger($limit)`,
+      params
     );
 
     return res.render('participants/index', {
@@ -35,7 +51,8 @@ router.get('/', async (req, res) => {
         limit,
         hasNext: page < totalPages,
         hasPrev: page > 1
-      }
+      },
+      search
     });
   } catch (error) {
     console.error(error);
