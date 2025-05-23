@@ -1,55 +1,235 @@
-import { Router } from "express";
-import { makeQuery } from "../helpers/functions.mjs";
+import express from 'express';
+import { makeQuery } from '../helpers/functions.mjs';
 
-const router = Router();
+const router = express.Router();
 
-router.get("/", async (req, res) => {
-    try {
-        const participants = await makeQuery("MATCH (u:Participant) RETURN u")
+/**
+ * Participants Management Page
+ */
+router.get('/', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
 
-        console.log(participants[0])
+    // Get total count for pagination
+    const countResult = await makeQuery(
+      'MATCH (p:Participant) RETURN count(p) as total'
+    );
+    const total = parseInt(countResult[0].total);
+    const totalPages = Math.ceil(total / limit);
 
-        return res.render("participants/index", { title: "Participants Management", participants: [...participants] })
-    } catch (error) {
-        return res.status(500).send("Internal Server Error")
+    // Get paginated participants
+    const participants = await makeQuery(
+      'MATCH (p:Participant) RETURN p ORDER BY p.name SKIP toInteger($skip) LIMIT toInteger($limit)',
+      { skip: skip, limit: limit }
+    );
+
+    return res.render('participants/index', {
+      title: 'Participants Management',
+      participants: [...participants],
+      pagination: {
+        currentPage: page,
+        totalPages,
+        total,
+        limit,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+/**
+ * Endpoint to create a new participant
+ */
+router.post('/', async (req, res) => {
+  try {
+    const fields = req.body;
+    console.log('Creating new participant with fields:', fields);
+
+    // Handle arrays properly
+    if (fields.type) {
+      fields.type = Array.isArray(fields.type) ? fields.type : [fields.type];
     }
-})
-
-router.get("/create", async (req, res) => {
-    try {
-        return res.render("participants/create", { title: "Create New Participant" })
-    } catch (error) {
-        return res.status(500).send("Internal Server Error")
+    if (fields.interests) {
+      fields.interests = Array.isArray(fields.interests) ? fields.interests : [fields.interests];
     }
-})
-
-router.post("/create", async (req, res) => {
-    try {
-        return res.redirect("/admin/participants")
-    } catch (error) {
-        return res.status(500).send("Internal Server Error")
+    if (fields.expertise) {
+      fields.expertise = Array.isArray(fields.expertise) ? fields.expertise : [fields.expertise];
     }
-})
 
-router.get("/:id", async (req, res) => {
-    try {
-        const { id } = req.params
+    // Generate parameterized property assignments for Cypher
+    const fieldKeys = Object.keys(fields);
+    const propertyAssignments = fieldKeys
+      .map((key) => {
+        const value = fields[key];
+        if (Array.isArray(value)) {
+          return `${key}: ${JSON.stringify(value)}`;
+        }
+        if (typeof value === 'number') {
+          return `${key}: ${value}`;
+        } else {
+          return `${key}: '${value}'`;
+        }
+      })
+      .join(', ');
 
-        const participant = await makeQuery("MATCH (u:Participant) WHERE ID(u) = $id RETURN u", { id: id })
+    console.log('Property Assignments:', propertyAssignments);
+    const result = await makeQuery(`
+      MATCH (p:Participant)
+      WITH count(p) + 1 AS participantCount
+      CREATE (newParticipant:Participant {
+        username: '${fields.name.toLowerCase()}-' + toString(participantCount),
+        ${propertyAssignments}
+      })
+      RETURN newParticipant
+    `);
 
-        return res.render("participants/details", { title: "Participant Details", participant })
-    } catch (error) {
-        console.error(error)
-        return res.status(500).send("Internal Server Error")
+    const p = result[0];
+    console.log('Created Participant with username:', p.username);
+    return res.render('participants/details', {
+      title: `Participant ${p.username}`,
+      participant: p,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+/**
+ * Page to create a new participant
+ */
+router.get('/new', (req, res) => {
+  return res.render('participants/new', { title: 'Create New Participant' });
+});
+
+/**
+ * Page to view participant details
+ */
+router.get('/:username', async (req, res) => {
+  try {
+    const username = req.params.username;
+    console.log('Viewing participant with username:', username);
+    const result = await makeQuery(
+      'MATCH (p:Participant {username: $username}) RETURN p',
+      { username }
+    );
+    const p = result[0];
+    console.log('participant ', p);
+
+    return res.render('participants/details', {
+      title: `Participant ${p.username}`,
+      participant: p,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+/**
+ * Endpoint to update participant details
+ */
+router.post('/:username', async (req, res) => {
+  try {
+    const username = req.params.username;
+    const fields = req.body;
+    console.log('Updating participant with username:', username);
+    console.log('Fields:', fields);
+    // Add your update logic here
+    for (const field in fields) {
+      const value = fields[field];
+      console.log(`Field: ${field}, Value: ${value}`);
+      if (value === '') {
+        console.log(`Field ${field} is empty`);
+        // Remove the field from the object
+        delete fields[field];
+      }
     }
-})
+    console.log('Updated fields:', fields);
+    const result = await makeQuery(
+      'MATCH (p:Participant {username: $username}) SET p += $fields RETURN p',
+      { username, fields }
+    );
+    const participantUpdated = result[0];
+    console.log('Updated participant:', participantUpdated);
+    // Redirect to the participant details page after updating
+    return res.render('participants/details', {
+      title: `Participant ${participantUpdated.username}`,
+      participant: participantUpdated,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
-router.get("/:id/edit", (req, res) => {
-    return res.redirect("/admin/participants/:id")
-})
+/**
+ * Page to edit participant details
+ */
+router.get('/:username/edit', async (req, res) => {
+  try {
+    const username = req.params.username;
+    const result = await makeQuery(
+      'MATCH (p:Participant {username: $username}) RETURN p',
+      { username }
+    );
 
-router.post("/:id/edit", (req, res) => {
-    return res.redirect("/admin/participants/:id")
-})
+    const participant = result[0];
+    console.log('Participant data from DB:', JSON.stringify(participant, null, 2));
+    console.log('Interests type:', typeof participant.interests);
+    console.log('Interests value:', participant.interests);
+
+    // Ensure arrays are properly handled and initialized
+    participant.interests = participant.interests || [];
+    participant.type = participant.type || [];
+    participant.expertise = participant.expertise || [];
+
+    // Convert to arrays if they're not already
+    if (!Array.isArray(participant.interests)) {
+      participant.interests = [participant.interests];
+    }
+    if (!Array.isArray(participant.type)) {
+      participant.type = [participant.type];
+    }
+    if (!Array.isArray(participant.expertise)) {
+      participant.expertise = [participant.expertise];
+    }
+
+    return res.render('participants/edit', {
+      title: `Edit Participant ${participant.username}`,
+      participant,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+/**
+ * Endpoint to delete an participant
+ */
+router.post('/:username/delete', async (req, res) => {
+  try {
+    const username = req.params.username;
+    console.log('Deleting participant with username:', username);
+    // Add your delete logic here
+    const result = await makeQuery(
+      'MATCH (p:Participant {username: $username}) DETACH DELETE p',
+      { username }
+    );
+    console.log('Delete result:', result);
+    // Redirect to the participants list page after deletion
+    return res.redirect('/admin/participants');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
 
 export default router;

@@ -1,6 +1,6 @@
 import express from 'express';
 
-import attendeesRouter from './attendees.mjs';
+import participantsRouter from './participants.mjs';
 import eventsRouter from './events.mjs';
 import partnersRouter from './partners.mjs';
 import ticketsRouter from './tickets.mjs';
@@ -12,7 +12,7 @@ router.use(express.urlencoded({ extended: true }));
 
 router.use('/static', express.static('server/admin/public'));
 
-router.use('/attendees', attendeesRouter);
+router.use('/participants', participantsRouter);
 router.use('/events', eventsRouter);
 router.use('/partners', partnersRouter);
 router.use('/tickets', ticketsRouter);

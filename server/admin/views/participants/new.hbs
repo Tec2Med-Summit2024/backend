@@ -1,7 +1,7 @@
 <header
   class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'
 >
-  <h1 class='text-4xl'>Edit Participant - {{participant.name}}</h1>
+  <h1 class='text-4xl'>Create New Participant</h1>
 
   <a
     href='/admin/participants'
@@ -14,21 +14,21 @@
 
 <section class='mx-auto max-w-screen-2xl p-6'>
   <form
-    id="edit-participant-form"
-    action='/admin/participants/{{participant.username}}'
+    id='create-participant-form'
+    action='/admin/participants'
     method='post'
     class='grid grid-cols-2 gap-6 text-lg'
     autocomplete='off'
   >
     <div class='flex flex-col gap-4'>
       <div class='flex flex-col'>
-        <label for='name'>Name</label>
+        <label for='name'>Name *</label>
         <input
           type='text'
           id='name'
           name='name'
-          placeholder='{{participant.name}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
@@ -37,7 +37,6 @@
         <input
           id='institution'
           name='institution'
-          placeholder='{{participant.institution}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -52,7 +51,6 @@
                 name='interests' 
                 value='{{interest}}' 
                 class='peer opacity-0 absolute' 
-                {{isChecked ../participant.interests interest}}
               />
               <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{interest}}</span>
             </label>
@@ -66,7 +64,6 @@
           type='text'
           id='field_of_study_work_research'
           name='field_of_study_work_research'
-          placeholder='{{participant.field_of_study_work_research}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -74,10 +71,9 @@
       <div class='flex flex-col'>
         <label for='phone'>Phone</label>
         <input
-          type='text'
+          type='tel'
           id='phone'
           name='phone'
-          placeholder='{{participant.phone}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -88,7 +84,6 @@
           type='text'
           id='website'
           name='website'
-          placeholder='{{participant.website}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -99,7 +94,6 @@
           type='text'
           id='instagram'
           name='instagram'
-          placeholder='{{participant.instagram}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -115,7 +109,6 @@
               id='type_attendee'
               name='type'
               value='Attendee'
-              {{#if (contains participant.type 'Attendee')}}checked{{/if}}
               class='w-4 h-4'
             />
             <label for='type_attendee'>Attendee</label>
@@ -126,7 +119,6 @@
               id='type_instructor'
               name='type'
               value='Instructor'
-              {{#if (contains participant.type 'Instructor')}}checked{{/if}}
               class='w-4 h-4'
             />
             <label for='type_instructor'>Instructor</label>
@@ -137,7 +129,6 @@
               id='type_speaker'
               name='type'
               value='Speaker'
-              {{#if (contains participant.type 'Speaker')}}checked{{/if}}
               class='w-4 h-4'
             />
             <label for='type_speaker'>Speaker</label>
@@ -146,13 +137,13 @@
       </div>
 
       <div class='flex flex-col'>
-        <label for='ticket_type'>Ticket Type</label>
+        <label for='ticket_type'>Ticket Type *</label>
         <input
           type='text'
           id='ticket_type'
           name='ticket_type'
-          placeholder='{{participant.ticket_type}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
@@ -166,7 +157,6 @@
                 name='expertise' 
                 value='{{expertise}}' 
                 class='peer opacity-0 absolute' 
-                {{isChecked ../participant.expertise expertise}}
               />
               <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{expertise}}</span>
             </label>
@@ -180,19 +170,18 @@
           type='text'
           id='current_location'
           name='current_location'
-          placeholder='{{participant.current_location}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
 
       <div class='flex flex-col'>
-        <label for='email'>Email</label>
+        <label for='email'>Email *</label>
         <input
-          type='text'
+          type='email'
           id='email'
           name='email'
-          placeholder='{{participant.email}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required
         />
       </div>
 
@@ -202,7 +191,6 @@
           type='text'
           id='linkedin'
           name='linkedin'
-          placeholder='{{participant.linkedin}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -213,7 +201,6 @@
           type='text'
           id='facebook'
           name='facebook'
-          placeholder='{{participant.facebook}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -222,22 +209,21 @@
     <div class='flex flex-col gap-2 col-span-2'>
       <label for='biography'>Biography</label>
       <textarea
-        form="edit-participant-form"
+        form='create-participant-form'
         type='text'
         id='biography'
         name='biography'
-        placeholder='{{participant.biography}}'
         class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         rows='4'
-      /></textarea>
+      ></textarea>
     </div>
 
     <div class='w-fit mx-auto col-span-2'>
       <button
-        form="edit-participant-form"
+        form='create-participant-form'
         type='submit'
         class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
-      >Edit Participant</button>
+      >Create Participant</button>
     </div>
   </form>
 </section>

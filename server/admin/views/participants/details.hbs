@@ -1,1 +1,60 @@
-<h1>Participant Details</h1>
+<header class='flex flex-col gap-4 py-6 px-6 mx-auto max-w-screen-2xl'>
+  <div class='flex items-center justify-between'>
+    <h1 class='text-4xl font-bold'>{{participant.name}}</h1>
+    <a
+      href='/admin/participants'
+      class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 hover:underline'
+    >
+      <span class='material-symbols-outlined'>arrow_back</span>
+      <span>Return to Participants</span>
+    </a>
+  </div>
+
+  <div class='flex gap-4'>
+    <a
+      href='/admin/participants/{{participant.username}}/edit'
+      class='bg-blue-600 text-white px-4 py-2 rounded-md hover:opacity-80'
+    >
+      Edit Participant
+    </a>
+    <form
+      action='/admin/participants/{{participant.username}}/delete'
+      method='post'
+      class='inline'
+    >
+      <button
+        type='submit'
+        class='bg-red-600 text-white px-4 py-2 rounded-md hover:opacity-80 flex items-center gap-1'
+        onclick="return confirm('Are you sure you want to delete participant {{participant.username}}?')"
+      >
+        Delete Participant
+      </button>
+    </form>
+  </div>
+</header>
+
+<section class='px-6 mx-auto max-w-screen-2xl'>
+  <h2 class='text-lg font-semibold text-gray-600 mb-4'>Participant Username:
+    {{participant.username}}</h2>
+
+  <div class='grid grid-cols-1 md:grid-cols-2 gap-6 text-base'>
+    <p><strong>Participant Name:</strong> {{participant.name}}</p>
+    <p><strong>Type:</strong> {{participant.type}}</p>
+    <p><strong>Institution:</strong> {{participant.institution}}</p> 
+    <p><strong>Photo ID:</strong> {{participant.photo_id}}</p>
+    <p><strong>Ticket Type:</strong> {{participant.ticket_type}}</p> 
+    <p><strong>Ticket ID:</strong> {{participant.ticket_id}}</p> 
+    <p><strong>Interests:</strong> {{participant.interests}}</p>
+    <p><strong>Expertises:</strong> {{participant.expertise}}</p>
+    <p><strong>Work Field:</strong> {{participant.field_of_study_work_research}}</p>
+    <p><strong>Location:</strong> {{participant.current_location}}</p>
+    <p><strong>Phone:</strong> {{participant.phone}}</p>
+    <p><strong>Email:</strong> {{participant.email}}</p>
+    <p><strong>Website:</strong> {{participant.website}}</p>
+    <p><strong>LinkedIn:</strong> {{participant.linkedin}}</p>
+    <p><strong>Instagram:</strong> {{participant.instagram}}</p>
+    <p><strong>Facebook:</strong> {{participant.facebook}}</p>
+    <p class='md:col-span-2'><strong>Biography:</strong>
+      {{participant.biography}}</p>
+  </div>
+</section>

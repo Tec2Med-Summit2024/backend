@@ -1,38 +1,98 @@
-<section class="flex flex-col max-w-screen-2xl mx-auto p-6">
+<header
+  class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'
+>
+  <h1 class='text-4xl'>Participants</h1>
 
-    <div class="flex items-center justify-between gap-6 mb-4">
-        <h2 class="grow text-3xl border-b-2 border-slate-800">Participants</h2>
+  <a
+    href='/admin/participants/new'
+    class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'
+  >
+    <span class='material-symbols-outlined'>
+      add
+    </span>
+    Create
+  </a>
+</header>
 
-        <a href="/admin/participants/create"
-            class="flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100">
-            <span class="material-symbols-outlined">
-                add
-            </span>
-            Create
-        </a>
-    </div>
+<section class='flex flex-col max-w-screen-2xl mx-auto p-6'>
 
-    {{#each participants}}
-    <div class="flex flex-col mb-2">
-        <div class="px-2 py-1 flex items-center justify-between border  border-gray-800">
-            <div class="flex items-center gap-2">
-                <a href="/admin/participants/{{this.participant_id}}"
-                    class="font-bold hover:underline">{{this.name}}</a>
-            </div>
-            <div class="flex items-center gap-2 text-gray-50">
-                <a href="/admin/participants/{{this.participant_id}}/edit" type="submit"
-                    class="flex items-center justify-center h-8 w-8 bg-orange-500 rounded-md">
-                    <span class="material-symbols-outlined">edit</span>
-                </a>
-                <form action="/admin/participants/{{this.participant_id}}/delete" method="post"
-                    class="flex items-center justify-center h-8 w-8">
-                    <button type="submit"
-                        class="flex items-center justify-center h-8 w-8 bg-red-400 rounded-md cursor-pointer">
-                        <span class="material-symbols-outlined">delete</span>
-                    </button>
-                </form>
-            </div>
+  {{#each participants}}
+    <div class='flex flex-col mb-4'>
+      <span>{{this.username}}</span>
+      <div
+        class='px-2 py-1 flex items-center justify-between border border-gray-800'
+      >
+        <div class='flex items-center gap-2'>
+          <a
+            href='/admin/participants/{{this.username}}'
+            class='font-bold hover:underline'
+          >{{this.name}}</a>
+          |
+          <span>{{this.email}}</span>
+          | 
+          <span>{{this.type}}</span>
+          | 
+          <span>{{this.institution}}</span>
         </div>
+
+        <div class='flex items-center gap-2 text-gray-50'>
+
+          <a
+            href='/admin/participants/{{this.username}}/edit'
+            type='submit'
+            class='flex items-center justify-center h-8 w-8 bg-orange-500 rounded-md'
+          >
+            <span class='material-symbols-outlined'>edit</span>
+          </a>
+
+          <form
+            action='/admin/participants/{{this.username}}/delete'
+            method='post'
+            class='flex items-center justify-center h-8 w-8'
+          >
+            <button
+              type='submit'
+              class='flex items-center justify-center h-8 w-8 bg-red-400 rounded-md cursor-pointer'
+              onclick="return confirm('Are you sure you want to delete participant {{this.username}}?')"
+            >
+              <span class='material-symbols-outlined'>delete</span>
+            </button>
+          </form>
+
+        </div>
+      </div>
     </div>
-    {{/each}}
+  {{/each}}
+
+  {{#if pagination}}
+    <div class="flex items-center justify-between mt-6">
+      <div class="text-sm text-gray-600">
+        Showing {{pagination.limit}} of {{pagination.total}} participants
+      </div>
+      
+      <div class="flex items-center gap-2">
+        {{#if pagination.hasPrev}}
+          <a 
+            href="/admin/participants?page={{subtract pagination.currentPage 1}}" 
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+          >
+            Previous
+          </a>
+        {{/if}}
+
+        <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md">
+          Page {{pagination.currentPage}} of {{pagination.totalPages}}
+        </span>
+
+        {{#if pagination.hasNext}}
+          <a 
+            href="/admin/participants?page={{add pagination.currentPage 1}}" 
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+          >
+            Next
+          </a>
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
 </section>
