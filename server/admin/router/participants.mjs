@@ -19,9 +19,9 @@ router.get('/', async (req, res) => {
 
     if (search) {
       searchCondition = `
-        WHERE p.name CONTAINS $search 
-        OR p.username CONTAINS $search 
-        OR p.email CONTAINS $search
+        WHERE toLower(p.name) CONTAINS '${search.toLowerCase()}' 
+        OR toLower(p.username) CONTAINS '${search.toLowerCase()}' 
+        OR toLower(p.email) CONTAINS '${search.toLowerCase()}'
       `;
       params.search = search.toLowerCase();
     }
