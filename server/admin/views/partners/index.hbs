@@ -16,7 +16,7 @@
 
 <section class='flex flex-col max-w-screen-2xl mx-auto p-6'>
   <form
-    action='/admin/participants'
+    action='/admin/partners'
     method='get'
     class='mb-6 flex gap-4 items-end'
   >
@@ -42,7 +42,7 @@
     </button>
     {{#if search}}
       <a
-        href='/admin/participants'
+        href='/admin/partners'
         class='px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
       >
         Clear
@@ -101,13 +101,13 @@
         {{pagination.limit}}
         of
         {{pagination.total}}
-        participants
+        partners
       </div>
 
       <div class='flex items-center gap-2'>
         {{#if pagination.hasPrev}}
           <a
-            href='/admin/participants?page={{subtract
+            href='/admin/partners?page={{subtract
               pagination.currentPage
               1
             }}'
@@ -126,7 +126,7 @@
 
         {{#if pagination.hasNext}}
           <a
-            href='/admin/participants?page={{add pagination.currentPage 1}}'
+            href='/admin/partners?page={{add pagination.currentPage 1}}'
             class='px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200'
           >
             Next

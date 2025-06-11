@@ -116,22 +116,29 @@ router.get('/new', (req, res) => {
  */
 router.get('/:username', async (req, res) => {
   try {
-    const username = req.params.username;
-    const result = await makeQuery(
-      'MATCH (p:Partner {username: $username}) RETURN p',
-      { username }
-    );
-    const p = result[0];
-    console.log('Partner ', p);
+  const username = req.params.username;
+  const result = await makeQuery(
+    `
+    MATCH (p:Partner {username: $username})
+    OPTIONAL MATCH (participant:Participant)
+    WHERE participant.institution = p.name
+    WITH p, COLLECT(participant.username) as participants
+    RETURN p {.*, working_participants: participants}
+    `,
+    { username }
+  );
+  
+  const p = result[0];
 
-    return res.render('partners/details', {
-      title: `Partner ${p.username}`,
-      partner: p,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send('Internal Server Error');
-  }
+  return res.render('partners/details', {
+    title: `Partner ${p.username}`,
+    partner: p,
+  });
+} catch (error) {
+  console.error(error);
+  return res.status(500).send('Internal Server Error');
+}
+
 });
 
 /**
