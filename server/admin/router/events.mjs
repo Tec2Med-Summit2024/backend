@@ -39,7 +39,6 @@ router.get('/', async (req, res) => {
       params
     );
 
-
     // console.log('Events =>', events);
 
     return res.render('events/index', {
@@ -139,7 +138,9 @@ router.get('/:id', async (req, res) => {
     const eventId = parseInt(req.params.id);
     const result = await makeQuery(
       `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
-       RETURN e {.*, event_type: et.name}`,
+      OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
+      WITH e, et, COLLECT(DISTINCT q {.*}) AS questions
+      RETURN e {.*, event_type: et.name, questions_asked: questions}`,
       { eventId }
     );
     const e = result[0];
@@ -249,4 +250,24 @@ router.post('/:id/delete', async (req, res) => {
   }
 });
 
+router.post('/:id/questions/:qid/delete', async (req, res) => {
+  try {
+    const eventId = parseInt(req.params.id);
+    const questionId = req.params.qid;
+    console.log('Deleting question with ID:', questionId, 'from event:', eventId);
+    
+    const result = await makeQuery(
+      'MATCH (q:Question {question_id: $questionId})-[:ASKED_IN]->(e:Event {event_id: $eventId}) DETACH DELETE q',
+      { questionId, eventId }
+    );
+    console.log('Delete result:', result);
+    // Redirect to the events list page after deletion
+    return res.redirect(`/admin/events/${eventId}`);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
 export default router;
+
