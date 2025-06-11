@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 
     if (search) {
       searchCondition = `
-        WHERE e.name CONTAINS $search 
+        WHERE toLower(e.name) CONTAINS '${search.toLowerCase()}' 
         OR e.event_id CONTAINS $search
       `;
       params.search = search.toLowerCase();
