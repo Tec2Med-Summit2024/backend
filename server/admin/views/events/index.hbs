@@ -15,6 +15,40 @@
 </header>
 
 <section class='flex flex-col max-w-screen-2xl mx-auto p-6'>
+  <form
+    action='/admin/events'
+    method='get'
+    class='mb-6 flex gap-4 items-end'
+  >
+    <div class='flex-1'>
+      <label
+        for='search'
+        class='block text-sm font-medium text-gray-700 mb-1'
+      >Search</label>
+      <input
+        type='text'
+        id='search'
+        name='search'
+        placeholder='Search by name or event ID'
+        value='{{search}}'
+        class='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500'
+      />
+    </div>
+    <button
+      type='submit'
+      class='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+    >
+      Search
+    </button>
+    {{#if search}}
+      <a
+        href='/admin/events'
+        class='px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+      >
+        Clear
+      </a>
+    {{/if}}
+  </form>
 
   {{#each events}}
     <div class='flex flex-col mb-4'>
@@ -62,4 +96,35 @@
     </div>
   {{/each}}
 
+{{#if pagination}}
+    <div class="flex items-center justify-between mt-6">
+      <div class="text-sm text-gray-600">
+        Showing {{pagination.limit}} of {{pagination.total}} events
+      </div>
+      
+      <div class="flex items-center gap-2">
+        {{#if pagination.hasPrev}}
+          <a 
+            href="/admin/events?page={{subtract pagination.currentPage 1}}" 
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+          >
+            Previous
+          </a>
+        {{/if}}
+
+        <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md">
+          Page {{pagination.currentPage}} of {{pagination.totalPages}}
+        </span>
+
+        {{#if pagination.hasNext}}
+          <a 
+            href="/admin/events?page={{add pagination.currentPage 1}}" 
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+          >
+            Next
+          </a>
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
 </section>

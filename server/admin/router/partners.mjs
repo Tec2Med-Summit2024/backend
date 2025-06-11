@@ -8,8 +8,36 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit) || 50);
+    const skip = (page - 1) * limit;
+    const search = req.query.search || '';
+
+    // Build the search condition
+    let searchCondition = '';
+    const params = { skip, limit };
+
+    if (search) {
+      searchCondition = `
+        WHERE p.name CONTAINS $search 
+        OR p.username CONTAINS $search 
+        OR p.email CONTAINS $search
+      `;
+      params.search = search.toLowerCase();
+    }
+
+    // Get total count for pagination
+    const countResult = await makeQuery(
+      `MATCH (p:Partner) ${searchCondition} RETURN count(p) as total`,
+      params
+    );
+
+    const total = countResult[0]?.low || 0;
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+
     const partners = await makeQuery(
-      'MATCH (p:Partner) RETURN p'
+      `MATCH (p:Partner) ${searchCondition} RETURN p SKIP toInteger($skip) LIMIT toInteger($limit)`,
+      params
     );
 
     // console.log('Partners =>', partners);
@@ -17,6 +45,15 @@ router.get('/', async (req, res) => {
     return res.render('partners/index', {
       title: 'Partners Management',
       partners: [...partners],
+      pagination: {
+        currentPage: page,
+        totalPages,
+        total,
+        limit,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+      search,
     });
   } catch (error) {
     console.error(error);

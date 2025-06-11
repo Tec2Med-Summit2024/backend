@@ -8,15 +8,52 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
-    const events = await makeQuery(
-      'MATCH (e:Event) RETURN e ORDER BY e.start DESC'
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit) || 50);
+    const skip = (page - 1) * limit;
+    const search = req.query.search || '';
+
+    // Build the search condition
+    let searchCondition = '';
+    const params = { skip, limit };
+
+    if (search) {
+      searchCondition = `
+        WHERE e.name CONTAINS $search 
+        OR e.event_id CONTAINS $search
+      `;
+      params.search = search.toLowerCase();
+    }
+
+    const countResult = await makeQuery(
+      `MATCH (e:Event) ${searchCondition} RETURN count(e) as total`,
+      params
     );
+
+    const total = countResult[0]?.low || 0;
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+
+    const events = await makeQuery(
+      `MATCH (e:Event) ${searchCondition} RETURN e ORDER BY e.start DESC
+      SKIP toInteger($skip) LIMIT toInteger($limit)`,
+      params
+    );
+
 
     // console.log('Events =>', events);
 
     return res.render('events/index', {
       title: 'Events Management',
       events: [...events],
+      pagination: {
+        currentPage: page,
+        totalPages,
+        total,
+        limit,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+      search,
     });
   } catch (error) {
     console.error(error);

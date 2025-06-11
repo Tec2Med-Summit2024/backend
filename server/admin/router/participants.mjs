@@ -15,8 +15,8 @@ router.get('/', async (req, res) => {
 
     // Build the search condition
     let searchCondition = '';
-    let params = { skip, limit };
-    
+    const params = { skip, limit };
+
     if (search) {
       searchCondition = `
         WHERE p.name CONTAINS $search 
@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
       `MATCH (p:Participant) ${searchCondition} RETURN count(p) as total`,
       params
     );
-    
+
     const total = countResult[0]?.low || 0;
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
@@ -50,9 +50,9 @@ router.get('/', async (req, res) => {
         total,
         limit,
         hasNext: page < totalPages,
-        hasPrev: page > 1
+        hasPrev: page > 1,
       },
-      search
+      search,
     });
   } catch (error) {
     console.error(error);
@@ -73,10 +73,14 @@ router.post('/', async (req, res) => {
       fields.type = Array.isArray(fields.type) ? fields.type : [fields.type];
     }
     if (fields.interests) {
-      fields.interests = Array.isArray(fields.interests) ? fields.interests : [fields.interests];
+      fields.interests = Array.isArray(fields.interests)
+        ? fields.interests
+        : [fields.interests];
     }
     if (fields.expertise) {
-      fields.expertise = Array.isArray(fields.expertise) ? fields.expertise : [fields.expertise];
+      fields.expertise = Array.isArray(fields.expertise)
+        ? fields.expertise
+        : [fields.expertise];
     }
 
     // Generate parameterized property assignments for Cypher
@@ -198,7 +202,10 @@ router.get('/:username/edit', async (req, res) => {
     );
 
     const participant = result[0];
-    console.log('Participant data from DB:', JSON.stringify(participant, null, 2));
+    console.log(
+      'Participant data from DB:',
+      JSON.stringify(participant, null, 2)
+    );
     console.log('Interests type:', typeof participant.interests);
     console.log('Interests value:', participant.interests);
 
