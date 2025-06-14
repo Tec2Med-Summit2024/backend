@@ -12,18 +12,35 @@ router.get('/', async (req, res) => {
     const limit = Math.max(1, parseInt(req.query.limit) || 50);
     const skip = (page - 1) * limit;
     const search = req.query.search || '';
+    const type = req.query.type || '';
 
     // Build the search condition
     let searchCondition = '';
     const params = { skip, limit };
 
-    if (search) {
-      searchCondition = `
-        WHERE toLower(p.name) CONTAINS '${search.toLowerCase()}' 
-        OR toLower(p.username) CONTAINS '${search.toLowerCase()}' 
-        OR toLower(p.email) CONTAINS '${search.toLowerCase()}'
-      `;
-      params.search = search.toLowerCase();
+    if (search || type) {
+      searchCondition = 'WHERE ';
+      const conditions = [];
+
+      if (search) {
+        conditions.push(`(
+          toLower(p.name) CONTAINS '${search.toLowerCase()}' 
+          OR toLower(p.username) CONTAINS '${search.toLowerCase()}' 
+          OR toLower(p.email) CONTAINS '${search.toLowerCase()}'
+        )`);
+        params.search = search.toLowerCase();
+      }
+
+      if (type && type !== '') {
+        conditions.push(`any(t IN p.type WHERE toLower(t) = toLower('${type}'))`);
+        params.type = type;
+      }
+
+      if (conditions.length > 0) {
+        searchCondition += conditions.join(' AND ');
+      } else {
+        searchCondition = '';
+      }
     }
 
     // Get total count for pagination
@@ -36,10 +53,9 @@ router.get('/', async (req, res) => {
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
     // Get paginated participants
-    const participants = await makeQuery(
-      `MATCH (p:Participant) ${searchCondition} RETURN p SKIP toInteger($skip) LIMIT toInteger($limit)`,
-      params
-    );
+    const query = `MATCH (p:Participant) ${searchCondition} RETURN p SKIP toInteger($skip) LIMIT toInteger($limit)`;
+    
+    const participants = await makeQuery(query, params);
 
     return res.render('participants/index', {
       title: 'Participants Management',
@@ -53,6 +69,7 @@ router.get('/', async (req, res) => {
         hasPrev: page > 1,
       },
       search,
+      type,
     });
   } catch (error) {
     console.error(error);
