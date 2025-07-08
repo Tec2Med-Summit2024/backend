@@ -34,7 +34,11 @@ router.get('/', async (req, res) => {
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
     const events = await makeQuery(
-      `MATCH (e:Event) ${searchCondition} RETURN e ORDER BY e.start DESC
+      `MATCH (e:Event)-[:IN_TYPE]->(et:EventType)
+      ${searchCondition}
+      WITH e, et
+      RETURN e {.*, event_type: et.name}
+      ORDER BY e.start DESC
       SKIP toInteger($skip) LIMIT toInteger($limit)`,
       params
     );
@@ -139,8 +143,9 @@ router.get('/:id', async (req, res) => {
     const result = await makeQuery(
       `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
       OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
-      WITH e, et, COLLECT(DISTINCT q {.*}) AS questions
-      RETURN e {.*, event_type: et.name, questions_asked: questions}`,
+      OPTIONAL MATCH (e)-[:ORGANIZED_BY]->(p:Partner)
+      WITH e, et, COLLECT(DISTINCT q {.*}) AS questions, p
+      RETURN e {.*, event_type: et.name, questions_asked: questions, company_username: p.username}`,
       { eventId }
     );
     const e = result[0];
@@ -254,8 +259,13 @@ router.post('/:id/questions/:qid/delete', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
     const questionId = req.params.qid;
-    console.log('Deleting question with ID:', questionId, 'from event:', eventId);
-    
+    console.log(
+      'Deleting question with ID:',
+      questionId,
+      'from event:',
+      eventId
+    );
+
     const result = await makeQuery(
       'MATCH (q:Question {question_id: $questionId})-[:ASKED_IN]->(e:Event {event_id: $eventId}) DETACH DELETE q',
       { questionId, eventId }
@@ -270,4 +280,3 @@ router.post('/:id/questions/:qid/delete', async (req, res) => {
 });
 
 export default router;
-
