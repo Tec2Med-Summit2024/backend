@@ -68,11 +68,23 @@ router.post('/', async (req, res) => {
   try {
     const fields = req.body;
     console.log('Creating new partner with fields:', fields);
+    
+    // Handle arrays properly
+    if (fields.interests) {
+      fields.interests = Array.isArray(fields.interests) ? fields.interests : [fields.interests];
+    }
+    
+    // Store country_code and phone separately (don't combine them)
+    // The country_code field will be stored as is, phone field will be stored as is
+    
     // Generate parameterized property assignments for Cypher
     const fieldKeys = Object.keys(fields);
     const propertyAssignments = fieldKeys
       .map((key) => {
         const value = fields[key];
+        if (Array.isArray(value)) {
+          return `${key}: ${JSON.stringify(value)}`;
+        }
         if (typeof value === 'number') {
           return `${key}: ${value}`;
         } else {
@@ -150,6 +162,15 @@ router.post('/:username', async (req, res) => {
     const fields = req.body;
     console.log('Updating partner with username:', username);
     console.log('Fields:', fields);
+    
+    // Handle arrays properly
+    if (fields.interests) {
+      fields.interests = Array.isArray(fields.interests) ? fields.interests : [fields.interests];
+    }
+    
+    // Store country_code and phone separately (don't combine them)
+    // The country_code field will be stored as is, phone field will be stored as is
+    
     // Add your update logic here
     for (const field in fields) {
       const value = fields[field];
@@ -189,11 +210,20 @@ router.get('/:username/edit', async (req, res) => {
       { username }
     );
 
-    console.log('Partner ', result[0]);
+    const partner = result[0];
+    console.log('Partner ', partner);
+
+    // Ensure arrays are properly handled and initialized
+    partner.interests = partner.interests || [];
+
+    // Convert to arrays if they're not already
+    if (!Array.isArray(partner.interests)) {
+      partner.interests = [partner.interests];
+    }
 
     return res.render('partners/edit', {
-      title: `Edit Partner ${result[0].username}`,
-      partner: result[0],
+      title: `Edit Partner ${partner.username}`,
+      partner: partner,
     });
   } catch (error) {
     console.error(error);

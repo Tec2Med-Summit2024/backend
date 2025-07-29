@@ -42,7 +42,7 @@
     <p><strong>Interests:</strong> {{partner.interests}}</p>
     <p><strong>Work Field:</strong> {{partner.field_of_study_work_research}}</p>
     <p><strong>Location:</strong> {{partner.current_location}}</p>
-    <p><strong>Phone:</strong> {{partner.phone}}</p>
+    <p><strong>Phone:</strong> {{#if partner.country_code}}{{partner.country_code}} {{/if}}{{partner.phone}}</p>
     <p><strong>Email:</strong> {{partner.email}}</p>
     <p><strong>Website:</strong> {{partner.website}}</p>
     <p><strong>LinkedIn:</strong> {{partner.linkedin}}</p>

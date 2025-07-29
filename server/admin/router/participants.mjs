@@ -99,7 +99,6 @@ router.post('/', async (req, res) => {
         ? fields.expertise
         : [fields.expertise];
     }
-
     // Generate parameterized property assignments for Cypher
     const fieldKeys = Object.keys(fields);
     const propertyAssignments = fieldKeys
@@ -189,6 +188,7 @@ router.post('/:username', async (req, res) => {
         delete fields[field];
       }
     }
+
     console.log('Updated fields:', fields);
     const result = await makeQuery(
       'MATCH (p:Participant {username: $username}) SET p += $fields RETURN p',
@@ -223,8 +223,6 @@ router.get('/:username/edit', async (req, res) => {
       'Participant data from DB:',
       JSON.stringify(participant, null, 2)
     );
-    console.log('Interests type:', typeof participant.interests);
-    console.log('Interests value:', participant.interests);
 
     // Ensure arrays are properly handled and initialized
     participant.interests = participant.interests || [];

@@ -44,7 +44,7 @@
       <div class='flex flex-col'>
         <label>Interests</label>
         <div class='flex flex-wrap gap-2 mt-1'>
-          {{#each (array '3D Printing' '3D Modelling' 'Artificial reality' 'Artificial Intelligence' 'Ethics' 'Virtual reality' 'Machine Learning' 'Clean tech' 'Data modelling' 'Aerospace medicine' 'Dentistry' 'Data Science' 'Telecomunications' 'Biosignals' 'Psychiatry' 'Nuclear medicine' 'Surgery' 'Neuroscience' 'Biomedical imaging' 'Cell & Tissue Engineering' 'Hardware & robotics' 'Biomaterials' 'Genetics' 'Bionic systems' 'Exoskeletons' 'Epidemics' 'Scientific writing' 'Integrative medicine') as |interest|}}
+          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |interest|}}
             <label class='relative cursor-pointer'>
               <input 
                 type='checkbox' 
@@ -70,12 +70,85 @@
 
       <div class='flex flex-col'>
         <label for='phone'>Phone</label>
-        <input
-          type='tel'
-          id='phone'
-          name='phone'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-        />
+        <div class='flex gap-2'>
+          <select
+            id='country_code'
+            name='country_code'
+            class='px-2 py-1 border border-gray-800 outline-none rounded-md bg-white'
+            style='width: 120px;'
+          >
+            <option value='+351' selected>🇵🇹 +351</option>
+            <option value='+1'>🇺🇸 +1</option>
+            <option value='+44'>🇬🇧 +44</option>
+            <option value='+33'>🇫🇷 +33</option>
+            <option value='+49'>🇩🇪 +49</option>
+            <option value='+34'>🇪🇸 +34</option>
+            <option value='+39'>🇮🇹 +39</option>
+            <option value='+31'>🇳🇱 +31</option>
+            <option value='+32'>🇧🇪 +32</option>
+            <option value='+41'>🇨🇭 +41</option>
+            <option value='+46'>🇸🇪 +46</option>
+            <option value='+47'>🇳🇴 +47</option>
+            <option value='+45'>🇩🇰 +45</option>
+            <option value='+358'>🇫🇮 +358</option>
+            <option value='+48'>🇵🇱 +48</option>
+            <option value='+420'>🇨🇿 +420</option>
+            <option value='+36'>🇭🇺 +36</option>
+            <option value='+40'>🇷🇴 +40</option>
+            <option value='+421'>🇸🇰 +421</option>
+            <option value='+386'>🇸🇮 +386</option>
+            <option value='+385'>🇭🇷 +385</option>
+            <option value='+371'>🇱🇻 +371</option>
+            <option value='+372'>🇪🇪 +372</option>
+            <option value='+370'>🇱🇹 +370</option>
+            <option value='+375'>🇧🇾 +375</option>
+            <option value='+380'>🇺🇦 +380</option>
+            <option value='+7'>🇷🇺 +7</option>
+            <option value='+90'>🇹🇷 +90</option>
+            <option value='+972'>🇮🇱 +972</option>
+            <option value='+971'>🇦🇪 +971</option>
+            <option value='+966'>🇸🇦 +966</option>
+            <option value='+20'>🇪🇬 +20</option>
+            <option value='+27'>🇿🇦 +27</option>
+            <option value='+234'>🇳🇬 +234</option>
+            <option value='+254'>🇰🇪 +254</option>
+            <option value='+91'>🇮🇳 +91</option>
+            <option value='+86'>🇨🇳 +86</option>
+            <option value='+81'>🇯🇵 +81</option>
+            <option value='+82'>🇰🇷 +82</option>
+            <option value='+65'>🇸🇬 +65</option>
+            <option value='+60'>🇲🇾 +60</option>
+            <option value='+66'>🇹🇭 +66</option>
+            <option value='+84'>🇻🇳 +84</option>
+            <option value='+62'>🇮🇩 +62</option>
+            <option value='+63'>🇵🇭 +63</option>
+            <option value='+61'>🇦🇺 +61</option>
+            <option value='+64'>🇳🇿 +64</option>
+            <option value='+55'>🇧🇷 +55</option>
+            <option value='+54'>🇦🇷 +54</option>
+            <option value='+56'>🇨🇱 +56</option>
+            <option value='+57'>🇨🇴 +57</option>
+            <option value='+58'>🇻🇪 +58</option>
+            <option value='+593'>🇪🇨 +593</option>
+            <option value='+595'>🇵🇾 +595</option>
+            <option value='+598'>🇺🇾 +598</option>
+            <option value='+51'>🇵🇪 +51</option>
+            <option value='+52'>🇲🇽 +52</option>
+            <option value='+503'>🇸🇻 +503</option>
+            <option value='+502'>🇬🇹 +502</option>
+            <option value='+504'>🇭🇳 +504</option>
+            <option value='+505'>🇳🇮 +505</option>
+            <option value='+506'>🇨🇷 +506</option>
+            <option value='+507'>🇵🇦 +507</option>
+          </select>
+          <input
+            type='tel'
+            id='phone'
+            name='phone'
+            class='flex-1 px-2 py-1 border border-gray-800 outline-none rounded-md'
+            placeholder='Phone number'
+          />
+        </div>
       </div>
 
       <div class='flex flex-col'>
@@ -150,7 +223,7 @@
       <div class='flex flex-col'>
         <label>Expertise</label>
         <div class='flex flex-wrap gap-2 mt-1'>
-          {{#each (array '3D Printing' '3D Modelling' 'Artificial reality' 'Artificial Intelligence' 'Ethics' 'Virtual reality' 'Machine Learning' 'Clean tech' 'Data modelling' 'Aerospace medicine' 'Dentistry' 'Data Science' 'Telecomunications' 'Biosignals' 'Psychiatry' 'Nuclear medicine' 'Surgery' 'Neuroscience' 'Biomedical imaging' 'Cell & Tissue Engineering' 'Hardware & robotics' 'Biomaterials' 'Genetics' 'Bionic systems' 'Exoskeletons' 'Epidemics' 'Scientific writing' 'Integrative medicine') as |expertise|}}
+          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |expertise|}}
             <label class='relative cursor-pointer'>
               <input 
                 type='checkbox' 

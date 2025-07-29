@@ -71,6 +71,12 @@ router.post('/', async (req, res) => {
   try {
     const fields = req.body;
     console.log('Creating new event with fields:', fields);
+    
+    // Handle arrays properly
+    if (fields.topics_covered) {
+      fields.topics_covered = Array.isArray(fields.topics_covered) ? fields.topics_covered : [fields.topics_covered];
+    }
+    
     // Generate parameterized property assignments for Cypher
     const eventType = fields.event_type;
     delete fields.event_type;
@@ -79,6 +85,9 @@ router.post('/', async (req, res) => {
     const propertyAssignments = fieldKeys
       .map((key) => {
         const value = fields[key];
+        if (Array.isArray(value)) {
+          return `${key}: ${JSON.stringify(value)}`;
+        }
         if (typeof value === 'number') {
           return `${key}: ${value}`;
         } else {
@@ -183,6 +192,12 @@ router.post('/:id', async (req, res) => {
     const fields = req.body;
     console.log('Updating event with ID:', eventId);
     console.log('Fields:', fields);
+    
+    // Handle arrays properly
+    if (fields.topics_covered) {
+      fields.topics_covered = Array.isArray(fields.topics_covered) ? fields.topics_covered : [fields.topics_covered];
+    }
+    
     // Add your update logic here
     for (const field in fields) {
       const value = fields[field];
@@ -222,11 +237,20 @@ router.get('/:id/edit', async (req, res) => {
       { eventId }
     );
 
-    console.log('Event ', result[0]);
+    const event = result[0];
+    console.log('Event ', event);
+
+    // Ensure arrays are properly handled and initialized
+    event.topics_covered = event.topics_covered || [];
+
+    // Convert to arrays if they're not already
+    if (!Array.isArray(event.topics_covered)) {
+      event.topics_covered = [event.topics_covered];
+    }
 
     return res.render('events/edit', {
-      title: `Edit Event ${result[0].event_id}`,
-      event: result[0],
+      title: `Edit Event ${event.event_id}`,
+      event: event,
     });
   } catch (error) {
     console.error(error);

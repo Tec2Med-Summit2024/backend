@@ -58,13 +58,19 @@
 
       <div class='flex flex-col'>
         <label for='topics_covered'>Topics</label>
-        <input
-          type='text'
-          id='topics_covered'
-          name='topics_covered'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+        <div class='flex flex-wrap gap-2 mt-1'>
+          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |topic|}}
+            <label class='relative cursor-pointer'>
+              <input 
+                type='checkbox' 
+                name='topics_covered' 
+                value='{{topic}}' 
+                class='peer opacity-0 absolute' 
+              />
+              <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{topic}}</span>
+            </label>
+          {{/each}}
+        </div>
       </div>
 
       <div class='flex flex-col'>

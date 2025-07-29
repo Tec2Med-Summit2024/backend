@@ -23,7 +23,6 @@ const handlebars = {
 					return parsed.map(x => x.trim()).includes(val);
 				}
 			} catch (e) {
-				console.log('Not JSON, treating as comma-separated');
 				// If not JSON, treat as comma-separated string
 				return list.split(',').map(x => x.trim()).includes(val);
 			}
