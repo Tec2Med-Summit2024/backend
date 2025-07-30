@@ -29,25 +29,8 @@
           name='name'
           placeholder='{{event.name}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="80"
         />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='topics_covered'>Topics</label>
-        <div class='flex flex-wrap gap-2 mt-1'>
-          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |topic|}}
-            <label class='relative cursor-pointer'>
-              <input 
-                type='checkbox' 
-                name='topics_covered' 
-                value='{{topic}}' 
-                class='peer opacity-0 absolute' 
-                {{isChecked ../event.topics_covered topic}}
-              />
-              <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{topic}}</span>
-            </label>
-          {{/each}}
-        </div>
       </div>
 
       <div class='flex flex-col'>
@@ -84,6 +67,17 @@
         />
       </div>
 
+      <div class='flex flex-col'>
+        <label for='max_cap'>Maximum Capacity</label>
+        <input
+          type='text'
+          id='max_cap'
+          name='max_cap'
+          placeholder='{{event.max_cap}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
+
     </div>
 
     <div class='flex flex-col gap-2'>
@@ -94,17 +88,6 @@
           id='company'
           name='company'
           placeholder='{{event.company}}'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-        />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='speakers_instructors'>Speakers/Instructors</label>
-        <input
-          type='text'
-          id='speakers_instructors'
-          name='speakers_instructors'
-          placeholder='{{event.speakers_instructors}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         />
       </div>
@@ -121,6 +104,17 @@
       </div>
 
       <div class='flex flex-col'>
+        <label for='speakers_instructors'>Speakers/Instructors</label>
+        <input
+          type='text'
+          id='speakers_instructors'
+          name='speakers_instructors'
+          placeholder='{{event.speakers_instructors}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        />
+      </div>
+
+      <div class='flex flex-col'>
         <label for='materials_to_bring'>Materials Necessary</label>
         <input
           type='text'
@@ -128,20 +122,30 @@
           name='materials_to_bring'
           placeholder='{{event.materials_to_bring}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          oninput="validateMaterialsInput(this)"
         />
+        <span class="text-xs text-gray-500 mt-1">Maximum 10 comma-separated values</span>
       </div>
 
-      <div class='flex flex-col'>
-        <label for='max_cap'>Maximum Capacity</label>
-        <input
-          type='text'
-          id='max_cap'
-          name='max_cap'
-          placeholder='{{event.max_cap}}'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-        />
-      </div>
+    </div>
 
+    <div class='flex flex-col gap-2 col-span-2'>
+      <label for='topics_covered'>Topics</label>
+      <div class='flex flex-wrap gap-2 mt-1'>
+        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |topic|}}
+          <label class='relative cursor-pointer'>
+            <input 
+              type='checkbox' 
+              name='topics_covered' 
+              value='{{topic}}' 
+              class='peer opacity-0 absolute' 
+              {{isChecked ../event.topics_covered topic}}
+            />
+            <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{topic}}</span>
+          </label>
+        {{/each}}
+      </div>
+      <span class="text-xs text-gray-500 mt-1">Select between 2 and 6 topics</span>
     </div>
 
     <div class='flex flex-col gap-2 col-span-2'>
@@ -154,7 +158,9 @@
         placeholder='{{event.description_about}}'
         class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         rows='4'
+        maxlength="250"
       /></textarea>
+      <span class="text-xs text-gray-500 mt-1">Maximum 250 characters including spaces</span>
     </div>
 
     <div class='w-fit mx-auto col-span-2'>
@@ -162,7 +168,46 @@
         form="edit-event-form"
         type='submit'
         class='px-6 py-2 bg-green-600 text-gray-100 rounded-md '
+        onclick="return validateEventForm()"
       >Edit Event</button>
     </div>
   </form>
+
+  <script>
+    function validateEventForm() {
+      // Validate start time is before end time
+      const startTime = document.getElementById('start').value;
+      const endTime = document.getElementById('end').value;
+      
+      if (startTime && endTime && startTime >= endTime) {
+        alert('Start Date & Time must be before End Date & Time');
+        return false;
+      }
+      
+      // Validate topics selection (min 2, max 6)
+      const selectedTopics = document.querySelectorAll('input[name="topics_covered"]:checked');
+      if (selectedTopics.length < 2) {
+        alert('Please select at least 2 topics');
+        return false;
+      }
+      if (selectedTopics.length > 6) {
+        alert('Please select no more than 6 topics');
+        return false;
+      }
+      
+      return true;
+    }
+
+    function validateMaterialsInput(input) {
+      const value = input.value;
+      const materials = value.split(',').map(item => item.trim()).filter(item => item.length > 0);
+      
+      if (materials.length > 10) {
+        alert('Maximum 10 materials allowed');
+        // Remove the extra materials
+        const limitedMaterials = materials.slice(0, 10);
+        input.value = limitedMaterials.join(', ');
+      }
+    }
+  </script>
 </section>

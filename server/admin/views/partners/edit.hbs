@@ -40,6 +40,7 @@
           name='field_of_study_work_research'
           placeholder='{{partner.field_of_study_work_research}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
         />
       </div>
 
@@ -172,24 +173,6 @@
 
     <div class='flex flex-col gap-2'>
       <div class='flex flex-col'>
-        <label for='interests'>Interests</label>
-        <div class='flex flex-wrap gap-2 mt-1'>
-          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |interest|}}
-            <label class='relative cursor-pointer'>
-              <input 
-                type='checkbox' 
-                name='interests' 
-                value='{{interest}}' 
-                class='peer opacity-0 absolute' 
-                {{isChecked ../partner.interests interest}}
-              />
-              <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{interest}}</span>
-            </label>
-          {{/each}}
-        </div>
-      </div>
-
-      <div class='flex flex-col'>
         <label for='current_location'>Location</label>
         <input
           type='text'
@@ -197,6 +180,7 @@
           name='current_location'
           placeholder='{{partner.current_location}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
         />
       </div>
 
@@ -236,6 +220,25 @@
     </div>
 
     <div class='flex flex-col gap-2 col-span-2'>
+      <label for='interests'>Interests</label>
+      <div class='flex flex-wrap gap-2 mt-1'>
+        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |interest|}}
+          <label class='relative cursor-pointer'>
+            <input 
+              type='checkbox' 
+              name='interests' 
+              value='{{interest}}' 
+              class='peer opacity-0 absolute' 
+              {{isChecked ../partner.interests interest}}
+            />
+            <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{interest}}</span>
+          </label>
+        {{/each}}
+      </div>
+      <span class="text-xs text-gray-500 mt-1">Select between 2 and 8 interests</span>
+    </div>
+
+    <div class='flex flex-col gap-2 col-span-2'>
       <label class for='biography'>Biography</label>
       <textarea
         form="edit-partner-form"
@@ -245,15 +248,35 @@
         placeholder='{{partner.biography}}'
         class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         rows='4'
+        maxlength="250"
       /></textarea>
+      <span class="text-xs text-gray-500 mt-1">Maximum 250 characters including spaces</span>
     </div>
 
     <div class='w-fit mx-auto col-span-2'>
       <button
         form="edit-partner-form"
         type='submit'
-        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md '
+        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
+        onclick="return validatePartnerForm()"
       >Edit Partner</button>
     </div>
   </form>
 </section>
+
+<script>
+  function validatePartnerForm() {
+    const selectedInterests = document.querySelectorAll('input[name="interests"]:checked');
+    
+    if (selectedInterests.length < 2) {
+      alert('Please select at least 2 interests');
+      return false;
+    }
+    if (selectedInterests.length > 8) {
+      alert('Please select no more than 8 interests');
+      return false;
+    }
+    
+    return true;
+  }
+</script>

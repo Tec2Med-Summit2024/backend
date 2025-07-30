@@ -29,6 +29,8 @@
           name='name'
           placeholder='{{participant.name}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="100"
+          oninput="validateNameInput(this)"
         />
       </div>
 
@@ -39,6 +41,7 @@
           name='institution'
           placeholder='{{participant.institution}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
         />
       </div>
 
@@ -58,6 +61,7 @@
             </label>
           {{/each}}
         </div>
+        <span class="text-xs text-gray-500 mt-1">Select between 2 and 10 interests</span>
       </div>
 
       <div class='flex flex-col'>
@@ -68,6 +72,7 @@
           name='field_of_study_work_research'
           placeholder='{{participant.field_of_study_work_research}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
         />
       </div>
 
@@ -172,6 +177,19 @@
             countrySelect.value = originalCountryCode;
           }
         });
+
+        function validateNameInput(input) {
+          const value = input.value;
+          // Remove 'de', 'da', 'dos' and count names
+          const names = value.split(' ').filter(name => 
+            name.length > 0 && 
+            !['de', 'da', 'dos'].includes(name.toLowerCase())
+          );
+          
+          if (names.length > 3) {
+            alert('Maximum 3 names allowed (ignoring "de", "da", "dos")');
+          }
+        }
       </script>
 
       <div class='flex flex-col'>
@@ -264,6 +282,7 @@
             </label>
           {{/each}}
         </div>
+        <span class="text-xs text-gray-500 mt-1">Select between 2 and 6 expertises</span>
       </div>
 
       <div class='flex flex-col'>
@@ -274,6 +293,7 @@
           name='current_location'
           placeholder='{{participant.current_location}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
         />
       </div>
 
@@ -321,7 +341,8 @@
         placeholder='{{participant.biography}}'
         class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         rows='4'
-      /></textarea>
+        maxlength="40"
+      ></textarea>
     </div>
 
     <div class='w-fit mx-auto col-span-2'>
@@ -329,7 +350,35 @@
         form="edit-participant-form"
         type='submit'
         class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
+        onclick="return validateParticipantForm()"
       >Edit Participant</button>
     </div>
   </form>
 </section>
+
+<script>
+  function validateParticipantForm() {
+    const selectedInterests = document.querySelectorAll('input[name="interests"]:checked');
+    const selectedExpertises = document.querySelectorAll('input[name="expertise"]:checked');
+    
+    if (selectedInterests.length < 2) {
+      alert('Please select at least 2 interests');
+      return false;
+    }
+    if (selectedInterests.length > 10) {
+      alert('Please select no more than 10 interests');
+      return false;
+    }
+    
+    if (selectedExpertises.length < 2) {
+      alert('Please select at least 2 expertises');
+      return false;
+    }
+    if (selectedExpertises.length > 6) {
+      alert('Please select no more than 6 expertises');
+      return false;
+    }
+    
+    return true;
+  }
+</script>

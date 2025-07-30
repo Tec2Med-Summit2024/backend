@@ -28,7 +28,9 @@
           id='name'
           name='name'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="100"
           required
+          oninput="validateNameInput(this)"
         />
       </div>
 
@@ -38,6 +40,8 @@
           id='institution'
           name='institution'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
+          required
         />
       </div>
 
@@ -65,7 +69,10 @@
           id='field_of_study_work_research'
           name='field_of_study_work_research'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
+          required
         />
+        <span class="text-xs text-gray-500 mt-1">Maximum 40 characters including spaces</span>
       </div>
 
       <div class='flex flex-col'>
@@ -244,6 +251,8 @@
           id='current_location'
           name='current_location'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="40"
+          required
         />
       </div>
 
@@ -288,6 +297,8 @@
         name='biography'
         class='px-2 py-1 border border-gray-800 outline-none rounded-md'
         rows='4'
+        maxlength="40"
+        required
       ></textarea>
     </div>
 
@@ -296,7 +307,48 @@
         form='create-participant-form'
         type='submit'
         class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
+        onclick="return validateParticipantForm()"
       >Create Participant</button>
     </div>
   </form>
 </section>
+
+<script>
+  function validateNameInput(input) {
+    const value = input.value;
+    // Remove 'de', 'da', 'dos' and count names
+    const names = value.split(' ').filter(name => 
+      name.length > 0 && 
+      !['de', 'da', 'dos'].includes(name.toLowerCase())
+    );
+    
+    if (names.length > 3) {
+      alert('Maximum 3 names allowed (ignoring "de", "da", "dos")');
+    }
+  }
+
+  function validateParticipantForm() {
+    const selectedInterests = document.querySelectorAll('input[name="interests"]:checked');
+    const selectedExpertises = document.querySelectorAll('input[name="expertise"]:checked');
+    
+    if (selectedInterests.length < 2) {
+      alert('Please select at least 2 interests');
+      return false;
+    }
+    if (selectedInterests.length > 10) {
+      alert('Please select no more than 10 interests');
+      return false;
+    }
+    
+    if (selectedExpertises.length < 2) {
+      alert('Please select at least 2 expertises');
+      return false;
+    }
+    if (selectedExpertises.length > 6) {
+      alert('Please select no more than 6 expertises');
+      return false;
+    }
+    
+    return true;
+  }
+</script>

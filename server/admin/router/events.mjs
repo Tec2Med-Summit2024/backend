@@ -96,12 +96,14 @@ router.post('/', async (req, res) => {
       })
       .join(', ');
     console.log('Property Assignments:', propertyAssignments);
+    
+    // Use a more robust approach to generate event_id
     const result = await makeQuery(
       `
       MATCH (e:Event)
-      WITH count(e) + 1 AS newEventId
+      WITH coalesce(max(e.event_id), 0) + 1 AS nextEventId
       CREATE (newEvent:Event {
-        event_id: newEventId,
+        event_id: nextEventId,
         ${propertyAssignments}
       })
       CREATE (newEvent)-[:IN_TYPE]->(et:EventType {name: $eventType})
