@@ -2,7 +2,6 @@ import {
   getTicketDB,
   getQRCodeDB,
   getEventsDB,
-  getConnectionsDB,
   getNotificationsDB,
   searchUsersDB,
   updateSettingsDB,
@@ -31,14 +30,6 @@ export const getEvents = async (username, role) => {
       return { ok: false, error: 404, errorMsg: `${role} not found` };
   
     return { ok: true, value: events };
-};
-
-export const getConnections = async (username, role) => {
-    const connections = await getConnectionsDB(username, role);
-    if (!connections) 
-      return { ok: false, error: 404, errorMsg: `${role} not found` };
-  
-    return { ok: true, value: connections };
 };
 
 export const getUserNotifications = async (username, role) => {

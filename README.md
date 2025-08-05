@@ -19,7 +19,6 @@ Some general notes about the model and design of the application:
   - [Get user ticket](#get-user-ticket)
   - [Get user qrcode](#get-user-qrcode)
   - [Get user schedule](#get-user-schedule)
-  - [Get user connections](#get-user-connections)
   - [Get user notifications](#get-user-notifications)
   - [Search users](#search-users)
   - [Update settings](#update-settings)
@@ -30,11 +29,6 @@ Some general notes about the model and design of the application:
   - [Update participant](#update-participant)
   - [Add event to participant schedule](#add-event-to-participant-schedule)
   - [Remove event from participant schedule](#remove-event-from-participant-schedule)
-  - [Send participant connection request](#send-participant-connection-request)
-  - [Get participant connection requests](#get-participant-connection-requests)
-  - [Accept/Deny participant connection request](#accept/deny-participant-connection-request)
-  - [Delete participant connection](#delete-participant-connection)
-  - [Get participant contacts](#get-participant-contacts)
   - [Add participant certificate](#add-participant-certificate)
   - [Get participant certificate](#get-participant-certificate)
   - [Get participant certificates](#get-participant-certificates)
@@ -178,22 +172,6 @@ Returns the schedule of the user identified by **username**.
 
 <br>
 
-#### Get user connections
-
-```HTTP
-GET /api/users/{username}/connections
-```
-
-Returns the connections of the user identified by **username**.
-
-**Query parameters**
-
-| Param     | Optional | Type   | Description                                                |
-| :-------- | -------- | :----- | :--------------------------------------------------------- |
-| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect. |
-
-<br>
-
 #### Get user notifications
 
 ```HTTP
@@ -282,88 +260,6 @@ Removes event identified by **id** from the schedule of the participant identifi
 
 <br>
 
-#### Send participant connection request
-
-```HTTP
-POST /api/participants/{username}/requests
-```
-
-Creates a connection request sent by the participant identified by **username** to another participant in the application system.
-
-**Query parameters**
-
-| Param   | Optional | Type   | Description                                                                     |
-| :------ | -------- | :----- | :------------------------------------------------------------------------------ |
-| partner | yes      | `BOOL` | If `partner=True` starts following a partner. Else, sends a connection request. |
-
-<br>
-
-#### Get participant connection requests
-
-```HTTP
-GET /api/participants/{username}/requests
-```
-
-Returns the connection requests of the participant identified by **username**.
-
-**Query parameters**
-
-| Param     | Optional | Type   | Description                                                                                             |
-| :-------- | -------- | :----- | :------------------------------------------------------------------------------------------------------ |
-| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect.                                              |
-| sent      | yes      | `BOOL` | If `sent=True` then searches for only sent requests. Else, searches for all connection requests         |
-| received  | yes      | `BOOL` | If `received=True` then searches for only received requests. Else, searches for all connection requests |
-
-<br>
-
-#### Accept/Deny participant connection request
-
-```HTTP
-DELETE /api/participants/{username}/requests/{id}
-```
-
-Accepts or denies the received connection request identified by **id** of the participant identified by **username**.
-
-**Query parameters**
-
-| Param     | Optional | Type   | Description                                                                          |
-| :-------- | -------- | :----- | :----------------------------------------------------------------------------------- |
-| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect.                           |
-| deny      | yes      | `BOOL` | If `deny=True`, deletes the received connections request. Else, accepts the request. |
-
-<br>
-
-#### Delete participant connection
-
-```HTTP
-DELETE /api/participants/{username}/connections/{id}
-```
-
-Delete the connection identified by **id** of the participant identified by **username**.
-
-**Query parameters**
-
-| Param   | Optional | Type   | Description                                                              |
-| :------ | -------- | :----- | :----------------------------------------------------------------------- |
-| partner | yes      | `BOOL` | If `partner=True` stops following a partner. Else, deletes a connection. |
-
-<br>
-
-#### Get participant contacts
-
-```HTTP
-GET /api/participants/{username}/contacts
-```
-
-Returns the contacts of the participant identified by **username**.
-
-**Query parameters**
-
-| Param     | Optional | Type   | Description                                                |
-| :-------- | -------- | :----- | :--------------------------------------------------------- |
-| parameter | yes/no   | `TYPE` | Short description of what the parameter is and its effect. |
-
-<br>
 
 #### Add participant certificate
 

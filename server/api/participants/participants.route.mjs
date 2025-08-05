@@ -6,11 +6,6 @@ import {
   updateParticipant,
   addEventToSchedule,
   removeEventFromSchedule,
-  addConnectionRequest,
-  getRequests,
-  decideRequest,
-  deleteConnection,
-  getContacts,
   addCertificate,
   getCertificate,
   getCertificates,
@@ -44,31 +39,6 @@ router.post('/:username/events', addEventToSchedule);
  *
  */
 router.delete('/:username/events/:eventID', removeEventFromSchedule);
-
-/**
- *
- */
-router.post('/:username/request', addConnectionRequest);
-
-/**
- *
- */
-router.get('/:username/request', getRequests);
-
-/**
- *
- */
-router.delete('/:username/request/:requestID', decideRequest);
-
-/**
- *
- */
-router.delete('/:username/connections/:connectionID', deleteConnection);
-
-/**
- *
- */
-router.get('/:username/contacts', getContacts);
 
 /**
  *

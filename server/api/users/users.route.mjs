@@ -1,6 +1,6 @@
 import express from 'express';
 // remove this comment and add your controller functions
-import { getUserTicket, getUserQRCode, getUserEvents, getUserConnections, getUsers, updateSettings, getNotifications, getUserType} from './users.controller.mjs';
+import { getUserTicket, getUserQRCode, getUserEvents, getUsers, updateSettings, getNotifications, getUserType} from './users.controller.mjs';
 import { verifyRole, verifyUsername } from '../../middleware/verifier.mjs';
 
 const router = express.Router();
@@ -22,11 +22,6 @@ router.get('/:username/qrcode', getUserQRCode);
  * 
  */
 router.get('/:username/events', getUserEvents);
-
-/**
- * 
- */
-router.get('/:username/connections', getUserConnections);
 
 /**
  * 

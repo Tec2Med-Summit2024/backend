@@ -5,11 +5,6 @@ const eventsRelationships = {
   participant: 'GOES_TO',
 };
 
-const connectionsRelationships = {
-  partner: 'FOLLOWS',
-  participant: 'CONNECTS_WITH',
-};
-
 /**
  *
  * @param {string} username User's username
@@ -78,31 +73,6 @@ export const getEventsDB = async (username, role) => {
     );
 
     return result.records.map((e) => e.get(0).properties);
-  } catch (error) {
-    return { ok: false, error: 500, errorMsg: error.message };
-  } finally {
-    await session.close();
-  }
-};
-
-/**
- *
- * @param {string} username User's username
- * @param {string} role User's role
- * @returns {Promise<{ } | null>}
- */
-export const getConnectionsDB = async (username, role) => {
-  const driver = getDriver();
-  const session = driver.session();
-
-  try {
-    const result = await session.run(
-      `MATCH (u:${role} {username: $username})-[:${connectionsRelationships[role]}]-(c)
-            RETURN c`,
-      { username }
-    );
-
-    return result.records.map((c) => c.get(0).properties);
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {

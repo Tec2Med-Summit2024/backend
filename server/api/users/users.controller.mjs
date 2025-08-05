@@ -2,7 +2,6 @@ import {
   getTicket,
   getQRCode,
   getEvents,
-  getConnections,
   getUserNotifications,
   searchUsers,
   updateUserSettings,
@@ -51,19 +50,6 @@ export const getUserEvents = async (req, res) => {
   return res.status(result.error).json({ error: result.errorMsg });
 };
 
-/**
- * 
- * @param {import("express").Request} req 
- * @param {import("express").Response} res 
- */
-export const getUserConnections = async (req, res) => {
-  const result = await getConnections(req.username, req.role);
-  if (result.ok) {
-    return res.status(200).json(result.value);
-  }
-  
-  return res.status(result.error).json({ error: result.errorMsg });
-};
 
 /**
  * 
