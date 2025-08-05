@@ -134,7 +134,7 @@ router.get('/:username', async (req, res) => {
     MATCH (p:Partner {username: $username})
     OPTIONAL MATCH (participant:Participant)
     WHERE participant.institution = p.name
-    WITH p, COLLECT(participant.username) as participants
+    WITH p, COLLECT({username: participant.username, name: participant.name}) as participants
     RETURN p {.*, working_participants: participants}
     `,
     { username }

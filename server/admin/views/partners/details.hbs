@@ -42,13 +42,26 @@
     <p><strong>Interests:</strong> {{partner.interests}}</p>
     <p><strong>Work Field:</strong> {{partner.field_of_study_work_research}}</p>
     <p><strong>Location:</strong> {{partner.current_location}}</p>
-    <p><strong>Phone:</strong> {{#if partner.country_code}}{{partner.country_code}} {{/if}}{{partner.phone}}</p>
+    <p><strong>Phone:</strong>
+      {{#if partner.country_code}}{{partner.country_code}}
+      {{/if}}{{partner.phone}}</p>
     <p><strong>Email:</strong> {{partner.email}}</p>
     <p><strong>Website:</strong> {{partner.website}}</p>
     <p><strong>LinkedIn:</strong> {{partner.linkedin}}</p>
     <p><strong>Instagram:</strong> {{partner.instagram}}</p>
     <p><strong>Facebook:</strong> {{partner.facebook}}</p>
-    <p><strong>Working Participants Usernames:</strong> {{partner.working_participants}}</p>
+    <p><strong>Working Participants Usernames:</strong>
+      <style>
+        .underlined-link { text-decoration: underline; }
+      </style>
+      {{#each partner.working_participants}}
+        <a
+          href='/admin/participants/{{this.username}}'
+          class='underlined-link'
+        >{{this.name}}</a>{{#unless @last}}, {{/unless}}
+      {{/each}}
+    </p>
+    <p><strong>Representatives:</strong> {{partner.representatives}}</p>
     <p class='md:col-span-2'><strong>Biography:</strong>
       {{partner.biography}}</p>
   </div>
