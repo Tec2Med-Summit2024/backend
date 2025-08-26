@@ -71,12 +71,14 @@ router.post('/', async (req, res) => {
   try {
     const fields = req.body;
     console.log('Creating new event with fields:', fields);
-    
+
     // Handle arrays properly
     if (fields.topics_covered) {
-      fields.topics_covered = Array.isArray(fields.topics_covered) ? fields.topics_covered : [fields.topics_covered];
+      fields.topics_covered = Array.isArray(fields.topics_covered)
+        ? fields.topics_covered
+        : [fields.topics_covered];
     }
-    
+
     // Generate parameterized property assignments for Cypher
     const eventType = fields.event_type;
     delete fields.event_type;
@@ -96,7 +98,7 @@ router.post('/', async (req, res) => {
       })
       .join(', ');
     console.log('Property Assignments:', propertyAssignments);
-    
+
     // Use a more robust approach to generate event_id
     const result = await makeQuery(
       `
@@ -152,11 +154,23 @@ router.get('/:id', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
     const result = await makeQuery(
-      `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
+      `MATCH (e:Event {event_id: 12})-[:IN_TYPE]->(et:EventType)
       OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
       OPTIONAL MATCH (e)-[:ORGANIZED_BY]->(p:Partner)
       WITH e, et, COLLECT(DISTINCT q {.*}) AS questions, p
-      RETURN e {.*, event_type: et.name, questions_asked: questions, company_username: p.username}`,
+      
+      UNWIND e.speakers_instructors AS username
+      OPTIONAL MATCH (participant:Participant {username: username})
+      WITH e, et, questions, p,
+          COLLECT(DISTINCT {username: participant.username, name: participant.name}) AS speakers
+
+      RETURN e {
+          .*, 
+          event_type: et.name, 
+          questions_asked: questions, 
+          company_username: p.username, 
+          speakers_instructors: speakers
+        }`,
       { eventId }
     );
     const e = result[0];
@@ -194,12 +208,14 @@ router.post('/:id', async (req, res) => {
     const fields = req.body;
     console.log('Updating event with ID:', eventId);
     console.log('Fields:', fields);
-    
+
     // Handle arrays properly
     if (fields.topics_covered) {
-      fields.topics_covered = Array.isArray(fields.topics_covered) ? fields.topics_covered : [fields.topics_covered];
+      fields.topics_covered = Array.isArray(fields.topics_covered)
+        ? fields.topics_covered
+        : [fields.topics_covered];
     }
-    
+
     // Add your update logic here
     for (const field in fields) {
       const value = fields[field];

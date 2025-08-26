@@ -42,7 +42,17 @@
     <p><strong>Event Name:</strong> {{event.name}}</p>
     <p><strong>Company:</strong> <a href="/admin/partners/{{event.company_username}}" target="_blank" style="text-decoration: underline;">{{event.company}}</a></p>
     <p><strong>Topics Covered:</strong> {{event.topics_covered}}</p>
-    <p><strong>Speakers/Instructors:</strong> {{event.speakers_instructors}}</p>
+    <p><strong>Speakers/Instructors:</strong>
+    <style>
+        .underlined-link { text-decoration: underline; }
+      </style>
+      {{#each event.speakers_instructors}}
+        <a
+          href='/admin/participants/{{this.username}}'
+          class='underlined-link'
+        >{{this.name}}</a>{{#unless @last}}, {{/unless}}
+      {{/each}}
+     </p>
     <p>
       <strong>Start:</strong><br />
       📅
