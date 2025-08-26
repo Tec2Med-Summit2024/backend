@@ -8,19 +8,18 @@ import {
   getQuestionsFromEventFromDb,
 } from './events.db.mjs';
 
-/**
- *
- * @param {string} search
- * @param {Date} start
- * @param {Date} end
- */
-export const searchEvents = async (search, type, start, end) => {
+export const searchEvents = async (search, type, start, end, filters) => {
   try {
-    const events = await getFilteredEventsFromDb(search, type, start, end);
+    const events = await getFilteredEventsFromDb(
+      search,
+      type,
+      start,
+      end,
+      filters
+    );
     if (events) {
       return { ok: true, value: events };
     }
-
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   } catch (err) {
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
