@@ -33,6 +33,7 @@ export const authenticateToken = (req, res, next) => {
         } else {  
           req.user = payload.email;
           req.role = payload.role;
+          req.userID = payload.userID;
           next();
         }
       });

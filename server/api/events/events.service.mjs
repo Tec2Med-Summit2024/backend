@@ -8,11 +8,10 @@ import {
   getQuestionsFromEventFromDb,
 } from './events.db.mjs';
 
-export const searchEvents = async (search, type, start, end, filters) => {
+export const searchEvents = async (search, start, end, filters) => {
   try {
     const events = await getFilteredEventsFromDb(
       search,
-      type,
       start,
       end,
       filters
@@ -20,8 +19,10 @@ export const searchEvents = async (search, type, start, end, filters) => {
     if (events) {
       return { ok: true, value: events };
     }
+    console.log('Failed to fetch events');
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   } catch (err) {
+    console.log('Error searching events:', err);
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   }
 };

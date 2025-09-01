@@ -27,15 +27,10 @@ export const getAllEventsFromDb = async () => {
   }
 };
 
-export const getFilteredEventsFromDb = async (
-  search,
-  type,
-  start,
-  end,
-  filters
-) => {
+export const getFilteredEventsFromDb = async (search, start, end, filters) => {
   const driver = getDriver();
   const session = driver.session();
+  console.log('Searching events with filters:', filters);
   const {
     userId,
     registered,
@@ -44,7 +39,7 @@ export const getFilteredEventsFromDb = async (
     topics,
     types,
   } = filters;
-
+  console.log('Searching events with filters:', filters);
   try {
     let query = `
       MATCH (e:Event)-[:IN_TYPE]->(et:EventType)
@@ -68,10 +63,9 @@ export const getFilteredEventsFromDb = async (
     }
 
     query += `
-      WHERE e.start >= datetime($start) AND e.end <= datetime($end)
+      WHERE e.start >= $start AND e.end <= $end
       ${search ? 'AND toLower(e.name) CONTAINS toLower($search)' : ''}
-      ${type ? 'AND toLower(et.name) = toLower($type)' : ''}
-      ${types.length ? 'AND toLower(et.name) IN $types' : ''}
+      ${types.length ? 'AND toLower(et.name) IN ["workshop"]' : ''}
       ${
         topics.length
           ? 'AND ANY(topic IN e.topics_covered WHERE topic IN $topics)'
@@ -79,17 +73,15 @@ export const getFilteredEventsFromDb = async (
       }
       RETURN e, et.name as eventType
     `;
-
+    console.log('Constructed query:', query);
     const result = await session.run(query, {
       search,
-      type,
       start,
       end,
       userId,
       types: types.map((t) => t.toLowerCase()),
-      topics,
+      topics: topics.map((t) => t.toLowerCase()),
     });
-
     return result.records.map((r) => {
       const event = r.get('e')?.properties;
       if (event) {
