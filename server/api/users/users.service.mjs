@@ -41,10 +41,10 @@ export const getUserNotifications = async (username, role) => {
 };
 
 
-export const searchUsers = async (query, type, user, location, field, institution, interests, expertises) => {
+export const searchUsers = async (query, type, user, location, field, institution, interests, expertises, limit) => {
     if(!type)
       return { ok: false, error: 400, errorMsg: 'type is required' };
-    return { ok: true, value: await searchUsersDB(query, type, user, location, field, institution, interests, expertises) };
+    return { ok: true, value: await searchUsersDB(query, type, user, location, field, institution, interests, expertises, limit) };
 };
 
 export const updateUserSettings = async (username, role, data) => {

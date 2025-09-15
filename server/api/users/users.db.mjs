@@ -113,7 +113,8 @@ export const searchUsersDB = async (
   field,
   institution,
   interests,
-  expertises
+  expertises,
+  limit = -1
 ) => {
   const driver = getDriver();
   const session = driver.session();
@@ -174,8 +175,9 @@ export const searchUsersDB = async (
             entity.biography AS biography,
             entity.photo_id AS photo_id,
             follow_exists
- 
-      ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC, name DESC`,
+
+      ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC, name DESC
+      ${limit !== -1 ? `LIMIT ${limit}` : ''}`,
       {
         query,
         type,
