@@ -1,32 +1,21 @@
 <header class='flex flex-col gap-4 py-6 px-6 mx-auto max-w-screen-2xl'>
   <div class='flex items-center justify-between'>
     <h1 class='text-4xl font-bold'>{{event.name}}</h1>
-    <a
-      href='/admin/events'
-      class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 hover:underline'
-    >
+    <a href='/admin/events'
+      class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 hover:underline'>
       <span class='material-symbols-outlined'>arrow_back</span>
       <span>Return to Events</span>
     </a>
   </div>
 
   <div class='flex gap-4'>
-    <a
-      href='/admin/events/{{event.event_id}}/edit'
-      class='bg-blue-600 text-white px-4 py-2 rounded-md hover:opacity-80'
-    >
+    <a href='/admin/events/{{event.event_id}}/edit'
+      class='bg-blue-600 text-white px-4 py-2 rounded-md hover:opacity-80'>
       Edit Event
     </a>
-    <form
-      action='/admin/events/{{event.event_id}}/delete'
-      method='post'
-      class='inline'
-    >
-      <button
-        type='submit'
-        class='bg-red-600 text-white px-4 py-2 rounded-md hover:opacity-80 flex items-center gap-1'
-        onclick="return confirm('Are you sure you want to delete event {{event.event_id}}?')"
-      >
+    <form action='/admin/events/{{event.event_id}}/delete' method='post' class='inline'>
+      <button type='submit' class='bg-red-600 text-white px-4 py-2 rounded-md hover:opacity-80 flex items-center gap-1'
+        onclick="return confirm('Are you sure you want to delete event {{event.event_id}}?')">
         Delete Event
       </button>
     </form>
@@ -40,19 +29,31 @@
     {{event.event_type}}</h2>
   <div class='grid grid-cols-1 md:grid-cols-2 gap-6 text-base'>
     <p><strong>Event Name:</strong> {{event.name}}</p>
-    <p><strong>Company:</strong> <a href="/admin/partners/{{event.company_username}}" target="_blank" style="text-decoration: underline;">{{event.company}}</a></p>
+    <p><strong>Participants:</strong>
+      <style>
+        .underlined-link {
+          text-decoration: underline;
+        }
+      </style>
+      {{#each event.participants}}
+      <a href='/admin/participants/{{this.username}}' class='underlined-link'>{{this.name}}</a>{{#unless @last}},
+      {{/unless}}
+      {{/each}}
+    </p>
     <p><strong>Topics Covered:</strong> {{event.topics_covered}}</p>
     <p><strong>Speakers/Instructors:</strong>
-    <style>
-        .underlined-link { text-decoration: underline; }
+      <style>
+        .underlined-link {
+          text-decoration: underline;
+        }
       </style>
-      {{#each event.speakers_instructors}}
-        <a
-          href='/admin/participants/{{this.username}}'
-          class='underlined-link'
-        >{{this.name}}</a>{{#unless @last}}, {{/unless}}
+      {{#each event.presenters}}
+      <a href='/admin/participants/{{this.username}}' class='underlined-link'>{{this.name}}</a>
+      (<a href='/admin/participants/{{this.partner_username}}'
+        class='underlined-link'>{{this.partner_name}}</a>){{#unless @last}},
+      {{/unless}}
       {{/each}}
-     </p>
+    </p>
     <p>
       <strong>Start:</strong><br />
       📅
@@ -73,29 +74,24 @@
     <p><strong>Current Capacity:</strong> {{event.curr_cap}}</p>
     <p><strong>Max Capacity:</strong> {{event.max_cap}}</p>
     <p class='md:col-span-2'><strong>Description:</strong>
-      {{event.description_about}}</p>
+      {{event.description_about}}
+    </p>
   </div>
 
   <div class='border-t border-gray-300 mt-6'></div>
   <h3 class='text-lg font-semibold text-gray-600 col-span-2'>Questions Asked</h3>
-    <p class='text-gray-500 col-span-2'>Below are the questions asked by users during this event.</p>
-    {{#each event.questions_asked}}
-      <p><strong>Question ID:</strong> {{this.question_id}}</p>
-      <p><strong>Content:</strong> {{this.content}}</p>
-      <p><strong>Likes:</strong> {{this.likes}}</p>
-      <div class='flex items-center gap-2'>
-        <form
-          action='/admin/events/{{../event.event_id}}/questions/{{this.question_id}}/delete'
-          method='post'
-          class='inline'
-        >
-          <button
-            type='submit'
-            class='text-red-600 hover:underline'
-            onclick="return confirm('Are you sure you want to delete question {{this.question_id}}?')"
-          >Delete</button>
-        </form>
-      </div>
-      <div class="border-t border-gray-300 mt-4"></div>
-    {{/each}}
+  <p class='text-gray-500 col-span-2'>Below are the questions asked by users during this event.</p>
+  {{#each event.questions_asked}}
+  <p><strong>Question ID:</strong> {{this.question_id}}</p>
+  <p><strong>Content:</strong> {{this.content}}</p>
+  <p><strong>Likes:</strong> {{this.likes}}</p>
+  <div class='flex items-center gap-2'>
+    <form action='/admin/events/{{../event.event_id}}/questions/{{this.question_id}}/delete' method='post'
+      class='inline'>
+      <button type='submit' class='text-red-600 hover:underline'
+        onclick="return confirm('Are you sure you want to delete question {{this.question_id}}?')">Delete</button>
+    </form>
+  </div>
+  <div class="border-t border-gray-300 mt-4"></div>
+  {{/each}}
 </section>

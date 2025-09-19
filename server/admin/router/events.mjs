@@ -154,22 +154,19 @@ router.get('/:id', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
     const result = await makeQuery(
-      `MATCH (e:Event {event_id: 12})-[:IN_TYPE]->(et:EventType)
+      `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
       OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
-      OPTIONAL MATCH (e)-[:ORGANIZED_BY]->(p:Partner)
-      WITH e, et, COLLECT(DISTINCT q {.*}) AS questions, p
-      
-      UNWIND e.speakers_instructors AS username
-      OPTIONAL MATCH (participant:Participant {username: username})
-      WITH e, et, questions, p,
-          COLLECT(DISTINCT {username: participant.username, name: participant.name}) AS speakers
+      OPTIONAL MATCH (presenter:Participant)-[:PRESENTS]->(e)
+      OPTIONAL MATCH (presenter)-[:WORKS_AT]->(p:Partner)
+      OPTIONAL MATCH (attendee:Participant)-[:GOES_TO]->(e)
+      WITH e, et, COLLECT(DISTINCT q {.*}) AS questions, COLLECT(DISTINCT {username: presenter.username, name: presenter.name, partner_username: p.username, partner_name: p.name}) AS speakers_instructors, COLLECT(DISTINCT {username: attendee.username, name: attendee.name}) AS attendees
 
       RETURN e {
           .*, 
           event_type: et.name, 
           questions_asked: questions, 
-          company_username: p.username, 
-          speakers_instructors: speakers
+          presenters: speakers_instructors,
+          participants: attendees
         }`,
       { eventId }
     );
@@ -226,7 +223,32 @@ router.post('/:id', async (req, res) => {
         delete fields[field];
       }
     }
+    // Check if event_type exists in fields
+    if (fields.event_type) {
+      const eventType = fields.event_type;
+
+      console.log(`Updating event type to: ${eventType}`);
+
+      // Update the event type in a single Cypher query
+      await makeQuery(
+        `
+    MATCH (e:Event {event_id: $eventId})
+    OPTIONAL MATCH (e)-[r:IN_TYPE]->(et:EventType)
+    DELETE r
+    MERGE (etNew:EventType {name: $eventType})
+    MERGE (e)-[:IN_TYPE]->(etNew)
+    RETURN e, etNew
+    `,
+        { eventId, eventType }
+      );
+
+      // Remove event_type from fields after processing
+      delete fields.event_type;
+    }
+
     console.log('Updated fields:', fields);
+
+    // Update the event with the remaining fields
     const result = await makeQuery(
       'MATCH (e:Event {event_id: $eventId}) SET e += $fields RETURN e',
       { eventId, fields }
@@ -234,9 +256,46 @@ router.post('/:id', async (req, res) => {
     const eventUpdated = result[0];
     console.log('Updated event:', eventUpdated);
     // Redirect to the event details page after updating
-    return res.render('events/details', {
-      title: `Event ${eventUpdated.event_id}`,
-      event: eventUpdated,
+    return res.redirect(`/admin/events/${eventId}`);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+/**
+ * Endpoint to update event speakers/instructors
+ */
+router.put('/:id', async (req, res) => {
+  try {
+    console.log('PUT /:id called', req.params.id, req.body);
+    const eventId = parseInt(req.params.id);
+    const presenters = Array.isArray(req.body.presenters)
+      ? req.body.presenters.map(String) // coerce to strings
+      : [];
+    const result = await makeQuery(
+      `
+      MATCH (e:Event { event_id: $eventId })
+      WITH e
+      // create relationships only for participants that already exist
+      UNWIND $presenters AS username
+      MATCH (p:Participant { username: username })
+      MERGE (p)-[:PRESENTS]->(e)
+      WITH e
+      MATCH (pOld:Participant)-[rOld:PRESENTS]->(e)
+      WHERE NOT pOld.username IN $presenters
+      DELETE rOld
+      WITH e
+      OPTIONAL MATCH (p:Participant)-[:PRESENTS]->(e)
+      RETURN collect(p.username) AS presenters
+    `,
+      { eventId, presenters }
+    );
+    const updatedPresenters = result[0] || [];
+
+    return res.status(200).json({
+      message: 'Presenters updated',
+      presenters: updatedPresenters,
     });
   } catch (error) {
     console.error(error);
@@ -251,24 +310,40 @@ router.get('/:id/edit', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
     const result = await makeQuery(
-      'MATCH (e:Event {event_id: $eventId}) RETURN e',
+      `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
+      OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
+      OPTIONAL MATCH (presenter:Participant)-[:PRESENTS]->(e)
+      OPTIONAL MATCH (attendee:Participant)-[:GOES_TO]->(e)
+      WITH e, et, COLLECT(DISTINCT q {.*}) AS questions, COLLECT(DISTINCT {username: presenter.username, name: presenter.name}) AS speakers_instructors, COLLECT(DISTINCT {username: attendee.username, name: attendee.name}) AS attendees
+
+      RETURN e {
+          .*, 
+          event_type: et.name, 
+          questions_asked: questions, 
+          presenters: speakers_instructors,
+          participants: attendees
+        }`,
       { eventId }
     );
 
-    const event = result[0];
-    console.log('Event ', event);
+    const e = result[0];
+    console.log('Event ', e);
 
-    // Ensure arrays are properly handled and initialized
-    event.topics_covered = event.topics_covered || [];
+    const start = e.start;
+    const end = e.end;
 
-    // Convert to arrays if they're not already
-    if (!Array.isArray(event.topics_covered)) {
-      event.topics_covered = [event.topics_covered];
-    }
+    const startDate = start.split('T')[0];
+    const startTime = start.split('T')[1].split(':').slice(0, 2).join(':');
+    const endDate = end.split('T')[0];
+    const endTime = end.split('T')[1].split(':').slice(0, 2).join(':');
+    e.startDate = startDate;
+    e.startTime = startTime;
+    e.endDate = endDate;
+    e.endTime = endTime;
 
     return res.render('events/edit', {
-      title: `Edit Event ${event.event_id}`,
-      event: event,
+      title: `Edit Event ${e.event_id}`,
+      event: e,
     });
   } catch (error) {
     console.error(error);

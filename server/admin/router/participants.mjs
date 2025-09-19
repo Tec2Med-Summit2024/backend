@@ -3,6 +3,18 @@ import { makeQuery } from '../helpers/functions.mjs';
 
 const router = express.Router();
 
+router.get('/data', async (req, res) => {
+  try {
+    const participants = await makeQuery(`MATCH (p:Participant)
+    WITH p { .* , password: null } AS participant
+    RETURN participant LIMIT 50`);
+    return res.status(200).json({ participants });
+  } catch (error) {
+    console.error('Error fetching participants:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 /**
  * Participants Management Page
  */
@@ -32,7 +44,9 @@ router.get('/', async (req, res) => {
       }
 
       if (type && type !== '') {
-        conditions.push(`any(t IN p.type WHERE toLower(t) = toLower('${type}'))`);
+        conditions.push(
+          `any(t IN p.type WHERE toLower(t) = toLower('${type}'))`
+        );
         params.type = type;
       }
 
@@ -54,7 +68,7 @@ router.get('/', async (req, res) => {
 
     // Get paginated participants
     const query = `MATCH (p:Participant) ${searchCondition} RETURN p SKIP toInteger($skip) LIMIT toInteger($limit)`;
-    
+
     const participants = await makeQuery(query, params);
 
     return res.render('participants/index', {
