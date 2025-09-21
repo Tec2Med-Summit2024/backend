@@ -1,58 +1,33 @@
-<header
-  class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'
->
+<header class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'>
   <h1 class='text-4xl'>Create New Partner</h1>
 
-  <a
-    href='/admin/partners'
-    class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'
-  >
+  <a href='/admin/partners' class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'>
     <span class='material-symbols-outlined'>arrow_back</span>
     Return to Partners
   </a>
 </header>
 
 <section class='mx-auto max-w-screen-2xl p-6'>
-  <form
-    id='create-partner-form'
-    action='/admin/partners'
-    method='post'
-    class='grid grid-cols-2 gap-6 text-lg'
-    autocomplete='off'
-  >
+  <form id='create-partner-form' action='/admin/partners' method='post' class='grid grid-cols-2 gap-6 text-lg'
+    autocomplete='off'>
     <div class='flex flex-col gap-2'>
       <div class='flex flex-col'>
         <label for='name'>Name</label>
-        <input
-          type='text'
-          id='name'
-          name='name'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+        <input type='text' id='name' name='name' class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+        required
       </div>
 
       <div class='flex flex-col'>
         <label for='field_of_study_work_research'>Work Field</label>
-        <input
-          type='text'
-          id='field_of_study_work_research'
-          name='field_of_study_work_research'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          maxlength="40"
-          required
-        />
+        <input type='text' id='field_of_study_work_research' name='field_of_study_work_research'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' maxlength="40" />
       </div>
 
       <div class='flex flex-col'>
         <label for='phone'>Phone</label>
         <div class='flex gap-2'>
-          <select
-            id='country_code'
-            name='country_code'
-            class='px-2 py-1 border border-gray-800 outline-none rounded-md bg-white'
-            style='width: 120px;'
-          >
+          <select id='country_code' name='country_code'
+            class='px-2 py-1 border border-gray-800 outline-none rounded-md bg-white' style='width: 120px;'>
             <option value='+351' selected>🇵🇹 +351</option>
             <option value='+1'>🇺🇸 +1</option>
             <option value='+44'>🇬🇧 +44</option>
@@ -117,36 +92,21 @@
             <option value='+506'>🇨🇷 +506</option>
             <option value='+507'>🇵🇦 +507</option>
           </select>
-          <input
-            type='tel'
-            id='phone'
-            name='phone'
-            class='flex-1 px-2 py-1 border border-gray-800 outline-none rounded-md'
-            placeholder='Phone number'
-          />
+          <input type='tel' id='phone' name='phone'
+            class='flex-1 px-2 py-1 border border-gray-800 outline-none rounded-md' placeholder='Phone number' />
         </div>
       </div>
 
       <div class='flex flex-col'>
         <label for='website'>Website</label>
-        <input
-          type='url'
-          id='website'
-          name='website'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+        <input type='url' id='website' name='website'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
       </div>
 
       <div class='flex flex-col'>
         <label for='instagram'>Instagram</label>
-        <input
-          type='url'
-          id='instagram'
-          name='instagram'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+        <input type='url' id='instagram' name='instagram'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
       </div>
 
     </div>
@@ -154,47 +114,25 @@
     <div class='flex flex-col gap-2'>
       <div class='flex flex-col'>
         <label for='current_location'>Location</label>
-        <input
-          type='text'
-          id='current_location'
-          name='current_location'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          maxlength="40"
-          required
-        />
+        <input type='text' id='current_location' name='current_location'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' maxlength="40" />
       </div>
 
       <div class='flex flex-col'>
         <label for='email'>Email</label>
-        <input
-          type='email'
-          id='email'
-          name='email'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+        <input type='email' id='email' name='email' class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
       </div>
 
       <div class='flex flex-col'>
         <label for='linkedin'>LinkedIn</label>
-        <input
-          type='url'
-          id='linkedin'
-          name='linkedin'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+        <input type='url' id='linkedin' name='linkedin'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
       </div>
 
       <div class='flex flex-col'>
         <label for='facebook'>Facebook</label>
-        <input
-          type='url'
-          id='facebook'
-          name='facebook'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+        <input type='url' id='facebook' name='facebook'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
       </div>
 
     </div>
@@ -202,16 +140,18 @@
     <div class='flex flex-col gap-2 col-span-2'>
       <label for='interests'>Interests</label>
       <div class='flex flex-wrap gap-2 mt-1'>
-        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |interest|}}
-          <label class='relative cursor-pointer'>
-            <input 
-              type='checkbox' 
-              name='interests' 
-              value='{{interest}}' 
-              class='peer opacity-0 absolute' 
-            />
-            <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{interest}}</span>
-          </label>
+        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic
+        systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical
+        decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare'
+        'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health
+        policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition'
+        'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for
+        research' 'Surgery' 'Virtual reality' 'Wearable technology') as |interest|}}
+        <label class='relative cursor-pointer'>
+          <input type='checkbox' name='interests' value='{{interest}}' class='peer opacity-0 absolute' />
+          <span
+            class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{interest}}</span>
+        </label>
         {{/each}}
       </div>
       <span class="text-xs text-gray-500 mt-1">Select between 2 and 8 interests</span>
@@ -219,26 +159,14 @@
 
     <div class='flex flex-col gap-2 col-span-2'>
       <label class for='biography'>Biography</label>
-      <textarea
-        form='create-partner-form'
-        type='text'
-        id='biography'
-        name='biography'
-        class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-        rows='4'
-        maxlength="250"
-        required
-      ></textarea>
+      <textarea form='create-partner-form' type='text' id='biography' name='biography'
+        class='px-2 py-1 border border-gray-800 outline-none rounded-md' rows='4' maxlength="250"></textarea>
       <span class="text-xs text-gray-500 mt-1">Maximum 250 characters including spaces</span>
     </div>
 
     <div class='w-fit mx-auto col-span-2'>
-      <button
-        form='create-partner-form'
-        type='submit'
-        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
-        onclick="return validatePartnerForm()"
-      >Create Partner</button>
+      <button form='create-partner-form' type='submit' class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
+        onclick="return validatePartnerForm()">Create Partner</button>
     </div>
   </form>
 </section>
@@ -246,7 +174,7 @@
 <script>
   function validatePartnerForm() {
     const selectedInterests = document.querySelectorAll('input[name="interests"]:checked');
-    
+
     if (selectedInterests.length < 2) {
       alert('Please select at least 2 interests');
       return false;
@@ -255,7 +183,7 @@
       alert('Please select no more than 8 interests');
       return false;
     }
-    
+
     return true;
   }
 </script>

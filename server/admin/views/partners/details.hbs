@@ -12,20 +12,20 @@
 
   <div class='flex gap-4'>
     <a
-      href='/admin/partners/{{partner.username}}/edit'
+      href='/admin/partners/{{partner.user_id}}/edit'
       class='bg-blue-600 text-white px-4 py-2 rounded-md hover:opacity-80'
     >
       Edit Partner
     </a>
     <form
-      action='/admin/partners/{{partner.username}}/delete'
+      action='/admin/partners/{{partner.user_id}}/delete'
       method='post'
       class='inline'
     >
       <button
         type='submit'
         class='bg-red-600 text-white px-4 py-2 rounded-md hover:opacity-80 flex items-center gap-1'
-        onclick="return confirm('Are you sure you want to delete partner {{partner.username}}?')"
+        onclick="return confirm('Are you sure you want to delete partner {{partner.user_id}}?')"
       >
         Delete Partner
       </button>
@@ -34,8 +34,8 @@
 </header>
 
 <section class='px-6 mx-auto max-w-screen-2xl'>
-  <h2 class='text-lg font-semibold text-gray-600 mb-4'>Partner Username:
-    {{partner.username}}</h2>
+  <h2 class='text-lg font-semibold text-gray-600 mb-4'>Partner User ID:
+    {{partner.user_id}}</h2>
 
   <div class='grid grid-cols-1 md:grid-cols-2 gap-6 text-base'>
     <p><strong>Partner Name:</strong> {{partner.name}}</p>
@@ -50,13 +50,13 @@
     <p><strong>LinkedIn:</strong> {{partner.linkedin}}</p>
     <p><strong>Instagram:</strong> {{partner.instagram}}</p>
     <p><strong>Facebook:</strong> {{partner.facebook}}</p>
-    <p><strong>Working Participants Usernames:</strong>
+    <p><strong>Working Participants User IDs:</strong>
       <style>
         .underlined-link { text-decoration: underline; }
       </style>
       {{#each partner.working_participants}}
         <a
-          href='/admin/participants/{{this.username}}'
+          href='/admin/participants/{{this.user_id}}'
           class='underlined-link'
         >{{this.name}}</a>{{#unless @last}}, {{/unless}}
       {{/each}}

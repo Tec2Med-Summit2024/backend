@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import express from 'express';
 import { makeQuery } from '../helpers/functions.mjs';
 
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
     if (search) {
       searchCondition = `
         WHERE toLower(p.name) CONTAINS '${search.toLowerCase()}' 
-        OR toLower(p.username) CONTAINS '${search.toLowerCase()}' 
+        OR toLower(p.user_id) CONTAINS '${search.toLowerCase()}' 
         OR toLower(p.email) CONTAINS '${search.toLowerCase()}' 
       `;
       params.search = search.toLowerCase();
@@ -68,15 +69,17 @@ router.post('/', async (req, res) => {
   try {
     const fields = req.body;
     console.log('Creating new partner with fields:', fields);
-    
+
     // Handle arrays properly
     if (fields.interests) {
-      fields.interests = Array.isArray(fields.interests) ? fields.interests : [fields.interests];
+      fields.interests = Array.isArray(fields.interests)
+        ? fields.interests
+        : [fields.interests];
     }
-    
+
     // Store country_code and phone separately (don't combine them)
     // The country_code field will be stored as is, phone field will be stored as is
-    
+
     // Generate parameterized property assignments for Cypher
     const fieldKeys = Object.keys(fields);
     const propertyAssignments = fieldKeys
@@ -93,21 +96,20 @@ router.post('/', async (req, res) => {
       })
       .join(', ');
     console.log('Property Assignments:', propertyAssignments);
+    const user_id = crypto.randomUUID();
     const result = await makeQuery(`
-      MATCH (p:Partner)
-      WITH count(p) + 1 AS partnerCount
       CREATE (newPartner:Partner {
-        username: '${fields.name.toLowerCase()}-' + toString(partnerCount),
+        user_id: $user_id,
         ${propertyAssignments}
       })
       RETURN newPartner
-    `);
+    `, { user_id,});
 
     const p = result[0];
-    console.log('Created Partner with username:', p.username);
+    console.log('Created Partner with user_id:', p.user_id);
     // Add your creation logic here
     return res.render('partners/details', {
-      title: `Partner ${p.username}`,
+      title: `Partner ${p.user_id}`,
       partner: p,
     });
   } catch (error) {
@@ -126,51 +128,51 @@ router.get('/new', (req, res) => {
 /**
  * Page to view partner details
  */
-router.get('/:username', async (req, res) => {
+router.get('/:user_id', async (req, res) => {
   try {
-  const username = req.params.username;
-  const result = await makeQuery(
-    `
-    MATCH (p:Partner {username: $username})
-    OPTIONAL MATCH (participant:Participant)
-    WHERE participant.institution = p.name
-    WITH p, COLLECT({username: participant.username, name: participant.name}) as participants
+    const user_id = req.params.user_id;
+    const result = await makeQuery(
+      `
+    MATCH (p:Partner {user_id: $user_id})
+    OPTIONAL MATCH (participant:Participant)-[:WORKS_AT]->(p)
+    WITH p, COLLECT({user_id: participant.username, name: participant.name}) as participants
     RETURN p {.*, working_participants: participants}
     `,
-    { username }
-  );
-  
-  const p = result[0];
+      { user_id }
+    );
 
-  return res.render('partners/details', {
-    title: `Partner ${p.username}`,
-    partner: p,
-  });
-} catch (error) {
-  console.error(error);
-  return res.status(500).send('Internal Server Error');
-}
+    const p = result[0];
 
+    return res.render('partners/details', {
+      title: `Partner ${p.user_id}`,
+      partner: p,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
 });
 
 /**
  * Endpoint to update partner details
  */
-router.post('/:username', async (req, res) => {
+router.post('/:user_id', async (req, res) => {
   try {
-    const username = req.params.username;
+    const user_id = req.params.user_id;
     const fields = req.body;
-    console.log('Updating partner with username:', username);
+    console.log('Updating partner with user_id:', user_id);
     console.log('Fields:', fields);
-    
+
     // Handle arrays properly
     if (fields.interests) {
-      fields.interests = Array.isArray(fields.interests) ? fields.interests : [fields.interests];
+      fields.interests = Array.isArray(fields.interests)
+        ? fields.interests
+        : [fields.interests];
     }
-    
+
     // Store country_code and phone separately (don't combine them)
     // The country_code field will be stored as is, phone field will be stored as is
-    
+
     // Add your update logic here
     for (const field in fields) {
       const value = fields[field];
@@ -183,14 +185,14 @@ router.post('/:username', async (req, res) => {
     }
     console.log('Updated fields:', fields);
     const result = await makeQuery(
-      'MATCH (p:Partner {username: $username}) SET p += $fields RETURN p',
-      { username, fields }
+      'MATCH (p:Partner {user_id: $user_id}) SET p += $fields RETURN p',
+      { user_id, fields }
     );
     const partnerUpdated = result[0];
     console.log('Updated partner:', partnerUpdated);
     // Redirect to the partner details page after updating
     return res.render('partners/details', {
-      title: `Partner ${partnerUpdated.username}`,
+      title: `Partner ${partnerUpdated.user_id}`,
       partner: partnerUpdated,
     });
   } catch (error) {
@@ -202,12 +204,12 @@ router.post('/:username', async (req, res) => {
 /**
  * Page to edit partner details
  */
-router.get('/:username/edit', async (req, res) => {
+router.get('/:user_id/edit', async (req, res) => {
   try {
-    const username = req.params.username;
+    const user_id = req.params.user_id;
     const result = await makeQuery(
-      'MATCH (p:Partner {username: $username}) RETURN p',
-      { username }
+      'MATCH (p:Partner {user_id: $user_id}) RETURN p',
+      { user_id }
     );
 
     const partner = result[0];
@@ -222,7 +224,7 @@ router.get('/:username/edit', async (req, res) => {
     }
 
     return res.render('partners/edit', {
-      title: `Edit Partner ${partner.username}`,
+      title: `Edit Partner ${partner.user_id}`,
       partner: partner,
     });
   } catch (error) {
@@ -234,14 +236,14 @@ router.get('/:username/edit', async (req, res) => {
 /**
  * Endpoint to delete an partner
  */
-router.post('/:username/delete', async (req, res) => {
+router.post('/:user_id/delete', async (req, res) => {
   try {
-    const username = req.params.username;
-    console.log('Deleting partner with username:', username);
+    const user_id = req.params.user_id;
+    console.log('Deleting partner with user_id:', user_id);
     // Add your delete logic here
     const result = await makeQuery(
-      'MATCH (p:Partner {username: $username}) DETACH DELETE p',
-      { username }
+      'MATCH (p:Partner {user_id: $user_id}) DETACH DELETE p',
+      { user_id }
     );
     console.log('Delete result:', result);
     // Redirect to the partners list page after deletion
