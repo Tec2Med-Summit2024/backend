@@ -50,10 +50,35 @@ export const updateParticipantWithData = async (username, data) => {
 
     const r = result.records[0]?.get(0)?.properties ?? null;
     if (!r) return null;
-    const { name, email } = r;
-    return {
-      name,
+    const {
       email,
+      name,
+      biography,
+      phone,
+      current_location,
+      field_of_study_work_research,
+      institution,
+      linkedIn,
+      instagram,
+      facebook,
+      website,
+      interests,
+      expertise,
+    } = r;
+    return {
+      email,
+      name,
+      biography,
+      phone,
+      current_location,
+      field_of_study_work_research,
+      institution,
+      linkedIn,
+      instagram,
+      facebook,
+      website,
+      interests,
+      expertise,
     };
   } finally {
     await session.close();

@@ -97,6 +97,8 @@ export const lookUpAccount = async (email) => {
         RETURN e.username AS username, 
         e.password AS password, 
         e.verification_code AS verification_code,
+        e.name AS name,
+        e.phone AS phone,
         labels(e)[0] AS type`,
       { email }
     );
@@ -104,8 +106,10 @@ export const lookUpAccount = async (email) => {
       return {
         username: result.records[0].get(0), 
         password: result.records[0].get(1), 
-        verification_code: result.records[0].get(2), 
-        type: result.records[0].get(3)};
+        verification_code: result.records[0].get(2),
+        name: result.records[0].get(3),
+        phone: result.records[0].get(4),
+        type: result.records[0].get(5)};
     }
     return null;
       
