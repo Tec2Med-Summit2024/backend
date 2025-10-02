@@ -3,7 +3,7 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 
 import { closeDriver, initDriver } from './database/connector.mjs';
-import { verifyUsername } from './middleware/verifier.mjs';
+import { authenticateToken, verifyUsername } from './middleware/verifier.mjs';
 
 import participantsRouter from './api/participants/participants.route.mjs';
 import eventsRouter from './api/events/events.route.mjs';
@@ -15,7 +15,7 @@ const app = express();
 
 initDriver(process.env.DB_URI, process.env.DB_USER, process.env.DB_PWD);
 
-app.get('/', (req, res) => res.json('Hello World!'));
+app.get('/', cors({ origin: '*' }), (req, res) => res.json('Hello World!'));
 
 
 app.use(cors());
@@ -24,11 +24,12 @@ app.use(fileUpload());
 
 app.param('username', verifyUsername);
 
-app.use('/api/participants', participantsRouter);
-app.use('/api/events', eventsRouter);
-app.use('/api/partners', partnersRouter);
-app.use('/api/users', usersRouter);
- app.use('/api', authRouter);
+// Apply authentication middleware to all API routes
+app.use('/api/participants', authenticateToken, participantsRouter);
+app.use('/api/events', authenticateToken, eventsRouter);
+app.use('/api/partners', authenticateToken, partnersRouter);
+app.use('/api/users', authenticateToken, usersRouter);
+app.use('/api', authRouter);
 
 app.use('*', (_, res) => res.status(404).json({ error: 'Not found' }));
 
