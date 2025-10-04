@@ -9,7 +9,9 @@ export const getAllEventsFromDb = async () => {
   const session = driver.session();
 
   try {
-    const result = await session.run(`MATCH (e:Event )-[:IN_TYPE]->(et:EventType) RETURN e, et.name`);
+    const result = await session.run(
+      `MATCH (e:Event )-[:IN_TYPE]->(et:EventType) RETURN e, et.name`
+    );
 
     return result.records.map((r) => {
       const event = r.get('e')?.properties;
@@ -25,37 +27,70 @@ export const getAllEventsFromDb = async () => {
   }
 };
 
-/**
- *
- * @param {string} search
- * @param {Date} start
- * @param {Date} end
- */
-export const getFilteredEventsFromDb = async (name, type, start, end) => {
+export const getFilteredEventsFromDb = async (search, start, end, filters) => {
   const driver = getDriver();
   const session = driver.session();
-  console.log(name, type, start, end);
-  console.log(typeof start, typeof end);
+  console.log('Searching events with filters:', filters);
+  const {
+    userId,
+    registered,
+    speaker_instructor,
+    questions_asked,
+    topics,
+    types,
+  } = filters;
+  console.log('Searching events with filters:', filters);
   try {
-    const result = await session.run(
-      `MATCH (e:Event )-[:IN_TYPE]->(et:EventType) 
-      WHERE toLower(e.name) CONTAINS toLower($name) 
-       AND toLower(et.name) CONTAINS toLower($type)
-       AND e.start >= $start 
-       AND e.end <= $end 
-       RETURN e, et.name AS eventType`,
-      { name, type, start, end }
-    );
+    let query = `
+      MATCH (e:Event)-[:IN_TYPE]->(et:EventType)
+    `;
 
+    if (registered || speaker_instructor || questions_asked) {
+      query += `
+        OPTIONAL MATCH (p:Participant {email: $userId})
+        ${registered ? 'MATCH (p)-[:GOES_TO]->(e)' : ''}
+        ${
+          speaker_instructor
+            ? 'WHERE ANY(s IN e.speakers_instructors WHERE s = $userId)'
+            : ''
+        }
+        ${
+          questions_asked
+            ? 'MATCH (q:Question)-[:ASKED_IN]->(e) WHERE q.authorId = $userId'
+            : ''
+        }
+      `;
+    }
+
+    query += `
+      WHERE e.start >= $start AND e.end <= $end
+      ${search ? 'AND toLower(e.name) CONTAINS toLower($search)' : ''}
+      ${types.length ? 'AND toLower(et.name) IN ["workshop"]' : ''}
+      ${
+        topics.length
+          ? 'AND ANY(topic IN e.topics_covered WHERE topic IN $topics)'
+          : ''
+      }
+      RETURN e, et.name as eventType
+    `;
+    console.log('Constructed query:', query);
+    const result = await session.run(query, {
+      search,
+      start,
+      end,
+      userId,
+      types: types.map((t) => t.toLowerCase()),
+      topics: topics.map((t) => t.toLowerCase()),
+    });
     return result.records.map((r) => {
       const event = r.get('e')?.properties;
       if (event) {
-        event.type = r.get('eventType'); // Add eventType as 'type' inside event JSON
+        event.type = r.get('eventType');
       }
       return event;
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   } finally {
     session.close();
@@ -92,7 +127,7 @@ export const getEventByIdFromDb = async (id) => {
 };
 
 /**
- * 
+ *
  * * @param {string} eventId
  * @param {string} username
  * @param {string} feedback
@@ -121,7 +156,6 @@ export const addFeedbackToEventFromDb = async (id, username, feedback) => {
   }
 };
 
-
 /**
  *
  * @param {string} eventId
@@ -141,7 +175,8 @@ export const createQuestionInEventFromDb = async (username, id, content) => {
       { eventId }
     );
 
-    const questionCount = countResult.records[0]?.get('questionCount').toNumber() || 0;
+    const questionCount =
+      countResult.records[0]?.get('questionCount').toNumber() || 0;
 
     // Step 2: Generate the question_id based on the event_id and question count
     const questionId = `${eventId}q${questionCount + 1}`;
@@ -203,7 +238,11 @@ export const likeQuestionInEventFromDb = async (id, questionId, username) => {
  * @param {string} eventId
  * @param {string} questionId
  */
-export const dislikeQuestionInEventFromDb = async (id, questionId, username) => {
+export const dislikeQuestionInEventFromDb = async (
+  id,
+  questionId,
+  username
+) => {
   const driver = getDriver();
   const session = driver.session();
   const eventId = parseInt(id);
@@ -231,7 +270,6 @@ export const dislikeQuestionInEventFromDb = async (id, questionId, username) => 
   }
 };
 
-
 /**
  * Get all the questions from an event
  * @param {string} eventId
@@ -257,7 +295,7 @@ export const getQuestionsFromEventFromDb = async (id, username) => {
           name: r.get('participantName'),
           username: r.get('participantUsername'),
         };
-        question.liked = r.get('liked');  // Attach the 'liked' status to the question
+        question.liked = r.get('liked'); // Attach the 'liked' status to the question
       }
       return question;
     });

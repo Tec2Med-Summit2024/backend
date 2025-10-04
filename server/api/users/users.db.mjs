@@ -113,7 +113,8 @@ export const searchUsersDB = async (
   field,
   institution,
   interests,
-  expertises
+  expertises,
+  limit = -1
 ) => {
   const driver = getDriver();
   const session = driver.session();
@@ -137,23 +138,22 @@ export const searchUsersDB = async (
       
       // Find matching entities based on both Participants and Partners
       MATCH (entity)
-      WHERE 
+      WHERE
         (
-          (entity:Partner AND type = 'partner') OR
-          (entity:Participant AND any(t IN entity.type WHERE toLower(t) = toLower(type)))
+          (entity:Partner AND toLower($type) = 'partner') OR
+          (entity:Participant AND any(t IN entity.type WHERE toLower(t) = toLower($type)))
         )
-      AND toLower(entity.name) CONTAINS toLower(query)
+      AND toLower(entity.name) CONTAINS toLower($query)
       AND entity.email <> user.email
 
-      // Se alguma cena brekar deve ser por causa destes filtros (nome das propriedades etc ...)
-      AND toLower(entity.current_location) CONTAINS toLower(location)
-      AND toLower(entity.field_of_study_work_research) CONTAINS toLower(field)
-      AND toLower(entity.institution) CONTAINS toLower(institution)
-      AND all(i IN query_interests WHERE i IN entity.interests)
-      AND all(i IN query_expertises WHERE i IN entity.expertise)
+      // Apply optional filters
+      AND ($location = '' OR toLower(entity.current_location) CONTAINS toLower($location))
+      AND ($field = '' OR toLower(entity.field_of_study_work_research) CONTAINS toLower($field))
+      AND ($institution = '' OR toLower(entity.institution) CONTAINS toLower($institution))
+      AND (size($interests) = 0 OR all(i IN $interests WHERE i IN entity.interests))
+      AND (size($expertises) = 0 OR all(i IN $expertises WHERE i IN entity.expertise))
 
-
-      // Check if a FOLLOW relationship exists between the user and the entity (if the entity is a Partner)
+      // Check if a FOLLOW relationship exists between the user and the entity
       OPTIONAL MATCH (user)-[follows:FOLLOWS]->(entity)
       WITH user, entity, follows, user_interests, user_expertise, user_institution,
           entity.expertise AS entity_expertise,
@@ -174,8 +174,9 @@ export const searchUsersDB = async (
             entity.biography AS biography,
             entity.photo_id AS photo_id,
             follow_exists
- 
-      ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC, name DESC`,
+
+      ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC, name DESC
+      ${limit !== -1 ? `LIMIT ${limit}` : ''}`,
       {
         query,
         type,

@@ -106,6 +106,8 @@ export const loginAcc = async (email, password) => {
   const role = account.type;
   const passwordDB = account.password;
   const id = account.username;
+  const name = account.name;
+  const phone = account.phone;
 
   if (!passwordDB) {
     return { ok: false, error: 401, errorMsg: 'Password not set' };
@@ -120,11 +122,11 @@ export const loginAcc = async (email, password) => {
   if (!passwordIsValid) 
     return { ok: false, error: 401, errorMsg: 'Invalid Password!' };
 
-  const token = jwt.sign({ email, role }, 
+  const token = jwt.sign({ email, role, name, phone, id }, 
     process.env.TOKEN_SECRET,{
     expiresIn: '1000h',
   });
- 
+
   return { ok: true, message: 'Account logged in', id, token};
 };
 

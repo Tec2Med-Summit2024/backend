@@ -8,36 +8,57 @@ import {
   getQuestionsFromEvent,
 } from './events.service.mjs';
 
-/**
- * Get all events of the authorized user
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- * @query {string} [search] - Search query
- * @query {Date} [start] - Limit the events by start date
- * @query {Date} [end] - Limit the events by end date
- */
 export const getEvents = async (req, res) => {
   try {
-    console.log(req.query);
-    const { search, type, start, end } = req.query;
-    console.log(search, start, end);
-    const searchName = search || '';
-    const searchType = type || '';
-    const startDate = start ? new Date(start) : new Date(2000, 0, 1, 0, 0, 0);
-    const endDate = end ? new Date(end) : new Date(2100, 0, 1, 0, 0, 0);
+    const {
+      search = '',
+      start,
+      end,
+      registered = false,
+      speaker_instructor = false,
+      questions_asked = false,
+      topics = [],
+      types = [],
+    } = req.query;
+
+    const startDate = start ? new Date(start) : new Date(2000, 0, 1);
+    const endDate = end ? new Date(end) : new Date(2100, 0, 1);
+
+    const user = req.user ?? 'sarah98@tec2med.com'; // assuming authorized user info is available here
+
+    console.log('Searching events for user:', user);
+    console.log('Search parameters:', {
+      search,
+      start: startDate,
+      end: endDate,
+      registered,
+      speaker_instructor,
+      questions_asked,
+      topics,
+      types,
+    });
 
     const result = await searchEvents(
-      searchName,
-      searchType,
+      search,
       startDate.toISOString(),
-      endDate.toISOString()
+      endDate.toISOString(),
+      {
+        userId: user,
+        registered: registered === 'true',
+        speaker_instructor: speaker_instructor === 'true',
+        questions_asked: questions_asked === 'true',
+        topics: Array.isArray(topics) ? topics : topics ? [topics] : [],
+        types: Array.isArray(types) ? types : types ? [types] : [],
+      }
     );
+
     if (result.ok) {
       return res.status(200).json(result.value);
     }
-
+    console.log('Error searching events:', result.errorMsg);
     return res.status(result.error).json({ error: result.errorMsg });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
