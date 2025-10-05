@@ -15,8 +15,8 @@ export const getEvents = async (req, res) => {
       start,
       end,
       registered = false,
-      speaker_instructor = false,
-      questions_asked = false,
+      speakerInstructor = false,
+      questionsAsked = false,
       topics = [],
       types = [],
     } = req.query;
@@ -24,7 +24,7 @@ export const getEvents = async (req, res) => {
     const startDate = start ? new Date(start) : new Date(2000, 0, 1);
     const endDate = end ? new Date(end) : new Date(2100, 0, 1);
 
-    const user = req.user ?? 'sarah98@tec2med.com'; // assuming authorized user info is available here
+    const user = req.user.username || req.user.id;
 
     console.log('Searching events for user:', user);
     console.log('Search parameters:', {
@@ -32,8 +32,8 @@ export const getEvents = async (req, res) => {
       start: startDate,
       end: endDate,
       registered,
-      speaker_instructor,
-      questions_asked,
+      speakerInstructor,
+      questionsAsked,
       topics,
       types,
     });
@@ -45,8 +45,8 @@ export const getEvents = async (req, res) => {
       {
         userId: user,
         registered: registered === 'true',
-        speaker_instructor: speaker_instructor === 'true',
-        questions_asked: questions_asked === 'true',
+        speakerInstructor: speakerInstructor === 'true',
+        questionsAsked: questionsAsked === 'true',
         topics: Array.isArray(topics) ? topics : topics ? [topics] : [],
         types: Array.isArray(types) ? types : types ? [types] : [],
       }

@@ -34,8 +34,8 @@ export const getFilteredEventsFromDb = async (search, start, end, filters) => {
   const {
     userId,
     registered,
-    speaker_instructor,
-    questions_asked,
+    speakerInstructor,
+    questionsAsked,
     topics,
     types,
   } = filters;
@@ -43,36 +43,50 @@ export const getFilteredEventsFromDb = async (search, start, end, filters) => {
   try {
     let query = `
       MATCH (e:Event)-[:IN_TYPE]->(et:EventType)
-    `;
-
-    if (registered || speaker_instructor || questions_asked) {
-      query += `
-        OPTIONAL MATCH (p:Participant {email: $userId})
-        ${registered ? 'MATCH (p)-[:GOES_TO]->(e)' : ''}
-        ${
-          speaker_instructor
-            ? 'WHERE ANY(s IN e.speakers_instructors WHERE s = $userId)'
-            : ''
-        }
-        ${
-          questions_asked
-            ? 'MATCH (q:Question)-[:ASKED_IN]->(e) WHERE q.authorId = $userId'
-            : ''
-        }
-      `;
-    }
-
-    query += `
       WHERE e.start >= $start AND e.end <= $end
       ${search ? 'AND toLower(e.name) CONTAINS toLower($search)' : ''}
-      ${types.length ? 'AND toLower(et.name) IN ["workshop"]' : ''}
+      ${types.length ? 'AND toLower(et.name) IN $types' : ''}
       ${
         topics.length
           ? 'AND ANY(topic IN e.topics_covered WHERE topic IN $topics)'
           : ''
       }
-      RETURN e, et.name as eventType
     `;
+
+    // Add filter-specific MATCH and WHERE clauses
+    if (registered || speakerInstructor || questionsAsked) {
+      query += ' WITH e, et ';
+      
+      if (registered) {
+        query += `
+          MATCH (p:Participant {username: $userId})-[:GOES_TO]->(e)
+        `;
+      }
+      
+      if (speakerInstructor) {
+        query += `
+          MATCH (e {speakers_instructors: $userId})
+        `;
+      }
+      
+      if (questionsAsked) {
+        query += `
+          MATCH (p2:Participant {username: $userId})-[:ASKS]->(q:Question)-[:ASKED_IN]->(e)
+        `;
+      }
+      
+      // Combine all filter conditions with proper WHERE clause
+      const filterConditions = [];
+      if (registered) filterConditions.push('p IS NOT NULL');
+      if (speakerInstructor) filterConditions.push('e.speakers_instructors CONTAINS $userId');
+      if (questionsAsked) filterConditions.push('q IS NOT NULL');
+      
+      if (filterConditions.length > 0) {
+        query += ` WHERE ${filterConditions.join(' OR ')}`;
+      }
+    }
+
+    query += ` RETURN e, et.name as eventType`;
     console.log('Constructed query:', query);
     const result = await session.run(query, {
       search,
@@ -90,7 +104,16 @@ export const getFilteredEventsFromDb = async (search, start, end, filters) => {
       return event;
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error in getFilteredEventsFromDb:', error);
+    console.error('Query parameters:', {
+      search,
+      start,
+      end,
+      userId,
+      types: types.map((t) => t.toLowerCase()),
+      topics: topics.map((t) => t.toLowerCase()),
+    });
+    console.error('Filters:', filters);
     return null;
   } finally {
     session.close();
