@@ -4,6 +4,18 @@ import { makeQuery } from '../helpers/functions.mjs';
 
 const router = express.Router();
 
+router.get('/data', async (req, res) => {
+  try {
+    const partners = await makeQuery(`MATCH (p:Partner)
+    WITH p AS partner
+    RETURN partner`);
+    return res.status(200).json({ partners });
+  } catch (error) {
+    console.error('Error fetching partners:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 /**
  * Partners Management Page
  */
@@ -97,13 +109,16 @@ router.post('/', async (req, res) => {
       .join(', ');
     console.log('Property Assignments:', propertyAssignments);
     const user_id = crypto.randomUUID();
-    const result = await makeQuery(`
+    const result = await makeQuery(
+      `
       CREATE (newPartner:Partner {
         user_id: $user_id,
         ${propertyAssignments}
       })
       RETURN newPartner
-    `, { user_id,});
+    `,
+      { user_id }
+    );
 
     const p = result[0];
     console.log('Created Partner with user_id:', p.user_id);

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import express from 'express';
 import { makeQuery } from '../helpers/functions.mjs';
 
@@ -7,7 +8,7 @@ router.get('/data', async (req, res) => {
   try {
     const participants = await makeQuery(`MATCH (p:Participant)
     WITH p { .* , password: null } AS participant
-    RETURN participant LIMIT 50`);
+    RETURN participant`);
     return res.status(200).json({ participants });
   } catch (error) {
     console.error('Error fetching participants:', error);
@@ -130,15 +131,14 @@ router.post('/', async (req, res) => {
       .join(', ');
 
     console.log('Property Assignments:', propertyAssignments);
+    const user_id = crypto.randomUUID();
     const result = await makeQuery(`
-      MATCH (p:Participant)
-      WITH count(p) + 1 AS participantCount
       CREATE (newParticipant:Participant {
-        username: '${fields.name.toLowerCase()}-' + toString(participantCount),
+        username: $user_id,
         ${propertyAssignments}
       })
       RETURN newParticipant
-    `);
+    `, { user_id });
 
     const p = result[0];
     console.log('Created Participant with username:', p.username);
