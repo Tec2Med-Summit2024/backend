@@ -93,39 +93,14 @@ export const addFeedback = async (req, res) => {
     const { feedback } = req.body;
     const username = req.user.username;
 
-    console.log('=== ADD FEEDBACK DEBUG LOGS ===');
-    console.log('Request params:', { id, username });
-    console.log('Request body:', feedback);
-    console.log('User object:', req.user);
-
-    // Validate required parameters
-    if (!id) {
-      console.error('Missing event ID');
-      return res.status(400).json({ error: 'Event ID is required' });
-    }
-    if (!username) {
-      console.error('Missing username');
-      return res.status(400).json({ error: 'Username is required' });
-    }
-    if (!feedback) {
-      console.error('Missing feedback content');
-      return res.status(400).json({ error: 'Feedback content is required' });
-    }
-
-    console.log('Calling addFeedbackToEvent with:', { id, username, feedback });
     const result = await addFeedbackToEvent(id, username, feedback);
-    console.log('addFeedbackToEvent result:', result);
-
     if (result.ok) {
-      console.log('Feedback added successfully:', result.value);
       return res.status(200).json(result.value);
     }
 
-    console.error('Failed to add feedback:', { error: result.error, errorMsg: result.errorMsg });
     return res.status(result.error).json({ error: result.errorMsg });
   } catch (error) {
-    console.error('Unexpected error in addFeedback:', error);
-    console.error('Error stack:', error.stack);
+    console.log(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
