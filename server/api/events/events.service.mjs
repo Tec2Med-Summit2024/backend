@@ -52,13 +52,34 @@ export const getEventById = async (id) => {
  */
 export const addFeedbackToEvent = async (eventId, username, feedback) => {
   try {
+    console.log('=== SERVICE LAYER DEBUG LOGS ===');
+    console.log('addFeedbackToEvent called with:', { eventId, username, feedback });
+    console.log('Feedback type:', typeof feedback);
+    console.log('Feedback object keys:', feedback ? Object.keys(feedback) : 'null');
+
+    // Validate feedback object structure
+    if (!feedback || typeof feedback !== 'object') {
+      console.error('Invalid feedback object:', feedback);
+      return { ok: false, error: 400, errorMsg: 'Invalid feedback format' };
+    }
+
     const result = await addFeedbackToEventFromDb(eventId, username, feedback);
+    console.log('Database result:', result);
+
     if (result) {
+      console.log('Successfully added feedback to database');
       return { ok: true, value: result };
     }
 
-    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+    console.error('Database returned null/undefined result');
+    return { ok: false, error: 500, errorMsg: 'Failed to add feedback to database' };
   } catch (err) {
+    console.error('Error in addFeedbackToEvent service:', err);
+    console.error('Error details:', {
+      message: err.message,
+      stack: err.stack,
+      code: err.code
+    });
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   }
 };

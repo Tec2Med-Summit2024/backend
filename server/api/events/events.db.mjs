@@ -159,20 +159,81 @@ export const addFeedbackToEventFromDb = async (id, username, feedback) => {
   const driver = getDriver();
   const session = driver.session();
   const eventId = parseInt(id);
-  const feedbackId = `${eventId}f${username}`;
-  feedback.feedback_id = feedbackId; // Add feedback_id to the feedback object
+  const feedbackId = `${eventId}_f_${username}`;
+  
+  console.log('=== DATABASE LAYER DEBUG LOGS ===');
+  console.log('addFeedbackToEventFromDb called with:', { id, eventId, username, feedback });
+  console.log('Generated feedbackId:', feedbackId);
+
   try {
+    // Check if event exists first
+    console.log('Checking if event exists with ID:', eventId);
+    const eventCheck = await session.run(
+      `MATCH (e:Event {event_id: $eventId}) RETURN e`,
+      { eventId }
+    );
+    console.log('Event check result records:', eventCheck.records.length);
+    if (eventCheck.records.length === 0) {
+      console.error('Event not found with ID:', eventId);
+      return null;
+    }
+
+    // Check if participant exists
+    console.log('Checking if participant exists with username:', username);
+    const participantCheck = await session.run(
+      `MATCH (p:Participant {username: $username}) RETURN p`,
+      { username }
+    );
+    console.log('Participant check result records:', participantCheck.records.length);
+    if (participantCheck.records.length === 0) {
+      console.error('Participant not found with username:', username);
+      return null;
+    }
+
+    // Flatten nested objects for Neo4j compatibility
+    const flattenedFeedback = {
+      feedback_id: feedbackId,
+      comments: feedback.comments || '',
+      team_organization: feedback.team?.organization || null,
+      team_helpfulness: feedback.team?.helpfulness || null,
+      team_communication: feedback.team?.communication || null,
+      team_meals_quality: feedback.team?.meals_quality || null,
+      team_choice_of_speakers: feedback.team?.choice_of_speakers || null,
+      team_price: feedback.team?.price || null,
+      team_location: feedback.team?.location || null,
+      team_date: feedback.team?.date || null,
+      program_learning: feedback.program?.learning || null,
+      program_personal_growth: feedback.program?.personal_growth || null,
+      program_personal_purpose: feedback.program?.personal_purpose || null,
+      program_networking: feedback.program?.networking || null,
+      session_data: JSON.stringify(feedback.session) || '{}'
+    };
+
+    console.log('Flattened feedback object:', flattenedFeedback);
+
+    console.log('Creating feedback node with Cypher query...');
     const result = await session.run(
       `MATCH (e:Event {event_id: $eventId})
        MATCH (p:Participant {username: $username})
        CREATE (f:Feedback $feedback)
        CREATE (p)-[:GIVES_FEEDBACK]->(f)
-       CREATE (f)-[:ABOUT]->(e) 
+       CREATE (f)-[:ABOUT]->(e)
        RETURN f.feedback_id AS feedbackId`,
-      { eventId, username, feedback }
+      { eventId, username, feedback: flattenedFeedback }
     );
-    return result.records[0]?.get('feedbackId');
+    
+    const feedbackIdResult = result.records[0]?.get('feedbackId');
+    console.log('Cypher query result:', feedbackIdResult);
+    console.log('Total records returned:', result.records.length);
+    
+    return feedbackIdResult;
   } catch (error) {
+    console.error('Database error in addFeedbackToEventFromDb:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
     return null;
   } finally {
     session.close();

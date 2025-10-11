@@ -25,32 +25,32 @@ router.get('/:id', getEvent);
 
 /**
  * @brief Add event feedback
- * @POST /api/events/:id/score/:username
+ * @POST /api/events/:id/feedback
  */
-router.post('/:id/feedback/:username', addFeedback);
+router.post('/:id/feedback', addFeedback);
 
 /**
  * @brief Creates a new question for the event
  * @POST /api/events/:id/questions
  */
-router.post('/:id/questions/:username', createQuestion);
+router.post('/:id/questions', createQuestion);
 
 /**
  * @brief Likes a question
  * @PUT /api/events/:id/questions/:questionId/like
  */
-router.put('/:id/questions/:questionId/:username', likeQuestion);
+router.put('/:id/questions/:questionId', likeQuestion);
 
 /**
  * @brief Dislikes a question
  * @DELETE /api/events/:id/questions/:questionId
  */
-router.delete('/:id/questions/:questionId/:username', dislikeQuestion);
+router.delete('/:id/questions/:questionId', dislikeQuestion);
 
 /**
  * @brief Gets all questions of the event. Username is used to check if the user liked the question
- * @GET /api/events/:id/questions/:username
+ * @GET /api/events/:id/questions
  */
-router.get('/:id/questions/:username', getQuestions);
+router.get('/:id/questions', getQuestions);
 
 export default router;

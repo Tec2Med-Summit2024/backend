@@ -415,6 +415,12 @@ POST /api/events/{id}/questions
 
 Sends a question made by the logged participant to the event identified by **id**.
 
+**Body content**
+
+| Param     | Optional | Type   | Description                                                |
+| :-------- | -------- | :----- | :--------------------------------------------------------- |
+| content | no   | `STRING` | The content of the question. |
+
 <br>
 
 #### Get event questions
@@ -423,17 +429,17 @@ Sends a question made by the logged participant to the event identified by **id*
 GET /api/events/{id}/questions
 ```
 
-Returns the questions of the event identified by **id**.
+Returns the questions of the event identified by **id**. The endpoint uses the authenticated user to determine which questions have been liked by the user.
 
 <br>
 
-#### Send event satisfaction score
+#### Send event feedback
 
 ```HTTP
-POST /api/events/{id}/score
+POST /api/events/{id}/feedback
 ```
 
-Sends the satisfaction score given by the logged user to the event identified by **id**.
+Sends the feedback given by the logged user to the event identified by **id**.
 
 <br>
 

@@ -89,17 +89,43 @@ export const getEvent = async (req, res) => {
  */
 export const addFeedback = async (req, res) => {
   try {
-    const { id, username } = req.params;
+    const { id } = req.params;
     const { feedback } = req.body;
+    const username = req.user.username;
 
+    console.log('=== ADD FEEDBACK DEBUG LOGS ===');
+    console.log('Request params:', { id, username });
+    console.log('Request body:', feedback);
+    console.log('User object:', req.user);
+
+    // Validate required parameters
+    if (!id) {
+      console.error('Missing event ID');
+      return res.status(400).json({ error: 'Event ID is required' });
+    }
+    if (!username) {
+      console.error('Missing username');
+      return res.status(400).json({ error: 'Username is required' });
+    }
+    if (!feedback) {
+      console.error('Missing feedback content');
+      return res.status(400).json({ error: 'Feedback content is required' });
+    }
+
+    console.log('Calling addFeedbackToEvent with:', { id, username, feedback });
     const result = await addFeedbackToEvent(id, username, feedback);
+    console.log('addFeedbackToEvent result:', result);
+
     if (result.ok) {
+      console.log('Feedback added successfully:', result.value);
       return res.status(200).json(result.value);
     }
 
+    console.error('Failed to add feedback:', { error: result.error, errorMsg: result.errorMsg });
     return res.status(result.error).json({ error: result.errorMsg });
   } catch (error) {
-    console.log(error);
+    console.error('Unexpected error in addFeedback:', error);
+    console.error('Error stack:', error.stack);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -111,8 +137,9 @@ export const addFeedback = async (req, res) => {
  */
 export const createQuestion = async (req, res) => {
   try {
-    const { id, username } = req.params;
+    const { id } = req.params;
     const content = req.body.content;
+    const username = req.user.username;
 
     const result = await createQuestionInEvent(username, id, content);
     if (result.ok) {
@@ -133,7 +160,8 @@ export const createQuestion = async (req, res) => {
  */
 export const likeQuestion = async (req, res) => {
   try {
-    const { id, questionId, username } = req.params;
+    const { id, questionId } = req.params;
+    const username = req.user.username;
 
     const result = await likeQuestionInEvent(id, questionId, username);
     if (result.ok) {
@@ -153,7 +181,8 @@ export const likeQuestion = async (req, res) => {
  */
 export const dislikeQuestion = async (req, res) => {
   try {
-    const { id, questionId, username } = req.params;
+    const { id, questionId } = req.params;
+    const username = req.user.username;
 
     const result = await dislikeQuestionInEvent(id, questionId, username);
     if (result.ok) {
@@ -173,7 +202,8 @@ export const dislikeQuestion = async (req, res) => {
  */
 export const getQuestions = async (req, res) => {
   try {
-    const { id, username } = req.params;
+    const { id } = req.params;
+    const username = req.user.username;
 
     const result = await getQuestionsFromEvent(id, username);
     if (result.ok) {
