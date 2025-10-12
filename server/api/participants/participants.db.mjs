@@ -64,6 +64,7 @@ export const updateParticipantWithData = async (username, data) => {
       website,
       interests,
       expertise,
+      profile_image,
     } = r;
     return {
       email,
@@ -79,7 +80,68 @@ export const updateParticipantWithData = async (username, data) => {
       website,
       interests,
       expertise,
+      profile_image,
     };
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ * Updates the profile image path for a participant
+ * @param {string} username - Participant username
+ * @param {string} imagePath - Relative path to the profile image
+ * @returns {Promise<{success: boolean, profile_image?: string, error?: string}>}
+ */
+export const updateParticipantProfileImage = async (username, imagePath) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (a:Participant {username: $username})
+      SET a.profile_image = $imagePath
+      RETURN a.profile_image`,
+      { username, imagePath }
+    );
+
+    const record = result.records[0];
+    if (!record) {
+      return { success: false, error: 'Participant not found' };
+    }
+
+    const profileImage = record.get(0);
+    return { success: true, profile_image: profileImage };
+
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ * Gets the current profile image path for a participant
+ * @param {string} username - Participant username
+ * @returns {Promise<{success: boolean, profile_image?: string, error?: string}>}
+ */
+export const getParticipantProfileImage = async (username) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (a:Participant {username: $username})
+      RETURN a.profile_image`,
+      { username }
+    );
+
+    const record = result.records[0];
+    if (!record) {
+      return { success: false, error: 'Participant not found' };
+    }
+
+    const profileImage = record.get(0);
+    return { success: true, profile_image: profileImage || null };
+
   } finally {
     await session.close();
   }

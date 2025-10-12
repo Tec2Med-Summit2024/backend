@@ -10,6 +10,7 @@ import eventsRouter from './api/events/events.route.mjs';
 import partnersRouter from './api/partners/partners.route.mjs';
 import usersRouter from './api/users/users.route.mjs';
 import authRouter from './auth/auth.route.mjs';
+import { handleFileUploadErrors } from './middleware/fileUploadValidation.mjs';
 
 const app = express();
 
@@ -22,6 +23,9 @@ app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
 
+// Serve static files from the uploads directory
+app.use('/uploads', express.static('uploads'));
+
 app.param('username', verifyUsername);
 
 // Apply authentication middleware to all API routes
@@ -30,6 +34,9 @@ app.use('/api/events', authenticateToken, eventsRouter);
 app.use('/api/partners', authenticateToken, partnersRouter);
 app.use('/api/users', authenticateToken, usersRouter);
 app.use('/api', authRouter);
+
+// Add file upload error handling middleware
+app.use(handleFileUploadErrors);
 
 app.use('*', (_, res) => res.status(404).json({ error: 'Not found' }));
 

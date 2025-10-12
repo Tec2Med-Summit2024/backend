@@ -3,6 +3,8 @@
 import {
   getParticipantByUsername,
   updateParticipantWithData,
+  updateParticipantProfileImage,
+  getParticipantProfileImage,
   addEventToSchedule,
   removeEventFromSchedule,
   addCertificate,
@@ -167,4 +169,43 @@ export const getParticipantFollowedPartners = async (username) => {
   }
 
   return { ok: true, value: await getFollowedPartners(username) };
+};
+
+/**
+ * Updates the profile image for a participant
+ * @param {string} username - Participant username
+ * @param {string} imagePath - Relative path to the profile image
+ * @returns {Promise<{ok: boolean, profile_image?: string, error?: number, errorMsg?: string}>}
+ */
+export const updateParticipantProfileImageInDb = async (username, imagePath) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
+  }
+
+  const result = await updateParticipantProfileImage(username, imagePath);
+  if (!result.success) {
+    return { ok: false, error: 500, errorMsg: result.error };
+  }
+
+  return { ok: true, value: { profile_image: result.profile_image } };
+};
+
+/**
+ * Gets the profile image for a participant
+ * @param {string} username - Participant username
+ * @returns {Promise<{ok: boolean, profile_image?: string, error?: number, errorMsg?: string}>}
+ */
+export const getParticipantProfileImageFromDb = async (username) => {
+  const participant = await getParticipantByUsername(username);
+  if (!participant) {
+    return { ok: false, error: 404, errorMsg: 'Participant not found' };
+  }
+
+  const result = await getParticipantProfileImage(username);
+  if (!result.success) {
+    return { ok: false, error: 500, errorMsg: result.error };
+  }
+
+  return { ok: true, value: { profile_image: result.profile_image } };
 };

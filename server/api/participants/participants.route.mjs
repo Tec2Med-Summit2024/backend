@@ -11,8 +11,10 @@ import {
   getCertificates,
   getQuestions,
   getFollowedPartners,
+  uploadProfileImage,
 } from './participants.controller.mjs';
 import { verifyUsername } from '../../middleware/verifier.mjs';
+import { validateProfileImageUpload, handleMultipartData, handleFileUploadErrors } from '../../middleware/fileUploadValidation.mjs';
 
 const router = express.Router();
 
@@ -28,7 +30,7 @@ router.get('/:username', getParticipant);
 /**
  *
  */
-router.put('/:username', updateParticipant);
+router.put('/:username', handleMultipartData, updateParticipant);
 
 /**
  *
@@ -64,5 +66,10 @@ router.get('/:username/questions', getQuestions);
  *
  */
 router.get('/:username/partners', getFollowedPartners);
+
+/**
+ * Upload profile image for a participant
+ */
+router.post('/:username/profile-image', validateProfileImageUpload, uploadProfileImage);
 
 export default router;

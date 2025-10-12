@@ -172,7 +172,7 @@ export const searchUsersDB = async (
       RETURN entity.name AS name,
             entity.username AS username,
             entity.biography AS biography,
-            entity.photo_id AS photo_id,
+            entity.profile_image AS profile_image,
             follow_exists
 
       ORDER BY matched_interests DESC, matched_expertise DESC, institution_match DESC, name DESC
@@ -188,16 +188,30 @@ export const searchUsersDB = async (
         expertises,
       }
     );
-
-    return result.records.map((n) => {
-      return {
+    
+    const results = result.records.map((n) => {
+      const entity = n.get(0);
+      let profileImageValue = n.get(3);
+      
+      // Fallback to entity properties if direct alias is null/undefined
+      if (profileImageValue === null || profileImageValue === undefined) {
+        if (entity && entity.properties && entity.properties.profile_image !== undefined) {
+          profileImageValue = entity.properties.profile_image;
+        }
+      }
+      
+      const user = {
         name: n.get(0),
         username: n.get(1),
         biography: n.get(2),
-        photo_id: n.get(3),
+        profileImage: profileImageValue,
         follow_exists: n.get(4),
       };
+      
+      return user;
     });
+    
+    return results;
   } catch (error) {
     return { ok: false, error: 500, errorMsg: error.message };
   } finally {
