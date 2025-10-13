@@ -116,9 +116,7 @@ router.post('/', async (req, res) => {
         ${propertyAssignments}
       })
       RETURN newPartner
-    `,
-      { user_id }
-    );
+    `, { user_id });
 
     const p = result[0];
     console.log('Created Partner with user_id:', p.user_id);

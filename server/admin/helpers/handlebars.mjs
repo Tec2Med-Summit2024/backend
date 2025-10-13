@@ -32,6 +32,7 @@ const handlebars = {
 	array: function() {
 		return Array.prototype.slice.call(arguments, 0, -1);
 	},
+	isArray: (value) => Array.isArray(value),
 	json: (context) => JSON.stringify(context, null, 2),
 	typeof: (value) => typeof value,
 	isChecked: (array, value) => {

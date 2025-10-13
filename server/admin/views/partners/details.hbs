@@ -25,7 +25,7 @@
       <button
         type='submit'
         class='bg-red-600 text-white px-4 py-2 rounded-md hover:opacity-80 flex items-center gap-1'
-        onclick="return confirm('Are you sure you want to delete partner {{partner.user_id}}?')"
+        onclick="return confirm('Are you sure you want to delete partner {{partner.name}}?')"
       >
         Delete Partner
       </button>
@@ -50,7 +50,7 @@
     <p><strong>LinkedIn:</strong> {{partner.linkedin}}</p>
     <p><strong>Instagram:</strong> {{partner.instagram}}</p>
     <p><strong>Facebook:</strong> {{partner.facebook}}</p>
-    <p><strong>Working Participants User IDs:</strong>
+    <p><strong>Working Participants:</strong>
       <style>
         .underlined-link { text-decoration: underline; }
       </style>
