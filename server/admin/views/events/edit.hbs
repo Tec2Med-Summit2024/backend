@@ -1,22 +1,73 @@
-<header class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'>
-  <h1 class='text-4xl'>Edit Event - {{event.name}}</h1>
+<header
+  class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'>
+  <h1 class='text-4xl'>Edit Event</h1>
 
-  <a href='/admin/events/{{event.event_id}}'
-    class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'>
+  <a
+    href='/admin/events/{{event.event_id}}'
+    class='flex items-center gap-2 px-4 py-2 rounded-md bg-red-600 text-gray-100'>
     <span class='material-symbols-outlined'>arrow_back</span>
-    Return to {{event.name}}
+    Cancel
   </a>
 </header>
 
 <section class='mx-auto max-w-screen-2xl p-6'>
-  <form id="edit-event-form" action='/admin/events/{{event.event_id}}' method='post'
-    class='grid grid-cols-2 gap-6 text-lg' autocomplete='off'>
+  <form
+    id="edit-event-form"
+    action='/admin/events/{{event.event_id}}'
+    method='post'
+    class='grid grid-cols-2 gap-4 text-lg'
+    autocomplete='off'
+  >
+    <!-- coluna da esquerda -->
+    <div class='flex flex-col gap-4'>
+      
+      <div class='flex flex-col'>
+        <label for='name'>Event Name *</label>
+        <input type='text' id='name' name='name'
+          placeholder='{{event.name}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="80" />
+      </div>
 
-    <div class='flex flex-col gap-4 col-span-2'>
-      <div class="flex flex-col">
-        <label for="event_type">Event Type</label>
+      <div class='flex flex-col'>
+        <label for='building_and_room'>Location (Building, Floor, Room) *</label>
+        <input type='text' id='building_and_room' name='building_and_room'
+          placeholder='{{event.building_and_room}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='start'>Start Date &amp; Time *</label>
+        <input type='text' id='start' name='start'
+          placeholder='{{event.start}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='end'>End Date &amp; Time *</label>
+        <input type='text' id='end' name='end'
+          placeholder='{{event.end}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='materials_to_bring'>Materials to Bring</label>
+        <input type='text' id='materials_to_bring' name='materials_to_bring'
+          placeholder='{{event.materials_to_bring}}'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          oninput="validateMaterialsInput(this)" />
+        <span class="text-xs text-gray-500 mt-1">Maximum 10 comma-separated values</span>
+      </div>
+    </div>
+
+    <!-- coluna da direita -->
+    <div class='flex flex-col gap-4'>
+      <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css' />
+
+      <div class='flex flex-col'>
+        <label for="event_type">Event Type *</label>
         <select id="event-type-dropdown" name="event_type"
-          class="px-2 py-1 border border-gray-800 outline-none rounded-md w-full">
+          class="px-2 py-1 border border-gray-800 rounded-md">
           <option value="Debate">Debate</option>
           <option value="Masterclass">Masterclass</option>
           <option value="Roundtable">Roundtable</option>
@@ -24,352 +75,126 @@
           <option value="Workshop">Workshop</option>
         </select>
       </div>
-    </div>
 
-    <div class='flex flex-col gap-2'>
       <div class='flex flex-col'>
-        <label for='name'>Name</label>
-        <input type='text' id='name' name='name' placeholder='{{event.name}}'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' maxlength="80" />
+          <label for='speakers_instructors'>Speakers/Instructors *</label>
+          <select id='speakers_instructors' name='speakers_instructors'
+            class='px-2 py-1 border border-gray-800 outline-none rounded-md'>
+              {{#each participants}}
+              <option value="{{this.username}}" {{#if (includes ../event.presenters this.username)}}selected{{/if}}>{{this.name}}</option>
+              {{/each}}
+          </select>
       </div>
+
       <div class='flex flex-col'>
-        <label for='start'>Start Date &amp; Time</label>
-        <input type='text' id='start' name='start' placeholder='{{event.start}}'
+        <label for='max_cap'>Maximum Capacity *</label>
+        <input type='text' id='max_cap' name='max_cap'
+          placeholder='{{event.max_cap}}'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
       </div>
 
       <div class='flex flex-col'>
-        <label for='building_and_room'>Location</label>
-        <input type='text' id='building_and_room' name='building_and_room' placeholder='{{event.building_and_room}}'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
-      </div>
-
-      <div class="flex flex-col">
-        <label for="participants" class="flex items-center gap-2 pb-1">
-          <span>Participants</span>
-          <button id="activate-participants-btn" type="button" data-type="participants"
-            class="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md h-8 flex items-center">
-            Edit
-          </button>
-        </label>
-        <style>
-          .choices__list--dropdown {
-            max-height: 200px;
-            /* same as ~12 items */
-            overflow-y: auto;
-          }
-
-          .choices {
-            margin-bottom: 0px !important;
-          }
-        </style>
-
-        <select id="participants" name="participants" multiple
-          class="px-2 py-1 border border-gray-800 outline-none rounded-md" disabled>
-          {{#each event.participants}}
-          <option value="{{this.username}}" selected>{{this.name}}</option>
-          {{/each}}
+        <label for='attendees'>Attendees</label>
+        <select id='attendees' name='attendees'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'>
+            {{#each participants}}
+            <option value="{{this.username}}" {{#if (includes ../event.participants this.username)}}selected{{/if}}>{{this.name}}</option>
+            {{/each}}
         </select>
-
-        <div class="mt-2 flex justify-between hidden" id="participants-action-buttons" data-type="participants">
-          <button id="save-participants-btn" data-type="participants" type="button"
-            class="px-4 py-2 bg-green-500 text-white rounded-md">
-            Save
-          </button>
-          <button id="cancel-participants-btn" data-type="participants" type="button"
-            class="px-4 py-2 bg-red-500 text-white rounded-md">
-            Cancel
-          </button>
-        </div>
-
-        <span class="text-xs text-gray-500 mt-1">Select one or more participants</span>
       </div>
     </div>
 
-    <div class='flex flex-col gap-2'>
-
-      <div class="flex flex-col">
-        <label for="presenters" class="flex items-center gap-2 pb-1">
-          <span>Speakers/Instructors</span>
-          <button id="activate-presenters-btn" type="button" data-type="presenters"
-            class="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md h-8 flex items-center">
-            Edit
-          </button>
-        </label>
-        <style>
-          .choices__list--dropdown {
-            max-height: 200px;
-            /* same as ~12 items */
-            overflow-y: auto;
-          }
-
-          .choices {
-            margin-bottom: 0px !important;
-          }
-        </style>
-
-        <select id="presenters" name="presenters" multiple
-          class="px-2 py-1 border border-gray-800 outline-none rounded-md" disabled>
-          {{#each event.presenters}}
-          <option value="{{this.username}}" selected>{{this.name}}</option>
-          {{/each}}
-        </select>
-
-        <div class="mt-2 flex justify-between hidden" id="presenters-action-buttons" data-type="presenters">
-          <button id="save-presenters-btn" data-type="presenters" type="button"
-            class="px-4 py-2 bg-green-500 text-white rounded-md">
-            Save
-          </button>
-          <button id="cancel-presenters-btn" data-type="presenters" type="button"
-            class="px-4 py-2 bg-red-500 text-white rounded-md">
-            Cancel
-          </button>
-        </div>
-
-        <span class="text-xs text-gray-500 mt-1">Select one or more speakers/instructors</span>
-      </div>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-
-      <div class='flex flex-col'>
-        <label for='end'>End Date &amp; Time</label>
-        <input type='text' id='end' name='end' placeholder='{{event.end}}'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='materials_to_bring'>Materials Necessary</label>
-        <input type='text' id='materials_to_bring' name='materials_to_bring' placeholder='{{event.materials_to_bring}}'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' oninput="validateMaterialsInput(this)" />
-        <span class="text-xs text-gray-500 mt-1">Maximum 10 comma-separated values</span>
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='max_cap'>Maximum Capacity</label>
-        <input type='text' id='max_cap' name='max_cap' placeholder='{{event.max_cap}}'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
-      </div>
+    <!-- espaço de baixo -->
+    <div class='flex flex-col gap-2 col-span-2'>
+      <label for='description_about'>Description</label>
+      <textarea form="edit-event-form" type='text' id='description_about' name='description_about'
+        placeholder='{{event.description_about}}' class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        rows='4'
+        maxlength="250"></textarea>
+      <span class="text-xs text-gray-500 mt-1">Maximum 250 characters including spaces</span>
     </div>
 
     <div class='flex flex-col gap-2 col-span-2'>
-      <label for='topics_covered'>Topics</label>
+      <label for='topics_covered'>Topics *</label>
       <div class='flex flex-wrap gap-2 mt-1'>
-        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic
-        systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical
-        decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare'
-        'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health
-        policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition'
-        'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for
-        research' 'Surgery' 'Virtual reality' 'Wearable technology') as |topic|}}
+        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality'
+        'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals'
+        'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research'
+        'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics'
+        'Hardware & robotics' 'Healthcare' 'Health data privacy and security' 'Health policy'
+        'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition'
+        'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring'
+        'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |topic|}}
         <label class='relative cursor-pointer'>
-          <input type='checkbox' name='topics_covered' value='{{topic}}' class='peer opacity-0 absolute' {{isChecked
-            ../event.topics_covered topic}} />
-          <span
-            class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{topic}}</span>
+          <input type='checkbox' name='topics_covered' value='{{topic}}'
+            class='peer opacity-0 absolute'
+            {{isChecked ../event.topics_covered topic}} />
+          <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{topic}}</span>
         </label>
         {{/each}}
       </div>
       <span class="text-xs text-gray-500 mt-1">Select between 2 and 6 topics</span>
     </div>
 
-    <div class='flex flex-col gap-2 col-span-2'>
-      <label class for='description_about'>About</label>
-      <textarea form="edit-event-form" type='text' id='description_about' name='description_about'
-        placeholder='{{event.description_about}}' class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-        rows='4' maxlength="250" /></textarea>
-      <span class="text-xs text-gray-500 mt-1">Maximum 250 characters including spaces</span>
-    </div>
-
     <div class='w-fit mx-auto col-span-2'>
-      <button form="edit-event-form" type='submit' class='px-6 py-2 bg-green-600 text-gray-100 rounded-md '
-        onclick="return validateEventForm()">Edit Event</button>
+      <button form="edit-event-form" type='submit'
+        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md '
+        onclick="return validateEventForm()"
+      >Save all changes</button>
     </div>
   </form>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-  <script>
-
-    const eventData = {{{ json event }}};
-    const choicesInstances = {};
-    const initialSelections = {};
-    const cachedData = { presenters: null, participants: null };
-
-    const currentEventType = eventData.event_type; // Example, could be dynamically set
-    const selectElement = document.getElementById('event-type-dropdown');
-
-    // Set the selected value
-    selectElement.value = currentEventType;
-
-    document.addEventListener('DOMContentLoaded', () => {
-      // Initialize Choices for both dropdowns
-      initializeChoices("presenters", "presenters");
-      initializeChoices("participants", "participants");
-    });
-
-    function initializeChoices(selectId, type) {
-      const selectEl = document.getElementById(selectId);
-      choicesInstances[type] = new Choices(selectEl, {
-        removeItemButton: true,
-        placeholder: true,
-        placeholderValue: `Select or type and add ${type}`,
-        duplicateItemsAllowed: false,
-      });
-
-      initialSelections[type] = choicesInstances[type].getValue(true);
-    }
-
-    function populateDropdown(type, data) {
-      const selectEl = document.getElementById(type === "presenters" ? "presenters" : "participants");
-      selectEl.innerHTML = "";
-
-      data.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.username;
-        option.textContent = item.name;
-        selectEl.appendChild(option);
-      });
-
-      choicesInstances[type].setChoices(
-        data.map(item => ({
-          value: item.username,
-          label: item.name,
-          selected: initialSelections[type].includes(item.username),
-        })),
-        'value',
-        'label',
-        true
-      );
-    }
-
-    function fetchParticipantsData() {
-      return fetch("/admin/participants/data")
-        .then(response => response.json())
-        .then(data => {
-          cachedData.presenters = data.participants;
-          cachedData.participants = data.participants;
-          return data.participants;
-        })
-        .catch(err => console.error("Error fetching data:", err));
-    }
-
-    // --- BUTTON EVENT LISTENERS ---
-
-    // For all activate buttons
-    document.querySelectorAll('[id^="activate-"]').forEach(button => {
-      button.addEventListener("click", async () => {
-        const type = button.getAttribute("data-type");
-
-        document.getElementById(`activate-${type}-btn`).classList.add("hidden");
-        document.getElementById(`${type}-action-buttons`).classList.remove("hidden");
-
-        choicesInstances[type].enable();
-
-        if (!cachedData[type]) {
-          const data = await fetchParticipantsData();
-          populateDropdown(type, data);
-        } else {
-          populateDropdown(type, cachedData[type]);
-        }
-      });
-    });
-
-    // For all save buttons
-    document.querySelectorAll('[id^="save-"]').forEach(button => {
-      button.addEventListener("click", () => {
-        const type = button.getAttribute("data-type");
-        const selectedValues = choicesInstances[type].getValue(true);
-
-        fetch(`/admin/events/${eventData.event_id.low}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            [type]: selectedValues
-          }),
-        })
-          .then(res => res.json())
-          .then(data => {
-            alert(`${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully.`);
-            initialSelections[type] = selectedValues.slice();
-
-            choicesInstances[type].disable();
-            document.getElementById(`${type}-action-buttons`).classList.add("hidden");
-            document.getElementById(`activate-${type}-btn`).classList.remove("hidden");
-          })
-          .catch(err => {
-            console.error(`Error saving ${type}:`, err);
-            alert(`Error saving ${type}.`);
-          });
-      });
-    });
-
-    // For all cancel buttons
-    document.querySelectorAll('[id^="cancel-"]').forEach(button => {
-      button.addEventListener("click", () => {
-        const type = button.getAttribute("data-type");
-
-        // Reset dropdown values for the current type
-        choicesInstances[type].clearStore().setValue(initialSelections[type]);
-
-        // Re-add cached data with initial selections for the current type
-        if (cachedData[type]) {
-          populateDropdown(type, cachedData[type]);
-        }
-
-        choicesInstances[type].disable();
-        document.getElementById(`${type}-action-buttons`).classList.add("hidden");
-        document.getElementById(`activate-${type}-btn`).classList.remove("hidden");
-      });
-    });
-
-
-
-    // Validation functions
-    function validateEventForm() {
-      // Validate start time is before end time
-      const startTime = document.getElementById('start').value;
-      const endTime = document.getElementById('end').value;
-
-      if (startTime && endTime && startTime >= endTime) {
-        alert('Start Date & Time must be before End Date & Time');
-        return false;
-      }
-
-      // Validate topics selection (min 2, max 6)
-      const selectedTopics = document.querySelectorAll('input[name="topics_covered"]:checked');
-      if (selectedTopics.length < 2) {
-        alert('Please select at least 2 topics');
-        return false;
-      }
-      if (selectedTopics.length > 6) {
-        alert('Please select no more than 6 topics');
-        return false;
-      }
-
-
-      // Loop through each form field
-      const formElements = document.querySelectorAll('#edit-event-form input, #edit-event-form select, #edit-event-form textarea');
-
-      formElements.forEach((element) => {
-        // Check if field is empty and remove name if empty
-        if (element.value === "" || element.value === element.placeholder) {
-          element.removeAttribute('name');
-        }
-      });
-
-      // Allow form submission to continue
-      return true;
-    }
-
-    function validateMaterialsInput(input) {
-      const value = input.value;
-      const materials = value.split(',').map(item => item.trim()).filter(item => item.length > 0);
-
-      if (materials.length > 10) {
-        alert('Maximum 10 materials allowed');
-        // Remove the extra materials
-        const limitedMaterials = materials.slice(0, 10);
-        input.value = limitedMaterials.join(', ');
-      }
-    }
-  </script>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    ["speakers_instructors", "attendees"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) new Choices(el, {
+          removeItemButton: true,
+          placeholder: true,
+          placeholderValue: "Select or type...",
+          duplicateItemsAllowed: false,
+          shouldSort: true });
+    });
+  });
+
+  function validateEventForm() {
+    const startTime = document.getElementById('start').value;
+    const endTime = document.getElementById('end').value;
+    if (startTime && endTime && startTime >= endTime) {
+      alert('Start Date & Time must be before End Date & Time');
+      return false;
+    }
+
+    const selectedTopics = document.querySelectorAll('input[name="topics_covered"]:checked');
+    if (selectedTopics.length < 2) {
+      alert('Please select at least 2 topics');
+      return false;
+    }
+    if (selectedTopics.length > 6) {
+      alert('Please select no more than 6 topics');
+      return false;
+    }
+
+    const formElements = document.querySelectorAll('#edit-event-form input, #edit-event-form select, #edit-event-form textarea');
+    formElements.forEach((element) => {
+      // Check if field is empty and remove name if empty
+      if (element.value === "" || element.value === element.placeholder) {
+        element.removeAttribute('name');
+      }
+    });
+    return true;
+  }
+
+  function validateMaterialsInput(input) {
+    const value = input.value;
+    const materials = value.split(',').map(item => item.trim()).filter(item => item.length > 0);
+    if (materials.length > 10) {
+      alert('Maximum 10 materials allowed');
+      // Remove the extra materials
+      const limitedMaterials = materials.slice(0, 10);
+      input.value = limitedMaterials.join(', ');
+    }
+  }
+</script>

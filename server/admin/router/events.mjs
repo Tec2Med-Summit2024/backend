@@ -4,7 +4,7 @@ import { makeQuery } from '../helpers/functions.mjs';
 const router = express.Router();
 
 /**
- * Events Management Page
+ * LISTAR TODOS OS EVENTOS
  */
 router.get('/', async (req, res) => {
   try {
@@ -34,7 +34,8 @@ router.get('/', async (req, res) => {
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
     const events = await makeQuery(
-      `MATCH (e:Event)-[:IN_TYPE]->(et:EventType)
+      `
+      MATCH (e:Event)-[:IN_TYPE]->(et:EventType)
       ${searchCondition}
       WITH e, et
       RETURN e {.*, event_type: et.name}
@@ -72,7 +73,6 @@ router.post('/', async (req, res) => {
     const fields = req.body;
     console.log('Creating new event with fields:', fields);
 
-    // Handle arrays properly
     if (fields.topics_covered) {
       fields.topics_covered = Array.isArray(fields.topics_covered)
         ? fields.topics_covered
@@ -83,6 +83,7 @@ router.post('/', async (req, res) => {
     const eventType = fields.event_type;
     delete fields.event_type;
     console.log('Event Type:', eventType);
+
     const fieldKeys = Object.keys(fields);
     const propertyAssignments = fieldKeys
       .map((key) => {
@@ -153,8 +154,10 @@ router.get('/new', (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
+
     const result = await makeQuery(
-      `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
+      `
+      MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
       OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
       OPTIONAL MATCH (presenter:Participant)-[:PRESENTS]->(e)
       OPTIONAL MATCH (presenter)-[:WORKS_AT]->(p:Partner)
@@ -203,10 +206,10 @@ router.post('/:id', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
     const fields = req.body;
+
     console.log('Updating event with ID:', eventId);
     console.log('Fields:', fields);
 
-    // Handle arrays properly
     if (fields.topics_covered) {
       fields.topics_covered = Array.isArray(fields.topics_covered)
         ? fields.topics_covered
@@ -232,13 +235,13 @@ router.post('/:id', async (req, res) => {
       // Update the event type in a single Cypher query
       await makeQuery(
         `
-    MATCH (e:Event {event_id: $eventId})
-    OPTIONAL MATCH (e)-[r:IN_TYPE]->(et:EventType)
-    DELETE r
-    MERGE (etNew:EventType {name: $eventType})
-    MERGE (e)-[:IN_TYPE]->(etNew)
-    RETURN e, etNew
-    `,
+        MATCH (e:Event {event_id: $eventId})
+        OPTIONAL MATCH (e)-[r:IN_TYPE]->(et:EventType)
+        DELETE r
+        MERGE (etNew:EventType {name: $eventType})
+        MERGE (e)-[:IN_TYPE]->(etNew)
+        RETURN e, etNew
+        `,
         { eventId, eventType }
       );
 
@@ -309,8 +312,10 @@ router.put('/:id', async (req, res) => {
 router.get('/:id/edit', async (req, res) => {
   try {
     const eventId = parseInt(req.params.id);
+
     const result = await makeQuery(
-      `MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
+      `
+      MATCH (e:Event {event_id: $eventId})-[:IN_TYPE]->(et:EventType)
       OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
       OPTIONAL MATCH (presenter:Participant)-[:PRESENTS]->(e)
       OPTIONAL MATCH (attendee:Participant)-[:GOES_TO]->(e)

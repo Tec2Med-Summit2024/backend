@@ -1,18 +1,71 @@
-<header class='py-6 px-6 mx-auto max-w-screen-2xl'>
-  <div class='flex items-center justify-between'>
-    <div class='flex flex-col gap-4'>
-      <h1 class='text-4xl'>Create New Event</h1>
+<header class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'>
+  <h1 class='text-4xl'>Create New Event</h1>
 
-      <!-- Dropdown Menu -->
-      <div>
-        <label for='event_type' class='text-lg font-medium mb-1 block'>Event Type</label>
-        <select
-          id='event_type'
-          name='event_type'
-          form='create-event-form'
-          class='px-3 py-2 border border-gray-800 rounded-md w-64'
-          required
-        >
+  <a
+    href='/admin/events'
+    class='flex items-center gap-2 px-4 py-2 rounded-md bg-red-600 text-gray-100 h-fit self-start'>
+    <span class='material-symbols-outlined'>arrow_back</span>
+    Cancel
+  </a>
+</header>
+
+<section class='mx-auto max-w-screen-2xl p-6'>
+  <form
+    id='create-event-form'
+    action='/admin/events'
+    method='post'
+    class='grid grid-cols-2 gap-4 text-lg'
+    autocomplete='off'
+  >
+    <!-- coluna da esquerda -->
+    <div class='flex flex-col gap-4'>
+
+      <div class='flex flex-col'>
+        <label for='name'>Event Name *</label>
+        <input type='text' id='name' name='name'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' maxlength="80"
+          required/>
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='building_and_room'>Location (Building, Floor, Room) *</label>
+        <input type='text' id='building_and_room' name='building_and_room'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required/>
+      </div>
+      
+      <div class='flex flex-col'>
+        <label for='start'>Start Date &amp; Time *</label>
+        <input type='datetime-local' id='start' name='start'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required/>
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='end'>End Date &amp; Time *</label>
+        <input type='datetime-local' id='end' name='end'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required/>
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='materials_to_bring'>Materials to Bring</label>
+        <input type='text' id='materials_to_bring' name='materials_to_bring'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          oninput="validateMaterialsInput(this)"/>
+        <span class="text-xs text-gray-500 mt-1">Maximum 10 comma-separated values</span>
+      </div>
+    </div>
+
+    <!-- coluna da direita -->
+    <div class='flex flex-col gap-4'>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
+      <div class="flex flex-col">
+        <label for='event_type'>Event Type *</label>
+        <select id='event-type-dropdown' name='event_type' form='create-event-form'
+          class='px-2 py-1 border border-gray-800 rounded-md'
+          required>
           <option value='' disabled selected>Select a type</option>
           <option value='Debate'>Debate</option>
           <option value='Masterclass'>Masterclass</option>
@@ -21,151 +74,66 @@
           <option value='Workshop'>Workshop</option>
         </select>
       </div>
-    </div>
 
-    <!-- Return Link -->
-    <a
-      href='/admin/events'
-      class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100 h-fit self-start'
-    >
-      <span class='material-symbols-outlined'>arrow_back</span>
-      Return to Events
-    </a>
-  </div>
-</header>
-
-</header>
-
-<section class='mx-auto max-w-screen-2xl p-6'>
-  <form
-    id='create-event-form'
-    action='/admin/events'
-    method='post'
-    class='grid grid-cols-2 gap-6 text-lg'
-    autocomplete='off'
-  >
-    <div class='flex flex-col gap-2'>
-      <div class='flex flex-col'>
-        <label for='name'>Name</label>
-        <input
-          type='text'
-          id='name'
-          name='name'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          maxlength="80"
-          required
-        />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='start'>Start Date &amp; Time</label>
-        <input
-          type='datetime-local'
-          id='start'
-          name='start'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='building_and_room'>Location</label>
-        <input
-          type='text'
-          id='building_and_room'
-          name='building_and_room'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+      <div class="flex flex-col">
+          <label for='speakers_instructors'>Speakers/Instructors *</label>
+          <select id='speakers_instructors' name='speakers_instructors'
+          class="px-2 py-1 border border-gray-800 outline-none rounded-md">
+              {{#each participants}}
+              <option value="{{this.username}}">{{this.name}}</option>
+              {{/each}}
+          </select>
       </div>
 
       <div class='flex flex-col'>
         <label for='curr_cap'>Current Capacity</label>
-        <input
-          type='number'
-          id='curr_cap'
-          name='curr_cap'
-          value="0"
+        <input type='number' id='curr_cap' name='curr_cap' value="0"
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          readonly
-        />
+          readonly/>
       </div>
 
       <div class='flex flex-col'>
-        <label for='max_cap'>Maximum Capacity</label>
-        <input
-          type='number'
-          id='max_cap'
-          name='max_cap'
+        <label for='max_cap'>Maximum Capacity *</label>
+        <input type='number' id='max_cap' name='max_cap'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
+          required/>
       </div>
 
+      <div class="flex flex-col">
+        <label for='attendees'>Attendees</label>
+        <select id='attendees' name='attendees'
+        class="px-2 py-1 border border-gray-800 outline-none rounded-md">
+            {{#each participants}}
+            <option value="{{this.username}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+      </div>
     </div>
 
-    <div class='flex flex-col gap-2'>
-      <div class='flex flex-col'>
-        <label for='company'>Company</label>
-        <input
-          type='text'
-          id='company'
-          name='company'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='end'>End Date &amp; Time</label>
-        <input
-          type='datetime-local'
-          id='end'
-          name='end'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='speakers_instructors'>Speakers/Instructors</label>
-        <input
-          type='text'
-          id='speakers_instructors'
-          name='speakers_instructors'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-        />
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='materials_to_bring'>Materials Necessary</label>
-        <input
-          type='text'
-          id='materials_to_bring'
-          name='materials_to_bring'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required
-          oninput="validateMaterialsInput(this)"
-        />
-        <span class="text-xs text-gray-500 mt-1">Maximum 10 comma-separated values</span>
-      </div>
-
-      
-
+    <!-- espaço de baixo -->
+    <div class='flex flex-col gap-2 col-span-2'>
+      <label for='description_about'>Description</label>
+      <textarea form='create-event-form' type='text' id='description_about' name='description_about'
+        class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+        rows='4'
+        maxlength="250"></textarea>
+      <span class="text-xs text-gray-500 mt-1">Maximum 250 characters including spaces</span>
     </div>
 
     <div class='flex flex-col gap-2 col-span-2'>
-      <label for='topics_covered'>Topics</label>
+      <label for='topics_covered'>Topics *</label>
       <div class='flex flex-wrap gap-2 mt-1'>
-        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |topic|}}
+        {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality'
+        'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals'
+        'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research'
+        'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics'
+        'Hardware & robotics' 'Healthcare' 'Health data privacy and security' 'Health policy'
+        'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition'
+        'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring'
+        'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |topic|}}
           <label class='relative cursor-pointer'>
-            <input 
-              type='checkbox' 
-              name='topics_covered' 
-              value='{{topic}}' 
-              class='peer opacity-0 absolute' 
-            />
+            <input type='checkbox' name='topics_covered' value='{{topic}}' 
+              class='peer opacity-0 absolute' />
             <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{topic}}</span>
           </label>
         {{/each}}
@@ -173,66 +141,58 @@
       <span class="text-xs text-gray-500 mt-1">Select between 2 and 6 topics</span>
     </div>
 
-    <div class='flex flex-col gap-2 col-span-2'>
-      <label class for='description_about'>About</label>
-      <textarea
-        form='create-event-form'
-        type='text'
-        id='description_about'
-        name='description_about'
-        class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-        rows='4'
-        maxlength="250"
-        required
-      ></textarea>
-      <span class="text-xs text-gray-500 mt-1">Maximum 250 characters including spaces</span>
-    </div>
-
     <div class='w-fit mx-auto col-span-2'>
-      <button
-        form='create-event-form'
-        type='submit'
+      <button form='create-event-form' type='submit'
         class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
-        onclick="return validateEventForm()"
-      >Create Event</button>
+        onclick="return validateEventForm()">
+        Save new event
+      </button>
     </div>
   </form>
-
-  <script>
-    function validateEventForm() {
-      // Validate start time is before end time
-      const startTime = document.getElementById('start').value;
-      const endTime = document.getElementById('end').value;
-      
-      if (startTime && endTime && startTime >= endTime) {
-        alert('Start Date & Time must be before End Date & Time');
-        return false;
-      }
-      
-      // Validate topics selection (min 2, max 6)
-      const selectedTopics = document.querySelectorAll('input[name="topics_covered"]:checked');
-      if (selectedTopics.length < 2) {
-        alert('Please select at least 2 topics');
-        return false;
-      }
-      if (selectedTopics.length > 6) {
-        alert('Please select no more than 6 topics');
-        return false;
-      }
-      
-      return true;
-    }
-
-    function validateMaterialsInput(input) {
-      const value = input.value;
-      const materials = value.split(',').map(item => item.trim()).filter(item => item.length > 0);
-      
-      if (materials.length > 10) {
-        alert('Maximum 10 materials allowed');
-        // Remove the extra materials
-        const limitedMaterials = materials.slice(0, 10);
-        input.value = limitedMaterials.join(', ');
-      }
-    }
-  </script>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    ["speakers_instructors", "attendees"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) new Choices(el, {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: "Select or type...",
+        duplicateItemsAllowed: false,
+        shouldSort: true });
+    });
+  });
+
+  function validateEventForm() {
+    const startTime = document.getElementById('start').value;
+    const endTime = document.getElementById('end').value;
+    if (startTime && endTime && startTime >= endTime) {
+      alert('Start Date & Time must be before End Date & Time');
+      return false;
+    }
+    
+    const selectedTopics = document.querySelectorAll('input[name="topics_covered"]:checked');
+    if (selectedTopics.length < 2) {
+      alert('Please select at least 2 topics');
+      return false;
+    }
+    if (selectedTopics.length > 6) {
+      alert('Please select no more than 6 topics');
+      return false;
+    }
+    return true;
+  }
+
+  function validateMaterialsInput(input) {
+    const value = input.value;
+    const materials = value.split(',').map(item => item.trim()).filter(item => item.length > 0);
+    if (materials.length > 10) {
+      alert('Maximum 10 materials allowed');
+      // Remove the extra materials
+      const limitedMaterials = materials.slice(0, 10);
+      input.value = limitedMaterials.join(', ');
+    }
+  }
+</script>

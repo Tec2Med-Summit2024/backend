@@ -1,58 +1,38 @@
 <header class='flex items-center justify-between py-6 px-6 mx-auto max-w-screen-2xl'>
   <h1 class='text-4xl'>Create New Participant</h1>
 
-  <a href='/admin/participants' class='flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 text-gray-100'>
+  <a
+    href='/admin/participants'
+    class='flex items-center gap-2 px-4 py-2 rounded-md bg-red-600 text-gray-100'>
     <span class='material-symbols-outlined'>arrow_back</span>
-    Return to Participants
+    Cancel
   </a>
 </header>
 
 <section class='mx-auto max-w-screen-2xl p-6'>
-  <form id='create-participant-form' action='/admin/participants' method='post' class='grid grid-cols-2 gap-6 text-lg'
-    autocomplete='off'>
+  <form
+    id='create-participant-form'
+    action='/admin/participants'
+    method='post'
+    class='grid grid-cols-2 gap-4 text-lg'
+    autocomplete='off'
+  >
+    <!-- coluna da esquerda -->
     <div class='flex flex-col gap-4'>
       <div class='flex flex-col'>
         <label for='name'>Name *</label>
-        <input type='text' id='name' name='name' class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          maxlength="100" required oninput="validateNameInput(this)" />
+        <input type='text' id='name' name='name'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          maxlength="100"
+          required
+          oninput="validateNameInput(this)" />
       </div>
 
       <div class='flex flex-col'>
-        <label for='institution' class="flex items-center gap-2">
-          Institution
-          <button id="reset-institution" type="button" class="px-2 py-1 bg-gray-300 text-black rounded-md text-sm">
-            Reset
-          </button>
-        </label>
-
-        <select id='institution' name='institution' class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          ></select>
-      </div>
-
-      <div class='flex flex-col'>
-        <label>Interests</label>
-        <div class='flex flex-wrap gap-2 mt-1'>
-          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic
-          systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology'
-          'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven
-          healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and
-          security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear
-          medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific
-          writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |interest|}}
-          <label class='relative cursor-pointer'>
-            <input type='checkbox' name='interests' value='{{interest}}' class='peer opacity-0 absolute' />
-            <span
-              class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{interest}}</span>
-          </label>
-          {{/each}}
-        </div>
-      </div>
-
-      <div class='flex flex-col'>
-        <label for='field_of_study_work_research'>Work Field</label>
-        <input type='text' id='field_of_study_work_research' name='field_of_study_work_research'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' maxlength="40"  />
-        <span class="text-xs text-gray-500 mt-1">Maximum 40 characters including spaces</span>
+        <label for='email'>Email *</label>
+        <input type='email' id='email' name='email'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'
+          required/>
       </div>
 
       <div class='flex flex-col'>
@@ -130,6 +110,12 @@
       </div>
 
       <div class='flex flex-col'>
+        <label for='linkedin'>LinkedIn</label>
+        <input type='text' id='linkedin' name='linkedin'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+      </div>
+
+      <div class='flex flex-col'>
         <label for='website'>Website</label>
         <input type='text' id='website' name='website'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
@@ -140,11 +126,51 @@
         <input type='text' id='instagram' name='instagram'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
       </div>
-    </div>
 
-    <div class='flex flex-col gap-4'>
       <div class='flex flex-col'>
-        <label>Type</label>
+        <label for='facebook'>Facebook</label>
+        <input type='text' id='facebook' name='facebook'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+      </div>
+
+      <div class='flex flex-col'>
+        <label>Interests *</label>
+        <div class='flex flex-wrap gap-2 mt-1'>
+          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality'
+          'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals'
+          'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research'
+          'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics'
+          'Hardware & robotics' 'Healthcare' 'Health data privacy and security' 'Health policy'
+          'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition'
+          'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring'
+          'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |interest|}}
+          <label class='relative cursor-pointer'>
+            <input type='checkbox' name='interests' value='{{interest}}'
+              class='peer opacity-0 absolute' />
+            <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{interest}}</span>
+          </label>
+          {{/each}}
+        </div>
+        <span class="text-xs text-gray-500 mt-1">Select between 2 and 10 interests</span>
+      </div>
+
+    </div>
+    
+    <!-- coluna da direita -->
+    <div class='flex flex-col gap-4'>
+      <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css' />
+
+      <!-- Ainda não implementado o upload da foto de perfil -->
+      <!--
+      <div class='flex flex-col'>
+        <label for='profile_picture'>Profile picture</label>
+        <input
+          type='file' id='profile_picture' name='profile_picture' />
+      </div>
+      -->
+
+      <div class='flex flex-col'>
+        <label>Type *</label>
         <div class='flex gap-4 mt-1'>
           <div class='flex items-center gap-2'>
             <input type='checkbox' id='type_attendee' name='type' value='Attendee' class='w-4 h-4' />
@@ -162,134 +188,118 @@
       </div>
 
       <div class='flex flex-col'>
-        <label for='ticket_type'>Ticket Type *</label>
-        <input type='text' id='ticket_type' name='ticket_type'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' required />
-      </div>
-
-      <div class='flex flex-col'>
-        <label>Expertise</label>
-        <div class='flex flex-wrap gap-2 mt-1'>
-          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality' 'Biomedical imaging' 'Bionic
-          systems' 'Bioprinting' 'Biosignals' 'Cell & tissue engineering' 'Chronic diseases' 'Clean technology'
-          'Clinical decision support systems' 'Clinical research' 'Data modelling' 'Data science' 'Data-driven
-          healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics' 'Hardware & robotics' 'Health data privacy and
-          security' 'Health policy' 'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear
-          medicine' 'Nutrition' 'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring' 'Scientific
-          writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |expertise|}}
-          <label class='relative cursor-pointer'>
-            <input type='checkbox' name='expertise' value='{{expertise}}' class='peer opacity-0 absolute' />
-            <span
-              class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{expertise}}</span>
-          </label>
-          {{/each}}
+        <label>Ticket Type *</label>
+        <div class='flex gap-4 mt-1'>
+          <div class='flex items-center gap-2'>
+            <input type='checkbox' id='ticket_premium' name='ticket_type' value='Premium' class='w-4 h-4' />
+            <label for='ticket_premium'>Premium</label>
+          </div>
+          <div class='flex items-center gap-2'>
+            <input type='checkbox' id='ticket_expert' name='ticket_type' value='Expert' class='w-4 h-4' />
+            <label for='ticket_expert'>Expert</label>
+          </div>
+          <div class='flex items-center gap-2'>
+            <input type='checkbox' id='ticket_pioneer' name='ticket_type' value='Pioneer' class='w-4 h-4' />
+            <label for='ticket_pioneer'>Pioneer</label>
+          </div>
         </div>
       </div>
 
       <div class='flex flex-col'>
-        <label for='current_location'>Location</label>
+          <label for='institution'>Institution (Partner)</label>
+          <select id='institution' name='institution'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'>
+              {{#each partners}}
+              <option value='{{this.id}}'>{{this.name}}</option>
+              {{/each}}
+          </select>
+      </div>
+
+      <div class='flex flex-col'>
+        <label for='current_location'>Location (City, Country)</label>
         <input type='text' id='current_location' name='current_location'
           class='px-2 py-1 border border-gray-800 outline-none rounded-md' maxlength="40" />
       </div>
 
       <div class='flex flex-col'>
-        <label for='email'>Email *</label>
-        <input type='email' id='email' name='email' class='px-2 py-1 border border-gray-800 outline-none rounded-md'
-          required />
+        <label for='field_of_study_work_research'>Work Field *</label>
+        <input type='text' id='field_of_study_work_research' name='field_of_study_work_research'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md' maxlength="40"
+          required/>
+        <span class="text-xs text-gray-500 mt-1">Maximum 40 characters including spaces</span>
       </div>
 
       <div class='flex flex-col'>
-        <label for='linkedin'>LinkedIn</label>
-        <input type='text' id='linkedin' name='linkedin'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+          <label for='speakerEvents'>Registered Events (as a Speaker/Instructor)</label>
+          <select id='speakerEvents' name='speakerEvents'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'>
+              {{#each events}}
+              <option value='{{this.id}}'>{{this.title}}</option>
+              {{/each}}
+          </select>
       </div>
 
       <div class='flex flex-col'>
-        <label for='facebook'>Facebook</label>
-        <input type='text' id='facebook' name='facebook'
-          class='px-2 py-1 border border-gray-800 outline-none rounded-md' />
+          <label for='attendeeEvents'>Registered Events (as an Attendee)</label>
+          <select id='attendeeEvents' name='attendeeEvents'
+          class='px-2 py-1 border border-gray-800 outline-none rounded-md'>
+              {{#each events}}
+              <option value='{{this.id}}'>{{this.title}}</option>
+              {{/each}}
+          </select>
       </div>
+
+      <div class='flex flex-col'>
+        <label>Expertises *</label>
+        <div class='flex flex-wrap gap-2 mt-1'>
+          {{#each (array 'Aerospace medicine' 'Artificial intelligence' 'Augmented reality'
+          'Biomedical imaging' 'Bionic systems' 'Bioprinting' 'Biosignals'
+          'Cell & tissue engineering' 'Chronic diseases' 'Clean technology' 'Clinical decision support systems' 'Clinical research'
+          'Data modelling' 'Data science' 'Data-driven healthcare' 'Dentistry' 'Epidemiology' 'Ethics' 'Genetics'
+          'Hardware & robotics' 'Healthcare' 'Health data privacy and security' 'Health policy'
+          'Machine learning' 'Medical simulation' 'Mental health' 'Neuroscience' 'Nuclear medicine' 'Nutrition'
+          'Orthopedics & biomechanics' 'Public health' 'Remote patient monitoring'
+          'Scientific writing' 'Statistics for research' 'Surgery' 'Virtual reality' 'Wearable technology') as |expertise|}}
+          <label class='relative cursor-pointer'>
+            <input type='checkbox' name='expertise' value='{{expertise}}'
+              class='peer opacity-0 absolute' />
+            <span class='px-4 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-600 transition peer-checked:bg-green-300 peer-checked:text-gray-900 hover:bg-green-200'>{{expertise}}</span>
+          </label>
+          {{/each}}
+        </div>
+        <span class="text-xs text-gray-500 mt-1">Select between 2 and 6 expertises</span>
+      </div>
+
     </div>
 
+    <!-- espaço de baixo -->
     <div class='flex flex-col gap-2 col-span-2'>
       <label for='biography'>Biography</label>
       <textarea form='create-participant-form' type='text' id='biography' name='biography'
-        class='px-2 py-1 border border-gray-800 outline-none rounded-md' rows='4' maxlength="40" ></textarea>
+        class='px-2 py-1 border border-gray-800 outline-none rounded-md' rows='4' maxlength="40"></textarea>
+      <span class="text-xs text-gray-500 mt-1">Maximum 40 characters including spaces</span>
     </div>
 
     <div class='w-fit mx-auto col-span-2'>
-      <button form='create-participant-form' type='submit' class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
-        onclick="return validateParticipantForm()">Create Participant</button>
+      <button form='create-participant-form' type='submit'
+        class='px-6 py-2 bg-green-600 text-gray-100 rounded-md'
+        onclick="return validateParticipantForm()"
+      >Save new participant</button>
     </div>
   </form>
 </section>
 
-<!-- Choices.js CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-
-<!-- Choices.js JS -->
-<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-
-
+<script src='https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js'></script>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const selectEl = document.getElementById("institution");
-    let cachedPartners = [];
-
-    // Initialize Choices.js with placeholder
-    const institutionChoices = new Choices(selectEl, {
-      placeholder: true,
-      placeholderValue: 'Select an institution',
-      searchPlaceholderValue: 'Type to search...',
-      itemSelectText: '',
-      allowHTML: true,
-      shouldSort: false
-    });
-
-    // Populate choices with partners
-    function populatePartners(partners) {
-      institutionChoices.setChoices(
-        partners.map(partner => ({
-          value: partner.id || partner.name,  // use id if available
-          label: partner.name || partner,     // fallback for plain string
-          selected: false,
-          disabled: false,
-        })),
-        'value',
-        'label',
-        false
-      );
-    }
-
-    // Fetch partners once
-    fetch("/admin/partners/data")
-      .then(res => res.json())
-      .then(data => {
-        if (data.partners && Array.isArray(data.partners)) {
-          cachedPartners = data.partners;
-          populatePartners(cachedPartners);
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching partners:", err);
-      });
-
-    // Reset button: clear selection, restore placeholder, re-populate from cache
-    document.getElementById("reset-institution").addEventListener("click", () => {
-      institutionChoices.clearStore();
-
-      // Re-add placeholder
-      institutionChoices.setChoices(
-        [{ value: '', label: 'Select an institution', selected: true, disabled: true }],
-        'value',
-        'label',
-        true
-      );
-
-      // Re-add cached partners
-      if (cachedPartners.length > 0) {
-        populatePartners(cachedPartners);
-      }
+  document.addEventListener('DOMContentLoaded', () => {
+    ['institution', 'speakerEvents', 'attendeeEvents'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) new Choices(el, {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Select or type...',
+        duplicateItemsAllowed: false,
+        shouldSort: true });
     });
   });
 
@@ -307,9 +317,21 @@
   }
 
   function validateParticipantForm() {
+    // Ensure at least one Participant TYPE is selected
+    const selectedType = document.querySelectorAll('input[name="type"]:checked');
+    if (selectedType.length === 0) {
+      alert('Please select at least one Type (Attendee, Instructor or Speaker)');
+      return false;
+    }
+    // Ensure one, and only one, Ticket TYPE is selected
+    const selectedTicket = document.querySelectorAll('input[name="ticket_type"]:checked');
+    if (selectedTicket.length !== 1) {
+      alert('Please select one Ticket Type (Pioneer, Expert or Premium)');
+      return false;
+    }
+
     const selectedInterests = document.querySelectorAll('input[name="interests"]:checked');
     const selectedExpertises = document.querySelectorAll('input[name="expertise"]:checked');
-
     if (selectedInterests.length < 2) {
       alert('Please select at least 2 interests');
       return false;
@@ -318,7 +340,6 @@
       alert('Please select no more than 10 interests');
       return false;
     }
-
     if (selectedExpertises.length < 2) {
       alert('Please select at least 2 expertises');
       return false;
@@ -327,7 +348,6 @@
       alert('Please select no more than 6 expertises');
       return false;
     }
-
     return true;
   }
 </script>
