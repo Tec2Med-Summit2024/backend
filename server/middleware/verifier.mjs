@@ -44,8 +44,22 @@ export const verifyUsername = (req, res, next, username) => {
     req.username = username;
     return next();
   }
+
+  // Allow certain write operations that target resources (for example: POST /:username/cv-sent)
+  // where the authenticated user is not the same as the :username path param.
+  // This keeps existing protection for routes that should be restricted while allowing
+  // the CV-send flow where an attendee sends to a partner.
+  try {
+    const originalUrl = req.originalUrl || req.url || '';
+    if (originalUrl.includes('/cv-sent')) {
+      req.username = username;
+      return next();
+    }
+  } catch (e) {
+    // ignore and continue to normal checks
+  }
   
-  // For write operations (POST, PUT, DELETE, etc.), restrict to own user
+  // For other write operations (POST, PUT, DELETE, etc.), restrict to own user
   if (req.user && req.user.username !== username) {
     return res.status(403).json({ error: 'Access forbidden - can only modify own user data' });
   }

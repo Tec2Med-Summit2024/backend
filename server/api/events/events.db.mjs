@@ -35,7 +35,8 @@ export const getFilteredEventsFromDb = async (search, start, end, filters) => {
     userId,
     registered,
     speakerInstructor,
-    questionsAsked,
+    anyQuestionsAsked,
+    anyQuestionsAskedByMe,
     topics,
     types,
   } = filters;
@@ -54,7 +55,7 @@ export const getFilteredEventsFromDb = async (search, start, end, filters) => {
     `;
 
     // Add filter-specific MATCH and WHERE clauses
-    if (registered || speakerInstructor || questionsAsked) {
+    if (registered || speakerInstructor || anyQuestionsAsked || anyQuestionsAskedByMe) {
       query += ' WITH e, et ';
       
       if (registered) {
@@ -69,9 +70,15 @@ export const getFilteredEventsFromDb = async (search, start, end, filters) => {
         `;
       }
       
-      if (questionsAsked) {
+      if (anyQuestionsAskedByMe) {
         query += `
           MATCH (p2:Participant {username: $userId})-[:ASKS]->(q:Question)-[:ASKED_IN]->(e)
+        `;
+      }
+      
+      if (anyQuestionsAsked) {
+        query += `
+          MATCH (q:Question)-[:ASKED_IN]->(e)
         `;
       }
       
@@ -79,14 +86,15 @@ export const getFilteredEventsFromDb = async (search, start, end, filters) => {
       const filterConditions = [];
       if (registered) filterConditions.push('p IS NOT NULL');
       if (speakerInstructor) filterConditions.push('e.speakers_instructors CONTAINS $userId');
-      if (questionsAsked) filterConditions.push('q IS NOT NULL');
+      if (anyQuestionsAskedByMe) filterConditions.push('q IS NOT NULL');
+      if (anyQuestionsAsked) filterConditions.push('q IS NOT NULL');
       
       if (filterConditions.length > 0) {
         query += ` WHERE ${filterConditions.join(' OR ')}`;
       }
     }
 
-    query += ` RETURN e, et.name as eventType`;
+    query += ` RETURN DISTINCT e, et.name as eventType`;
     console.log('Constructed query:', query);
     const result = await session.run(query, {
       search,
@@ -323,9 +331,12 @@ export const getQuestionsFromEventFromDb = async (id, username) => {
   const eventId = parseInt(id);
   try {
     const result = await session.run(
-      `MATCH (p:Participant)-[:ASKS]->(q:Question)-[:ASKED_IN]->(e:Event {event_id:$eventId})
+      `MATCH (q:Question)-[:ASKED_IN]->(e:Event {event_id:$eventId})
+       OPTIONAL MATCH (p:Participant)-[:ASKS]->(q)
        OPTIONAL MATCH (p2:Participant {username: $username})-[:LIKES_QUESTION]->(q)
-       RETURN q, p.name AS participantName, p.username AS participantUsername, 
+       RETURN q,
+              COALESCE(p.name, 'Anonymous') AS participantName,
+              COALESCE(p.username, null) AS participantUsername,
               CASE WHEN p2 IS NOT NULL THEN true ELSE false END AS liked
        ORDER BY q.likes DESC`,
       { eventId, username }
@@ -343,6 +354,72 @@ export const getQuestionsFromEventFromDb = async (id, username) => {
       return question;
     });
   } catch (error) {
+    return null;
+  } finally {
+    session.close();
+  }
+};
+
+/**
+ * Get events where the user has asked questions
+ * @param {string} username
+ */
+export const getEventsWithUserQuestionsFromDb = async (username) => {
+  const driver = getDriver();
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (p:Participant {username: $username})-[:ASKS]->(q:Question)-[:ASKED_IN]->(e:Event)-[:IN_TYPE]->(et:EventType)
+       RETURN e, et.name as eventType, count(q) as questionCount
+       ORDER BY e.start`,
+      { username }
+    );
+
+    return result.records.map((r) => {
+      const event = r.get('e')?.properties;
+      if (event) {
+        event.type = r.get('eventType');
+        event.questionCount = r.get('questionCount').toNumber();
+      }
+      return event;
+    });
+  } catch (error) {
+    console.error('Error in getEventsWithUserQuestionsFromDb:', error);
+    return null;
+  } finally {
+    session.close();
+  }
+};
+
+/**
+ * Get events where the user is a speaker/instructor and has received questions
+ * @param {string} username
+ */
+export const getEventsWithQuestionsForUserFromDb = async (username) => {
+  const driver = getDriver();
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (e:Event)-[:IN_TYPE]->(et:EventType)
+       WHERE (e.speakers_instructors CONTAINS $username OR
+              EXISTS {(:Speaker {username: $username})-[:PRESENTS]->(e)} OR
+              EXISTS {(:Instructor {username: $username})-[:TEACHES]->(e)})
+       OPTIONAL MATCH (q:Question)-[:ASKED_IN]->(e)
+       RETURN e, et.name as eventType, count(q) as questionCount
+       ORDER BY e.start`,
+      { username }
+    );
+
+    return result.records.map((r) => {
+      const event = r.get('e')?.properties;
+      if (event) {
+        event.type = r.get('eventType');
+        event.questionCount = r.get('questionCount').toNumber();
+      }
+      return event;
+    });
+  } catch (error) {
+    console.error('Error in getEventsWithQuestionsForUserFromDb:', error);
     return null;
   } finally {
     session.close();

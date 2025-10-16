@@ -7,6 +7,8 @@ import {
   likeQuestion,
   dislikeQuestion,
   getQuestions,
+  getEventsWithUserQuestionsController,
+  getEventsWithQuestionsForUserController,
 } from './events.controller.mjs';
 
 const router = express.Router();
@@ -52,5 +54,23 @@ router.delete('/:id/questions/:questionId', dislikeQuestion);
  * @GET /api/events/:id/questions
  */
 router.get('/:id/questions', getQuestions);
+
+/**
+ * @brief Gets all questions of the event. Username is used to check if the user liked the question
+ * @GET /api/events/:id/questions
+ */
+router.get('/:id/questions', getQuestions);
+
+/**
+ * @brief Gets events where the user has asked questions
+ * @GET /api/events/questions/sent
+ */
+router.get('/questions/sent', getEventsWithUserQuestionsController);
+
+/**
+ * @brief Gets events where the user is a speaker/instructor and has received questions
+ * @GET /api/events/questions/received
+ */
+router.get('/questions/received', getEventsWithQuestionsForUserController);
 
 export default router;

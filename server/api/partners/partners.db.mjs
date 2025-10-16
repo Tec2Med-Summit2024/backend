@@ -120,4 +120,57 @@ export const getFollowersByPartner = async (username) => {
   } finally {
     await session.close();
   }
-};  
+};
+
+/**
+ * Check if a user has sent their CV to a specific partner
+ * @param {string} attendeeUsername
+ * @param {string} partnerUsername
+ * @returns {Promise<boolean>}
+ */
+export const checkCVSentToPartner = async (attendeeUsername, partnerUsername) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (a:Participant {username: $attendeeUsername})
+       MATCH (p:Partner {username: $partnerUsername})
+       OPTIONAL MATCH (a)-[sends:SUBMITS]->(cv:CV)<-[collects:COLLECTS]-(p)
+       RETURN COUNT(sends) > 0 AS cvSent`,
+      { attendeeUsername, partnerUsername }
+    );
+
+    const record = result.records[0];
+    return record?.get(0) === true;
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ * Record that an attendee sent a CV to a partner via email (no file uploaded)
+ * Creates a CV node and links (a)-[:SUBMITS]->(cv) and (p)-[:COLLECTS]->(cv)
+ * @param {string} attendeeUsername
+ * @param {string} partnerUsername
+ * @param {string} id
+ */
+export const recordEmailCVFromAttendee = async (attendeeUsername, partnerUsername, id) => {
+  const driver = getDriver();
+  const session = driver.session();
+
+  try {
+    const result = await session.run(
+      `MATCH (a:Participant {username: $attendeeUsername}), (p:Partner {username: $partnerUsername})
+       CREATE (a)-[:SUBMITS]->(cv:CV {id: $id, method: 'email', timestamp: datetime()})
+       CREATE (p)-[:COLLECTS]->(cv)
+       RETURN cv`,
+      { attendeeUsername, partnerUsername, id }
+    );
+
+    const cv = result.records[0]?.get(0)?.properties ?? null;
+    return cv;
+  } finally {
+    await session.close();
+  }
+};

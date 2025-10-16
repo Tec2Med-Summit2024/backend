@@ -3,8 +3,11 @@ import {
   sendCVToPartner,
   getReceivedCVsByPartner,
   getCV,
-  getFollowersByPartner
+  getFollowersByPartner,
+  checkCVSentToPartner,
+  recordEmailCVFromAttendee
 } from './partners.db.mjs';
+import crypto from 'crypto';
 
 export const getPartnerFromDb = async (username) => {
   const partner = await getPartnerByUsername(username);
@@ -74,6 +77,19 @@ export const getCVFromPartner = async (username, cvID) => {
 };
 
 /**
+ * Check if a user has sent their CV to a specific partner
+ * @param {string} attendeeUsername
+ * @param {string} partnerUsername
+ */
+export const checkCVStatus = async (attendeeUsername, partnerUsername) => {
+  const result = await checkCVSentToPartner(attendeeUsername, partnerUsername);
+  if (!result) {
+    return { ok: true, value: { cvSent: false } };
+  }
+  return { ok: true, value: { cvSent: true } };
+};
+
+/**
  * 
  * @param {string} username 
  */
@@ -84,4 +100,46 @@ export const getFollowersFromPartner = async (username) => {
   }
 
   return { ok: true, value: await getFollowersByPartner(username) };
-};  
+};
+
+/**
+ * Check if a user has sent their CV to a specific partner (single parameter version)
+ * @param {string} partnerUsername
+ */
+export const getPartnerCVStatus = async (partnerUsername) => {
+  const partner = await getPartnerByUsername(partnerUsername);
+  if (!partner) {
+    return { ok: false, error: 404, errorMsg: 'Partner not found' };
+  }
+  
+  // For now, return false as we don't have a specific implementation
+  // This would need to be implemented based on your CV sending logic
+  return { ok: true, value: { cvSent: false } };
+};
+
+/**
+ * Record that an attendee sent their CV via email to a partner
+ * @param {string} attendeeUsername
+ * @param {string} partnerUsername
+ */
+export const recordEmailCVSent = async (attendeeUsername, partnerUsername) => {
+  // Validate partner exists
+  const partner = await getPartnerByUsername(partnerUsername);
+  if (!partner) {
+    return { ok: false, error: 404, errorMsg: 'Partner not found' };
+  }
+
+  // Create a UUID for the CV record
+  const uuid = crypto.randomUUID();
+
+  try {
+    const cv = await recordEmailCVFromAttendee(attendeeUsername, partnerUsername, uuid);
+    if (!cv) {
+      return { ok: false, error: 500, errorMsg: 'Unable to record CV send' };
+    }
+    return { ok: true, value: cv };
+  } catch (err) {
+    return { ok: false, error: 500, errorMsg: err.message || 'Internal error' };
+  }
+};
+

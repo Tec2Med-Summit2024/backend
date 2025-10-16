@@ -6,6 +6,8 @@ import {
   likeQuestionInEventFromDb,
   dislikeQuestionInEventFromDb,
   getQuestionsFromEventFromDb,
+  getEventsWithUserQuestionsFromDb,
+  getEventsWithQuestionsForUserFromDb,
 } from './events.db.mjs';
 
 export const searchEvents = async (search, start, end, filters) => {
@@ -125,6 +127,42 @@ export const dislikeQuestionInEvent = async (eventId, questionId, username) => {
     console.log('Failed to dislike question');
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   } catch (err) {
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  }
+};
+
+/**
+ * Get events where the user has asked questions
+ * @param {string} username
+ */
+export const getEventsWithUserQuestions = async (username) => {
+  try {
+    const events = await getEventsWithUserQuestionsFromDb(username);
+    if (events) {
+      return { ok: true, value: events };
+    }
+    console.log('Failed to fetch events with user questions');
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  } catch (err) {
+    console.log('Error getting events with user questions:', err);
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  }
+};
+
+/**
+ * Get events where the user is a speaker/instructor and has received questions
+ * @param {string} username
+ */
+export const getEventsWithQuestionsForUser = async (username) => {
+  try {
+    const events = await getEventsWithQuestionsForUserFromDb(username);
+    if (events) {
+      return { ok: true, value: events };
+    }
+    console.log('Failed to fetch events with questions for user');
+    return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
+  } catch (err) {
+    console.log('Error getting events with questions for user:', err);
     return { ok: false, error: 500, errorMsg: 'Internal Server Error' };
   }
 };

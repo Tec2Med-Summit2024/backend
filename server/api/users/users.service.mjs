@@ -1,11 +1,15 @@
-import { 
+import {
   getTicketDB,
   getQRCodeDB,
   getEventsDB,
   getNotificationsDB,
   searchUsersDB,
   updateSettingsDB,
-  getUserTypeDB
+  getUserTypeDB,
+  followUserDB,
+  unfollowUserDB,
+  getFollowingDB,
+  checkFollowingDB
 } from './users.db.mjs';
 
 export const getTicket = async (username, role) => {
@@ -51,7 +55,43 @@ export const updateUserSettings = async (username, role, data) => {
       return { ok: false, error: 404, errorMsg: `${role} not found` };
   
     return { ok: true, value: res };
-};
+  };
+  
+  export const followUser = async (followerUsername, targetUsername) => {
+    const res = await followUserDB(followerUsername, targetUsername);
+    if (!res.ok) {
+      return res;
+    }
+    
+    return { ok: true, value: res.value };
+  };
+  
+  export const unfollowUser = async (followerUsername, targetUsername) => {
+    const res = await unfollowUserDB(followerUsername, targetUsername);
+    if (!res.ok) {
+      return res;
+    }
+    
+    return { ok: true, value: res.value };
+  };
+  
+  export const getFollowing = async (username) => {
+    const res = await getFollowingDB(username);
+    if (!res.ok) {
+      return res;
+    }
+    
+    return { ok: true, value: res.value };
+  };
+  
+  export const checkFollowing = async (followerUsername, targetUsername) => {
+    const res = await checkFollowingDB(followerUsername, targetUsername);
+    if (!res.ok) {
+      return res;
+    }
+    
+    return { ok: true, value: res.value };
+  };
 
 export const getUserTypes = async (username, role) => {
   const res = await getUserTypeDB(username, role);

@@ -262,3 +262,120 @@ export const getUserTypeDB = async (username, role) => {
     await session.close();
   }
 };
+
+/**
+ *
+ * @param {string} followerUsername Username of the user who is following
+ * @param {string} targetUsername Username of the user to be followed
+ * @returns {Promise<{ok: boolean, error?: number, errorMsg?: string, value?: any}>}
+ */
+export const followUserDB = async (followerUsername, targetUsername) => {
+  const driver = getDriver();
+  const session = driver.session();
+  
+  try {
+    const result = await session.run(
+      `MATCH (follower {username: $followerUsername}), (target {username: $targetUsername})
+       WHERE (target:Partner OR target:Participant)
+       MERGE (follower)-[:FOLLOWS]->(target)
+       RETURN follower, target`,
+      { followerUsername, targetUsername }
+    );
+    
+    if (result.records.length === 0) {
+      return { ok: false, error: 404, errorMsg: 'User not found' };
+    }
+    
+    return { ok: true, value: { follower: result.records[0].get(0).properties, target: result.records[0].get(1).properties } };
+  } catch (error) {
+    return { ok: false, error: 500, errorMsg: error.message };
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ *
+ * @param {string} followerUsername Username of the user who is unfollowing
+ * @param {string} targetUsername Username of the user to be unfollowed
+ * @returns {Promise<{ok: boolean, error?: number, errorMsg?: string, value?: any}>}
+ */
+export const unfollowUserDB = async (followerUsername, targetUsername) => {
+  const driver = getDriver();
+  const session = driver.session();
+  
+  try {
+    const result = await session.run(
+      `MATCH (follower {username: $followerUsername})-[f:FOLLOWS]->(target {username: $targetUsername})
+       WHERE (target:Partner OR target:Participant)
+       DELETE f
+       RETURN follower, target`,
+      { followerUsername, targetUsername }
+    );
+    
+    if (result.records.length === 0) {
+      return { ok: false, error: 404, errorMsg: 'Follow relationship not found' };
+    }
+    
+    return { ok: true, value: { follower: result.records[0].get(0).properties, target: result.records[0].get(1).properties } };
+  } catch (error) {
+    return { ok: false, error: 500, errorMsg: error.message };
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ *
+ * @param {string} username Username of the user to get following list for
+ * @returns {Promise<{ok: boolean, error?: number, errorMsg?: string, value?: any}>}
+ */
+export const getFollowingDB = async (username) => {
+  const driver = getDriver();
+  const session = driver.session();
+  
+  try {
+    const result = await session.run(
+      `MATCH (follower {username: $username})-[:FOLLOWS]->(followed)
+       WHERE (followed:Partner OR followed:Participant)
+       RETURN followed`,
+      { username }
+    );
+    
+    const following = result.records.map(record => record.get(0).properties);
+    
+    return { ok: true, value: following };
+  } catch (error) {
+    return { ok: false, error: 500, errorMsg: error.message };
+  } finally {
+    await session.close();
+  }
+};
+
+/**
+ *
+ * @param {string} followerUsername Username of the user who is following
+ * @param {string} targetUsername Username of the user to check
+ * @returns {Promise<{ok: boolean, error?: number, errorMsg?: string, value?: any}>}
+ */
+export const checkFollowingDB = async (followerUsername, targetUsername) => {
+  const driver = getDriver();
+  const session = driver.session();
+  
+  try {
+    const result = await session.run(
+      `MATCH (follower {username: $followerUsername})-[:FOLLOWS]->(target {username: $targetUsername})
+       WHERE (target:Partner OR target:Participant)
+       RETURN count(*) > 0 as isFollowing`,
+      { followerUsername, targetUsername }
+    );
+    
+    const isFollowing = result.records[0].get(0);
+    
+    return { ok: true, value: { isFollowing } };
+  } catch (error) {
+    return { ok: false, error: 500, errorMsg: error.message };
+  } finally {
+    await session.close();
+  }
+};

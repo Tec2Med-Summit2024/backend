@@ -6,6 +6,8 @@ import {
   likeQuestionInEvent,
   dislikeQuestionInEvent,
   getQuestionsFromEvent,
+  getEventsWithUserQuestions as getEventsWithUserQuestionsService,
+  getEventsWithQuestionsForUser as getEventsWithQuestionsForUserService,
 } from './events.service.mjs';
 
 export const getEvents = async (req, res) => {
@@ -16,7 +18,8 @@ export const getEvents = async (req, res) => {
       end,
       registered = false,
       speakerInstructor = false,
-      questionsAsked = false,
+      anyQuestionsAsked = false,
+      anyQuestionsAskedByMe = false,
       topics = [],
       types = [],
     } = req.query;
@@ -33,7 +36,8 @@ export const getEvents = async (req, res) => {
       end: endDate,
       registered,
       speakerInstructor,
-      questionsAsked,
+      anyQuestionsAsked,
+      anyQuestionsAskedByMe,
       topics,
       types,
     });
@@ -46,7 +50,8 @@ export const getEvents = async (req, res) => {
         userId: user,
         registered: registered === 'true',
         speakerInstructor: speakerInstructor === 'true',
-        questionsAsked: questionsAsked === 'true',
+        anyQuestionsAsked: anyQuestionsAsked === 'true',
+        anyQuestionsAskedByMe: anyQuestionsAskedByMe === 'true',
         topics: Array.isArray(topics) ? topics : topics ? [topics] : [],
         types: Array.isArray(types) ? types : types ? [types] : [],
       }
@@ -166,6 +171,44 @@ export const dislikeQuestion = async (req, res) => {
 
     return res.status(result.error).json({ error: result.errorMsg });
   } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+/**
+ * Get events where the user has asked questions
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+export const getEventsWithUserQuestionsController = async (req, res) => {
+  try {
+    const username = req.user.username;
+    const result = await getEventsWithUserQuestionsService(username);
+    if (result.ok) {
+      return res.status(200).json(result.value);
+    }
+    return res.status(result.error).json({ error: result.errorMsg });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+/**
+ * Get events where the user is a speaker/instructor and has received questions
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+export const getEventsWithQuestionsForUserController = async (req, res) => {
+  try {
+    const username = req.user.username;
+    const result = await getEventsWithQuestionsForUserService(username);
+    if (result.ok) {
+      return res.status(200).json(result.value);
+    }
+    return res.status(result.error).json({ error: result.errorMsg });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
