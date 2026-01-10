@@ -1,3 +1,5 @@
+# API Reference
+
 - [Users](#users)
 
   - [Get user ticket](#get-user-ticket)
