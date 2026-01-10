@@ -1,14 +1,12 @@
-# API Reference
+# API Reference - Partners
 
-- [Partners](#partners)
+- [Get partner](#get-partner)
+- [Send CV to partner](#send-cv-to-partner)
+- [Get received CV](#get-received-CV)
+- [Get all received CV](#get-all-received-CV)
+- [Get partners followed by partner](#Get-partners-followed-by-partner)
 
-  - [Get partner](#get-partner)
-  - [Send CV to partner](#send-cv-to-partner)
-  - [Get received CV](#get-received-CV)
-  - [Get all received CV](#get-all-received-CV)
-  - [Get partners followed by partner](#Get-partners-followed-by-partner)
-
-### Partners
+<br>
 
 #### Get partner
 
