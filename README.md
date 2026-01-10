@@ -26,3 +26,4 @@ If you wish to contribute to this repository, please consulte the [CONTRIBUTING.
 ## Licence
 This project is licenced under the [Apache Licence 2.0](LICENSE).
 All forks and contributions must comply with the terms of the licence.
+This repository contains a [NOTICE](NOTICE) file with additional attributions required by the licence mencioned above.
