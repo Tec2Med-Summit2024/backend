@@ -4,9 +4,9 @@
 - [Get event](#get-event)
 - [Send question to event](#send-question-to-event)
 - [Get event questions](#get-event-questions)
-- [Send event satisfaction score](#send-event-satisfaction-score)
+- [Send event satisfaction feedback](#send-event-satisfaction-feedback)
 
----
+<br>
 
 #### Get Events
 
@@ -25,7 +25,7 @@ Returns all the events of the authorized user
 | end   | ✅ | `STRING` | All events that end after the specified time will be omitted. Format: YYYY-MM-DDTHH:mm  |
 | type   | ✅ | `STRING` | All events of the specified type. Possible values: "Talk", "Masterclass", "Debate", "Roundtable", "Workshop".  |
 
-<br />
+<br>
 
 #### Get event
 
@@ -63,7 +63,7 @@ Returns the questions of the event identified by **id**. The endpoint uses the a
 
 <br>
 
-#### Send event feedback
+#### Send event satisfaction feedback
 
 ```HTTP
 POST /api/events/{id}/feedback
