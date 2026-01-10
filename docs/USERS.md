@@ -1,4 +1,5 @@
 # API Reference - Users
+NOTE: Users can be participants or partners. Participants can be attendees, speakers, instructors or speakers and instructors (both).
 
 - [Get user ticket](#get-user-ticket)
 - [Get user qrcode](#get-user-qrcode)
