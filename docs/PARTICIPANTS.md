@@ -11,7 +11,8 @@
 - [Get partners followed by participant](#get-partners-followed-by-participant)
 
 
-### Get participant
+
+#### Get participant
 
 ```HTTP
 GET /api/participants/{username}
@@ -21,7 +22,8 @@ Returns the participant identified by **username**.
 
 <br>
 
-### Update participant
+
+#### Update participant
 
 ```HTTP
 PUT /api/participants/{username}
@@ -31,7 +33,8 @@ Updates the participant identified by **username** and returns it. Only works fo
 
 <br>
 
-### Add event to participant schedule
+
+#### Add event to participant schedule
 
 ```HTTP
 POST /api/participants/{username}/events
@@ -40,8 +43,9 @@ POST /api/participants/{username}/events
 Adds an event to the schedule of the participant identified by **username**.
 
 <br>
-    
-### Remove event from participant schedule
+
+
+#### Remove event from participant schedule
 
 ```HTTP
 DELETE /api/participants/{username}/events/{id}
@@ -52,7 +56,7 @@ Removes event identified by **id** from the schedule of the participant identifi
 <br>
 
 
-### Add participant certificate
+#### Add participant certificate
 
 <!-- MAYBE NOT NECESSARY BECAUSE THE SYSTEM CAN ADD A CERTIFICATE INTERNALLY WHEN THE LOGGED USERS SENDS THE SATISFACTION SCORE -->
 
@@ -64,7 +68,8 @@ Add a new certificate to the collections of certificates of the participant iden
 
 <br>
 
-### Get participant certificate
+
+#### Get participant certificate
 
 ```HTTP
 GET /api/participants/{username}/certificates/{id}
@@ -74,7 +79,8 @@ Returns the certificate identified by **id** of the participant identified by **
 
 <br>
 
-### Get participant certificates
+
+#### Get participant certificates
 
 ```HTTP
 GET /api/participants/{username}/certificates
@@ -84,7 +90,8 @@ Returns the certificates of the participant identified by **username**.
 
 <br>
 
-### Get participant questions
+
+#### Get participant questions
 
 ```HTTP
 GET /api/participants/{username}/questions
@@ -100,7 +107,8 @@ Returns the questions of the participant identified by **username**.
 
 <br>
 
-### Get partners followed by participant
+
+#### Get partners followed by participant
 
 ```HTTP
 GET /api/participants/{username}/partners
