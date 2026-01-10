@@ -3,7 +3,7 @@
 - [Get all users](#get-all-users)
 - [Get event participants](#get-event-participants)
 
----
+<br>
 
 #### Get all users
 
