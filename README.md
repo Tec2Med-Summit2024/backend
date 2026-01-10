@@ -1,7 +1,4 @@
 # Backend App Tec2Med Summit
-
-
-## Overview
 This repository contains the **official version** of the Backend App Tec2Med Summit project. Any forks or derived versions may differ in functionality, stability, or quality. This project is intended to serve as a reliable reference for collaborators and users.
 
 
