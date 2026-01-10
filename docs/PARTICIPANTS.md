@@ -13,14 +13,13 @@
 ---
 
 #### Get participant
+Returns the participant identified by **username**.
+
+<br>
 
 ```HTTP
 GET /api/participants/{username}
 ```
-
-Returns the participant identified by **username**.
-
-<br>
 
 
 #### Update participant
