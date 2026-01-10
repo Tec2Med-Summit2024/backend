@@ -1,3 +1,5 @@
+# API Reference
+
 - [Partners](#partners)
 
   - [Get partner](#get-partner)
