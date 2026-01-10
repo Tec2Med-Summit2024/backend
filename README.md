@@ -1,5 +1,5 @@
 # Backend Documentation
-Welcome to the documentation for the project Backend App Tec2Med Summit.
+Welcome to the documentation for the **project Backend App Tec2Med Summit**.
 
 ## Application Notes
 
