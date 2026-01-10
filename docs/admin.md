@@ -1,3 +1,5 @@
+# API Reference
+
 - [Admin](#admin)
   - [Get all users](#get-all-users)
   - [Get event participants](#get-event-participants)
