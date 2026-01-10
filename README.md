@@ -27,7 +27,7 @@ Afonso Hermenegildo, Ana Rita Galhardo, Ana Teixeira, António Festas, Bruno Car
 
 This repository contains a [NOTICE](./NOTICE) file with the attributions required by its licence.
 
-## License
+## Licence
 This project is licenced under the **Apache License 2.0**. All original authors retain copyright.  
 
 For full terms and conditions, see [LICENSE](./LICENSE).
