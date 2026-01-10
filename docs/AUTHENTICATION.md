@@ -202,16 +202,14 @@ If email sending fails, the system automatically falls back to console logging w
 # Old version:
 This section below shows the previous version of the authentication endpoints, before recent changes, for reference.
 
-## API Reference
+## API Reference - Authentication
 
-- [Authentication](#authentication)
+- [Verify Account](#verify-account)
+- [Verification](#verification)
+- [Update Password](#update-password)
+- [Login](#login)
 
-  - [Verify Account](#Verify-Account)
-  - [Verification](#verification)
-  - [Update password](#update-password)
-  - [Login](#login)
-
-### Authentication
+---
 
 #### Verify Account
 
@@ -221,7 +219,7 @@ POST /api/request-verification
 
 Verifies if the email is in the ticket list. If it is, sends a verification code to the email.
 
-### TEMPORARY:
+**TEMPORARY**:
 (For testing check the code in the console, or change the email constant in server/auth/auth.service.mjs)
 
 **Body content**
@@ -247,7 +245,9 @@ Verifies the account with the verification code and returns a JWT Token and the 
 | email | no   | `STRING` | The email of the user. |
 | code | no   | `STRING` | Verification code. |
 
-#### Update password
+<br>
+
+#### Update Password
 
 ```HTTP
 PUT /api/password
@@ -265,14 +265,14 @@ Note: Needs the additional request header containing the JWT token of the user
 | email | no   | `STRING` | The email of the user. |
 | password | no   | `STRING` | New password. |
 
+<br>
+
 #### Login
 
 ```HTTP
 POST /api/login
 ```
-
 Logs in the user and returns a JWT Token and the user ID.
-
 
 **Body content**
 
