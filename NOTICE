@@ -1,6 +1,16 @@
-Project: Backend App Tec2Med Summit
-Version: 1.0.0
-Authors: Afonso Hermenegildo, Ana Rita Galhardo, Ana Teixeira, António Festas, Bruno Carmo, Francisco Jorge, Sahil Kumar
-Licence: Apache License 2.0
+Backend App Tec2Med Summit
+Version 1.0.0
 
-Note: This repository is the official version of Backend App Tec2Med Summit. Forks may include modifications that have not been verified.
+Copyright © 2026
+Afonso Hermenegildo
+Ana Rita Galhardo
+Ana Teixeira
+António Festas
+Bruno Carmo
+Francisco Jorge
+Sahil Kumar
+
+Note: This repository represents the official reference implementation
+of the Backend App Tec2Med Summit project. Forks and derived works are
+permitted under the Apache License 2.0 but may include unverified
+modifications.
