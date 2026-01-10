@@ -1,15 +1,12 @@
-# API Reference
+# API Reference - Events
 
-- [Events](#events)
+- [Get events](#get-events)
+- [Get event](#get-event)
+- [Send question to event](#send-question-to-event)
+- [Get event questions](#get-event-questions)
+- [Send event satisfaction score](#send-event-satisfaction-score)
 
-  - [Get events](#get-events)
-  - [Get event](#get-event)
-  - [Send question to event](#send-question-to-event)
-  - [Get event questions](#get-event-questions)
-  - [Send event satisfaction score](#send-event-satisfaction-score)
-
-
-### Events
+---
 
 #### Get Events
 
@@ -27,6 +24,7 @@ Returns all the events of the authorized user
 | start | ✅ | `STRING` | All events that start before the specified time will be omitted. Format: YYYY-MM-DDTHH:mm|
 | end   | ✅ | `STRING` | All events that end after the specified time will be omitted. Format: YYYY-MM-DDTHH:mm  |
 | type   | ✅ | `STRING` | All events of the specified type. Possible values: "Talk", "Masterclass", "Debate", "Roundtable", "Workshop".  |
+
 <br />
 
 #### Get event
