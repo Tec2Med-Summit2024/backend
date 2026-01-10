@@ -1,4 +1,5 @@
 # API Reference - Admin Panel
+NOTE: Users can be participants or partners. Participants can be attendees, speakers, instructors or speakers and instructors (both).
 
 - [Get all users](#get-all-users)
 - [Get event participants](#get-event-participants)
