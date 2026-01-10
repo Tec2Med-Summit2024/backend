@@ -19,4 +19,4 @@ Modified by: [Contributor's Full Name]
 
 ## Contribution License
 
-By contributing, you agree that your code will be licensed under the [Apache License 2.0](./LICENSE), and that the original authors retain copyright.
+By contributing, you agree that your code will be licenced under the [Apache License 2.0](./LICENSE), and that the original authors retain copyright.
