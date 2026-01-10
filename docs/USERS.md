@@ -1,15 +1,11 @@
-# API Reference
+# API Reference - Users
 
-- [Users](#users)
-
-  - [Get user ticket](#get-user-ticket)
-  - [Get user qrcode](#get-user-qrcode)
-  - [Get user schedule](#get-user-schedule)
-  - [Get user notifications](#get-user-notifications)
-  - [Search users](#search-users)
-  - [Update settings](#update-settings)
-
-### Users
+- [Get user ticket](#get-user-ticket)
+- [Get user qrcode](#get-user-qrcode)
+- [Get user schedule](#get-user-schedule)
+- [Get user notifications](#get-user-notifications)
+- [Search users](#search-users)
+- [Update settings](#update-settings)
 
 <br>
 
@@ -63,7 +59,6 @@ Returns the notifications of the user identified by **username**.
 
 <br>
 
-
 #### Search users
 
 ```HTTP
@@ -85,7 +80,6 @@ Returns a list of users in the application system.
 | expertises| yes      | `String` | The expertises of the user. Searches for users whose expertises match the given list of expertises. |
 
 Note: The interests and expertises parameters are lists of exact interests/expertises in the form of ; seperated values (i.e. &interests=3D Printing;Data modelling)
-
 
 <br>
 
