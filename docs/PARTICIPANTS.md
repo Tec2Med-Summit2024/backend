@@ -10,7 +10,7 @@
 - [Get participant questions](#get-participant-questions)
 - [Get partners followed by participant](#get-partners-followed-by-participant)
 
-
+---
 
 #### Get participant
 
