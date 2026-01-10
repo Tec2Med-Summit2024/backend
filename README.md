@@ -32,7 +32,7 @@ Note: Profile upload and some sensitive endpoints are currently documented separ
 ## Authors
 Afonso Hermenegildo, Ana Rita Galhardo, Ana Teixeira, António Festas, Bruno Carmo, Francisco Jorge, Sahil Kumar
 
-This repository contains a [NOTICE](NOTICE) file with the attributions required by its licence.
+This repository contains a [NOTICE](./NOTICE) file with the attributions required by its licence.
 
 
 ## Contributing
