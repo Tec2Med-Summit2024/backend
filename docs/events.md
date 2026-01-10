@@ -1,3 +1,5 @@
+# API Reference
+
 - [Events](#events)
 
   - [Get events](#get-events)
@@ -5,6 +7,7 @@
   - [Send question to event](#send-question-to-event)
   - [Get event questions](#get-event-questions)
   - [Send event satisfaction score](#send-event-satisfaction-score)
+
 
 ### Events
 
