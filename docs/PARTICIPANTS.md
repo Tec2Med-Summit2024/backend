@@ -1,4 +1,5 @@
 # API Reference - Participants
+NOTE: Users can be participants or partners. Participants can be attendees, speakers, instructors or speakers and instructors (both).
 
 - [Get participant](#get-participant)
 - [Update participant](#update-participant)
