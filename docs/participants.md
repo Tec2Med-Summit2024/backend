@@ -1,3 +1,5 @@
+# API Reference
+
 - [Participants](#participants)
 
   - [Get participant](#get-participant)
