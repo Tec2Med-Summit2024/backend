@@ -207,7 +207,7 @@ This section below shows the previous version of the authentication endpoints, b
 - [Update Password](#update-password)
 - [Login](#login)
 
----
+<br>
 
 #### Verify Account
 
@@ -278,3 +278,5 @@ Logs in the user and returns a JWT Token and the user ID.
 | :-------- | -------- | :----- | :--------------------------------------------------------- |
 | email | no   | `STRING` | The email of the user. |
 | password | no   | `STRING` | The password of the user. |
+
+<br>
