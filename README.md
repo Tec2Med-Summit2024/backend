@@ -24,6 +24,6 @@ Note: Profile upload and some sensitive endpoints are currently documented separ
 If you wish to contribute to this repository, please consulte the [CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
 ## Licence
-This project is licenced under the [Apache Licence 2.0](LICENSE).
-All forks and contributions must comply with the terms of the licence.
+This project is licenced under the [Apache Licence 2.0](LICENSE). All forks and contributions must comply with the terms of the licence.
+
 This repository contains a [NOTICE](NOTICE) file with additional attributions required by the licence mencioned above.
