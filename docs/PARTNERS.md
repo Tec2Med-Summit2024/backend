@@ -1,4 +1,5 @@
 # API Reference - Partners
+NOTE: Users can be participants or partners. Participants can be attendees, speakers, instructors or speakers and instructors (both).
 
 - [Get partner](#get-partner)
 - [Send CV to partner](#send-cv-to-partner)
