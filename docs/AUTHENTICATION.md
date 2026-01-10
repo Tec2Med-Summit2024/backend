@@ -1,6 +1,4 @@
 # Authentication System Documentation
-
-## Overview
 This application now has comprehensive JWT-based authentication protecting all API endpoints. All endpoints require valid JWT tokens for access.
 
 ## Setup Requirements
