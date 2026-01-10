@@ -13,12 +13,12 @@ Some general notes about the model and design of the application:
 ## API Reference
 Documentation for the API endpoints
 
-- [Authentication](docs/authentication.md)
-- [Users](docs/users.md)
-- [Participants](docs/participants.md)
-- [Partners](docs/partners.md)
-- [Events](docs/events.md)
-- [Admin](docs/admin.md)
+- [Authentication](./docs/AUTHENTICATION.md)
+- [Users](./docs/USERS.md)
+- [Participants](./docs/PARTICIPANTS.md)
+- [Partners](./docs/PARTNERS.md)
+- [Events](./docs/EVENTS.md)
+- [Admin Panel](./docs/ADMIN.md)
 
 Note: Profile upload and some sensitive endpoints are currently documented separately (`PROFILE_IMAGE_UPLOAD_API.md`, `PASSWORD_ENDPOINT_SECURITY.md`)
 
