@@ -1,4 +1,4 @@
-# API Reference - Painel Administrador
+# API Reference - Admin Panel
 
 - [Get all users](#get-all-users)
 - [Get event participants](#get-event-participants)
